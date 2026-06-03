@@ -31,8 +31,11 @@ type TrendingOptions struct {
 //
 // Trending has no official API: the listing is limited, not pre-filtered by
 // topic, and its HTML can change without notice. This client is therefore
-// deliberately tolerant — a row it cannot parse is skipped, never fatal — and
-// the page only provides candidates; downstream classification still applies.
+// tolerant of individual rows — one it cannot parse is skipped — but it does NOT
+// swallow a wholesale layout change: when every row fails (or the listing
+// container itself is gone with no empty-state marker), it reports a
+// *LayoutError rather than silently returning an empty set. The page only
+// provides candidates; downstream classification still applies.
 type TrendingClient struct {
 	httpClient *http.Client
 	baseURL    string
@@ -46,9 +49,21 @@ func NewTrendingClient() *TrendingClient {
 	}
 }
 
-// Trending returns repository candidates parsed from the trending page. Only
-// fetch/transport-level problems are fatal (returned as *UpstreamError); a
-// malformed individual row is skipped so a layout tweak cannot empty the run.
+// Trending returns repository candidates parsed from the trending page.
+//
+// It can return two distinct error kinds, and a caller (e.g. T6) should handle
+// both:
+//   - *UpstreamError — a transport-level failure (network, non-2xx status,
+//     unparseable body). Maps to exit code ExitUpstream (3).
+//   - *LayoutError — the page was fetched successfully but its structure was
+//     not recognized: the row selector matched nothing with no empty-state
+//     marker, or rows matched but none yielded an owner/name link. Severity is
+//     the caller's call (log-and-continue vs fail); detect it via IsLayoutDrift.
+//
+// A single malformed row is tolerated (skipped); the failure only escalates to
+// a *LayoutError when ALL rows fail, so a one-off markup quirk cannot empty the
+// run while a genuine redesign cannot pass unnoticed. A legitimately empty
+// listing (GitHub's empty-state) returns no candidates and no error.
 func (c *TrendingClient) Trending(ctx context.Context, opts TrendingOptions) ([]Candidate, error) {
 	const op = "github trending"
 

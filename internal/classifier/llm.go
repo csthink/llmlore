@@ -288,13 +288,13 @@ func (p *chatProvider) doOnce(ctx context.Context, payload []byte) (text string,
 	switch {
 	case resp.StatusCode == http.StatusUnauthorized || resp.StatusCode == http.StatusForbidden:
 		return "", false, &MissingConfigError{Op: opChat,
-			Err: fmt.Errorf("provider rejected credentials (status %d): %s", resp.StatusCode, providerMessage(body))}
+			Err: fmt.Errorf("provider rejected credentials (status %d); %s", resp.StatusCode, labeledProviderMessage(body))}
 	case resp.StatusCode == http.StatusTooManyRequests || resp.StatusCode >= 500:
 		return "", true, &UpstreamError{Op: opChat,
-			Err: fmt.Errorf("transient status %d: %s", resp.StatusCode, providerMessage(body))}
+			Err: fmt.Errorf("transient status %d; %s", resp.StatusCode, labeledProviderMessage(body))}
 	case resp.StatusCode < 200 || resp.StatusCode >= 300:
 		return "", false, &UpstreamError{Op: opChat,
-			Err: fmt.Errorf("unexpected status %d: %s", resp.StatusCode, providerMessage(body))}
+			Err: fmt.Errorf("unexpected status %d; %s", resp.StatusCode, labeledProviderMessage(body))}
 	}
 
 	var parsed chatResponse
@@ -314,6 +314,22 @@ func backoff(base time.Duration, attempt int) time.Duration {
 		d *= 2
 	}
 	return d
+}
+
+// labeledProviderMessage wraps the upstream provider's error text with an
+// explicit English source label. That passthrough text is outside llmlore's
+// control and may not be English (e.g. a non-English provider's error body), so
+// labeling it keeps it from ever reading as llmlore's own copy — an AC-9 edge
+// safety. The llmlore-authored parts of every error (Op, the status phrase, and
+// this label) stay English; only the quoted segment is foreign and is marked as
+// such. The CLI (T6) can choose to drop the quoted segment entirely and show
+// just the English prefix + status code; see .relay/T3.status.md.
+func labeledProviderMessage(body []byte) string {
+	msg := providerMessage(body)
+	if msg == "" {
+		return "no message from upstream provider"
+	}
+	return fmt.Sprintf("upstream provider message: %q", msg)
 }
 
 // providerMessage extracts an OpenAI-style {"error":{"message":...}} or falls

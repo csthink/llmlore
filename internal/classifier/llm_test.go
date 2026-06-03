@@ -185,6 +185,21 @@ func TestChatProviderUnauthorizedIsMissingConfig(t *testing.T) {
 	if IsUpstream(err) {
 		t.Errorf("401 must not be classified as upstream/exit 3: %v", err)
 	}
+	// The uncontrolled upstream text must be present but source-labeled, so it
+	// can never read as llmlore's own copy (AC-9 edge safety).
+	msg := err.Error()
+	if !strings.Contains(msg, "upstream provider message:") {
+		t.Errorf("error %q does not label the passthrough source", msg)
+	}
+	if !strings.Contains(msg, "invalid api key") {
+		t.Errorf("error %q dropped the upstream message", msg)
+	}
+}
+
+func TestLabeledProviderMessageHandlesEmptyBody(t *testing.T) {
+	if got := labeledProviderMessage(nil); strings.Contains(got, "\"\"") {
+		t.Errorf("empty body produced an empty quoted passthrough: %q", got)
+	}
 }
 
 func TestChatProviderRetriesThenSucceeds(t *testing.T) {

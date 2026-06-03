@@ -83,7 +83,12 @@ func TestEncodeRefreshesCount(t *testing.T) {
 		t.Fatalf("load: %v", err)
 	}
 	if out.Meta.Count != 1 {
-		t.Errorf("count not refreshed: got %d want 1", out.Meta.Count)
+		t.Errorf("written count not refreshed: got %d want 1", out.Meta.Count)
+	}
+	// Encode must not mutate the caller's in-memory dataset: the stale count
+	// stays as the caller set it (the correction lives only in the output).
+	if d.Meta.Count != 999 {
+		t.Errorf("Encode mutated receiver: Meta.Count = %d want 999 (unchanged)", d.Meta.Count)
 	}
 }
 

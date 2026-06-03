@@ -201,8 +201,10 @@ func Load(r io.Reader) (*Dataset, error) {
 }
 
 // Encode writes the dataset to w as indented JSON (human-readable, diff-friendly).
-// It refreshes Meta.Count to match the repo slice so the file stays consistent.
-func (d *Dataset) Encode(w io.Writer) error {
+// The written meta.count is refreshed to match the repo slice so the file stays
+// consistent. The value receiver makes this read-only: the count is corrected on
+// a local copy, so the caller's in-memory Dataset is never mutated.
+func (d Dataset) Encode(w io.Writer) error {
 	d.Meta.Count = len(d.Repos)
 	enc := json.NewEncoder(w)
 	enc.SetIndent("", "  ")

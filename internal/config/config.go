@@ -71,13 +71,43 @@ func (c *Config) ClassifierMode() string {
 	return model.ClassifiedByHeuristic
 }
 
-// Redacted returns a copy safe to log: every secret is replaced with a presence
-// marker. Use this instead of logging a Config directly.
+// Redacted returns a copy with every secret replaced by a presence marker.
+// Logging a Config directly is already safe (see String/GoString); use Redacted
+// when you need the redacted value as data rather than a formatted string.
 func (c *Config) Redacted() Config {
 	out := *c
 	out.GitHubToken = redact(c.GitHubToken)
 	out.LLM.APIKey = redact(c.LLM.APIKey)
 	return out
+}
+
+// String makes "%v", "%+v", and "%s" on a Config log-safe by default: secrets
+// are redacted. The `plain` alias strips Config's own Stringer/GoStringer so the
+// formatting below does not recurse back into these methods.
+func (c Config) String() string {
+	type plain Config
+	return fmt.Sprintf("%+v", plain(c.Redacted()))
+}
+
+// GoString makes "%#v" on a Config log-safe too.
+func (c Config) GoString() string {
+	type plain Config
+	return fmt.Sprintf("%#v", plain(c.Redacted()))
+}
+
+// String makes "%v"/"%+v"/"%s" on a standalone LLM log-safe (APIKey redacted),
+// covering callers that format the LLM field directly rather than the Config.
+func (l LLM) String() string {
+	type plain LLM
+	l.APIKey = redact(l.APIKey)
+	return fmt.Sprintf("%+v", plain(l))
+}
+
+// GoString makes "%#v" on a standalone LLM log-safe too.
+func (l LLM) GoString() string {
+	type plain LLM
+	l.APIKey = redact(l.APIKey)
+	return fmt.Sprintf("%#v", plain(l))
 }
 
 func redact(s string) string {

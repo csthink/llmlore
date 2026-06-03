@@ -1,6 +1,7 @@
 package config
 
 import (
+	"fmt"
 	"os"
 	"path/filepath"
 	"strings"
@@ -146,6 +147,39 @@ func TestRedactedHidesSecrets(t *testing.T) {
 	}
 	if r.GitHubToken == "" || r.LLM.APIKey == "" {
 		t.Error("Redacted should mark presence, not blank out set secrets")
+	}
+}
+
+func TestStringFormattingNeverLeaks(t *testing.T) {
+	cfg := Config{
+		GitHubToken: "ghp-TOPSECRET",
+		LLM:         LLM{Provider: "anthropic", APIKey: "sk-TOPSECRET"},
+		Port:        7777,
+	}
+	// Cover both the Config value and a *Config pointer across every verb a
+	// caller might reach for, plus formatting the LLM field on its own.
+	outputs := []string{
+		fmt.Sprintf("%v", cfg),
+		fmt.Sprintf("%+v", cfg),
+		fmt.Sprintf("%s", cfg),
+		fmt.Sprintf("%#v", cfg),
+		fmt.Sprintf("%v", &cfg),
+		fmt.Sprintf("%+v", &cfg),
+		fmt.Sprintf("%#v", &cfg),
+		fmt.Sprintf("%+v", cfg.LLM),
+		fmt.Sprintf("%#v", cfg.LLM),
+		fmt.Sprintf("%v", &cfg.LLM),
+	}
+	for i, out := range outputs {
+		if strings.Contains(out, "TOPSECRET") {
+			t.Errorf("output[%d] leaked a secret: %s", i, out)
+		}
+		// Non-secret context should still be visible for the value/+v forms.
+	}
+	// Sanity: presence is still indicated, and non-secret fields survive.
+	plus := fmt.Sprintf("%+v", cfg)
+	if !strings.Contains(plus, "***set***") || !strings.Contains(plus, "anthropic") {
+		t.Errorf("expected redaction marker and provider in %%+v output: %s", plus)
 	}
 }
 

@@ -61,7 +61,7 @@
 - [x] T0 项目骨架
 - [x] T1 数据模型 + 配置
 - [x] T2 采集(search + trending)
-- [ ] T3 分类(heuristic + LLM)
+- [x] T3 分类(heuristic + LLM)
 - [ ] T4 存储 + 富化
 - [ ] T5 渲染 + 本地服务
 - [ ] T6 discover 接线 + pull + 内嵌兜底

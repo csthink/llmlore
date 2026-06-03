@@ -62,7 +62,7 @@
 - [x] T1 数据模型 + 配置
 - [x] T2 采集(search + trending)
 - [x] T3 分类(heuristic + LLM)
-- [ ] T4 存储 + 富化
+- [x] T4 存储 + 富化
 - [ ] T5 渲染 + 本地服务
 - [ ] T6 discover 接线 + pull + 内嵌兜底
 - [ ] T7 my-stars

@@ -67,6 +67,7 @@ func Save(path string, d *model.Dataset) error {
 		return fmt.Errorf("close %s: %w", tmp, err)
 	}
 	if err := os.Rename(tmp, path); err != nil {
+		os.Remove(tmp)
 		return fmt.Errorf("replace %s: %w", path, err)
 	}
 	return nil

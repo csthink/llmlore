@@ -63,12 +63,13 @@ type ghSearchResponse struct {
 
 // ghRepo mirrors the subset of a Search API repository item we consume.
 type ghRepo struct {
-	FullName    string `json:"full_name"`
-	Name        string `json:"name"`
-	Description string `json:"description"`
-	Language    string `json:"language"`
-	Stars       int    `json:"stargazers_count"`
-	HTMLURL     string `json:"html_url"`
+	FullName    string    `json:"full_name"`
+	Name        string    `json:"name"`
+	Description string    `json:"description"`
+	Language    string    `json:"language"`
+	Stars       int       `json:"stargazers_count"`
+	HTMLURL     string    `json:"html_url"`
+	PushedAt    time.Time `json:"pushed_at"`
 	Owner       struct {
 		Login string `json:"login"`
 	} `json:"owner"`
@@ -214,6 +215,7 @@ func toCandidate(item ghRepo) Candidate {
 		Description: item.Description,
 		Language:    item.Language,
 		Stars:       item.Stars,
+		PushedAt:    item.PushedAt,
 		Source:      model.SourceSearch,
 	}
 }

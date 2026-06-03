@@ -14,6 +14,7 @@ package collector
 import (
 	"errors"
 	"fmt"
+	"time"
 )
 
 // ExitUpstream is the process exit code for a network / upstream failure
@@ -31,7 +32,8 @@ type Candidate struct {
 	Description string
 	Language    string
 	Stars       int
-	Source      string // model.SourceSearch or model.SourceTrending
+	PushedAt    time.Time // last push time; zero when the source cannot determine it (trending). Feeds model.Repo.PushedAt → is_stale (T4).
+	Source      string    // model.SourceSearch or model.SourceTrending
 }
 
 // UpstreamError wraps a failure talking to an external service (GitHub API or

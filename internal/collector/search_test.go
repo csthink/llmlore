@@ -8,6 +8,7 @@ import (
 	"strconv"
 	"strings"
 	"testing"
+	"time"
 
 	"github.com/csthink/llmlore/internal/model"
 )
@@ -41,6 +42,7 @@ func newSearchServer(t *testing.T, total int) (*SearchClient, *recordedRequest) 
 				"language": "Go",
 				"stargazers_count": %d,
 				"html_url": "https://github.com/owner%d/repo%d",
+				"pushed_at": "2026-01-02T03:04:05Z",
 				"owner": {"login": "owner%d"}
 			}`, i, i, i, i, 1000-i, i, i, i))
 		}
@@ -92,6 +94,10 @@ func TestSearchReturnsCandidates(t *testing.T) {
 	}
 	if first.URL != "https://github.com/owner0/repo0" {
 		t.Errorf("URL = %q", first.URL)
+	}
+	wantPushed := time.Date(2026, 1, 2, 3, 4, 5, 0, time.UTC)
+	if !first.PushedAt.Equal(wantPushed) {
+		t.Errorf("PushedAt = %v, want %v", first.PushedAt, wantPushed)
 	}
 
 	// Query construction and request shape.

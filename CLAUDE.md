@@ -60,7 +60,7 @@
 <!-- 每完成一个任务更新这里,方便跨会话快速定位 -->
 - [x] T0 项目骨架
 - [x] T1 数据模型 + 配置
-- [ ] T2 采集(search + trending)
+- [x] T2 采集(search + trending)
 - [ ] T3 分类(heuristic + LLM)
 - [ ] T4 存储 + 富化
 - [ ] T5 渲染 + 本地服务

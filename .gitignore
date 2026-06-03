@@ -1,0 +1,45 @@
+# ---- Go build & test artifacts ----
+/llmlore                 # root build output (binary); cmd/llmlore/ source is kept
+*.exe
+*.exe~
+*.dll
+*.so
+*.dylib
+*.test
+*.out
+coverage.*
+*.prof
+go.work
+go.work.sum
+
+# ---- Release / distribution ----
+/dist/                   # GoReleaser output
+
+# ---- Secrets & local config (NEVER commit keys) ----
+.env
+.env.*
+*.local
+*.local.toml
+config.local.toml
+*.key
+*.pem
+*.secret
+
+# ---- Personal data (NEVER commit; my-stars is local-only, lives in ~/.local/share/llmlore/) ----
+my-stars.json
+*.my-stars.json
+
+# ---- Task relay scratch (review inputs, not source) ----
+.relay/
+
+# ---- Generated dashboard output (regenerable; source of truth is data/repos.json) ----
+/out/
+*.dashboard.html
+
+# ---- Editor / OS ----
+.DS_Store
+.idea/
+.vscode/
+*.swp
+
+# NOTE: data/repos.json IS tracked (the open dataset) — do not ignore data/.

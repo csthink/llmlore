@@ -193,6 +193,13 @@ func underCap(count, limit int) bool {
 
 // allTopicsUnderCap reports whether EVERY topic still has room under limit, so
 // admitting the repo cannot push any topic view past the cap.
+//
+// A repo with NO topics returns true: it appears in no topic view and so cannot
+// breach any topic cap, leaving it bounded only by the type cap. Select assumes
+// spec §3 (topics >= 1) holds, so this is a defensive edge — and a deliberate
+// one: silently dropping such a repo here would hide the malformation, whereas
+// admitting it lets store.Save's Validate reject the whole dataset loudly before
+// it ever reaches disk.
 func allTopicsUnderCap(topics []string, counts map[string]int, limit int) bool {
 	if limit <= 0 {
 		return true

@@ -189,6 +189,26 @@ func TestSelectEveryTopicViewWithinCap(t *testing.T) {
 	}
 }
 
+func TestSelectEmptyTopicsBoundedByTypeCapOnly(t *testing.T) {
+	// spec §3 guarantees topics >= 1; this pins the defensive edge if it does not.
+	// An empty-topics repo appears in no topic view, so it cannot breach a topic
+	// cap: it is admitted (not silently dropped) and bounded only by the type cap.
+	// A later store.Save would reject such a malformed dataset via Validate.
+	noTopics := repo("o/a", 30, model.TypeGuide) // no topics
+
+	got := Select(dataset(noTopics), SelectOptions{PerTopicCap: 1})
+	if len(got.Repos) != 1 {
+		t.Fatalf("empty-topics repo dropped under a topic cap; want admitted (type-cap only)")
+	}
+
+	// Still subject to the type cap: with cap 1, only the higher-star one survives.
+	other := repo("o/b", 20, model.TypeGuide) // also no topics
+	got2 := Select(dataset(noTopics, other), SelectOptions{PerTypeCap: 1, PerTopicCap: 1})
+	if want := []string{"o/a"}; !equal(ids(got2.Repos), want) {
+		t.Errorf("got %v, want %v (type cap still applies)", ids(got2.Repos), want)
+	}
+}
+
 func ids(repos []model.Repo) []string {
 	out := make([]string, len(repos))
 	for i, r := range repos {

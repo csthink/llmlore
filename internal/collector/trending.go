@@ -2,6 +2,7 @@ package collector
 
 import (
 	"context"
+	"fmt"
 	"io"
 	"net/http"
 	"net/url"
@@ -87,19 +88,55 @@ func (c *TrendingClient) Trending(ctx context.Context, opts TrendingOptions) ([]
 		return nil, upstreamErrorf(op, "parse html: %v", err)
 	}
 
-	return parseTrending(doc), nil
+	candidates, detail := parseTrending(doc)
+	if detail != "" {
+		// Fetched fine, but the structure was not recognized: surface it as a
+		// layout drift so the caller can observe it instead of silently feeding
+		// an empty trending set into the pipeline.
+		return nil, &LayoutError{Source: op, Detail: detail}
+	}
+	return candidates, nil
 }
 
 // parseTrending extracts candidates from a trending document, skipping any row
 // that does not yield a usable owner/name.
-func parseTrending(doc *goquery.Document) []Candidate {
-	var candidates []Candidate
-	doc.Find("article.Box-row").Each(func(_ int, row *goquery.Selection) {
+//
+// It distinguishes a genuinely empty listing from a layout change. A non-empty
+// detail string means the page structure was not recognized (suspected drift):
+//   - the row selector matched nothing AND the page has no known empty-state
+//     marker, or
+//   - rows matched but none yielded a usable owner/name link.
+//
+// An empty detail with zero candidates means GitHub legitimately had nothing
+// trending (its empty-state marker was present).
+func parseTrending(doc *goquery.Document) (candidates []Candidate, detail string) {
+	rows := doc.Find("article.Box-row")
+	if rows.Length() == 0 {
+		if isTrendingEmptyState(doc) {
+			return nil, "" // legitimately no trending repositories
+		}
+		return nil, `no "article.Box-row" entries found`
+	}
+
+	rows.Each(func(_ int, row *goquery.Selection) {
 		if cand, ok := parseTrendingRow(row); ok {
 			candidates = append(candidates, cand)
 		}
 	})
-	return candidates
+	if len(candidates) == 0 {
+		// Rows exist but the inner repo-link structure no longer parses.
+		return nil, fmt.Sprintf("found %d row(s) but none yielded an owner/name link", rows.Length())
+	}
+	return candidates, ""
+}
+
+// isTrendingEmptyState reports whether the page is GitHub's "nothing trending"
+// state rather than a structural change. GitHub renders an empty listing inside
+// a `.blankslate` container; treating its presence as a legitimate empty result
+// (and its absence, with no rows, as drift) errs toward signaling a problem
+// rather than silently returning empty — the safer direction.
+func isTrendingEmptyState(doc *goquery.Document) bool {
+	return doc.Find(".blankslate").Length() > 0
 }
 
 // parseTrendingRow extracts a single Candidate. ok is false when the row lacks

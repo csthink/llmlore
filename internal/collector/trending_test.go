@@ -84,8 +84,13 @@ func TestTrendingParsesRowsAndToleratesBadOnes(t *testing.T) {
 	}
 }
 
-func TestTrendingEmptyPageYieldsNoCandidates(t *testing.T) {
-	c := newTrendingServer(t, `<html><body><p>nothing here</p></body></html>`)
+func TestTrendingEmptyStateYieldsNoCandidatesNoError(t *testing.T) {
+	// GitHub's legitimate "nothing trending" page: no rows, but a blankslate
+	// marker. Must be treated as a genuine empty result, not a layout drift.
+	const emptyState = `<html><body>
+	<div class="blankslate">It looks like we don't have any trending repositories for python right now.</div>
+	</body></html>`
+	c := newTrendingServer(t, emptyState)
 
 	got, err := c.Trending(context.Background(), TrendingOptions{Since: "weekly", Language: "python"})
 	if err != nil {
@@ -93,6 +98,41 @@ func TestTrendingEmptyPageYieldsNoCandidates(t *testing.T) {
 	}
 	if len(got) != 0 {
 		t.Fatalf("got %d candidates, want 0", len(got))
+	}
+}
+
+func TestTrendingLayoutDriftWhenRowSelectorMisses(t *testing.T) {
+	// Page fetched fine, but neither the row selector nor the empty-state marker
+	// matches: a suspected layout change must surface, not silently return empty.
+	c := newTrendingServer(t, `<html><body><main><p>a totally redesigned page</p></main></body></html>`)
+
+	got, err := c.Trending(context.Background(), TrendingOptions{})
+	if err == nil {
+		t.Fatal("expected a layout-drift error when no rows and no empty-state marker")
+	}
+	if !IsLayoutDrift(err) {
+		t.Fatalf("IsLayoutDrift(%v) = false, want true", err)
+	}
+	if IsUpstream(err) {
+		t.Errorf("layout drift must not be classified as an upstream/transport error: %v", err)
+	}
+	if got != nil {
+		t.Errorf("got %v, want nil candidates on drift", got)
+	}
+}
+
+func TestTrendingLayoutDriftWhenRowsUnparseable(t *testing.T) {
+	// The row container still matches, but its inner repo-link structure changed
+	// so every row is skipped. That silent-skip-everything case is also drift.
+	const driftedRows = `<html><body>
+	<article class="Box-row"><span>no repo link here</span></article>
+	<article class="Box-row"><span>nor here</span></article>
+	</body></html>`
+	c := newTrendingServer(t, driftedRows)
+
+	_, err := c.Trending(context.Background(), TrendingOptions{})
+	if !IsLayoutDrift(err) {
+		t.Fatalf("IsLayoutDrift(%v) = false, want true (rows present but none parseable)", err)
 	}
 }
 

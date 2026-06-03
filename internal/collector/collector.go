@@ -59,3 +59,26 @@ func IsUpstream(err error) bool {
 	var ue *UpstreamError
 	return errors.As(err, &ue)
 }
+
+// LayoutError signals that an upstream page was fetched successfully but its
+// HTML structure was not recognized — the expected elements were absent. It is
+// kept distinct from UpstreamError (a transport failure) so a caller can tell
+// "the network broke" apart from "the scraper's assumptions drifted", and so a
+// silently-empty scrape cannot pass for a legitimately empty result. Scraping
+// is best-effort, so the caller decides severity (log-and-continue vs fail).
+type LayoutError struct {
+	Source string // the source whose layout drifted, e.g. "github trending"
+	Detail string // what was missing, e.g. `no "article.Box-row" entries found`
+}
+
+func (e *LayoutError) Error() string {
+	return fmt.Sprintf("%s: unrecognized page layout (%s); the upstream HTML structure may have changed", e.Source, e.Detail)
+}
+
+// IsLayoutDrift reports whether err is (or wraps) a *LayoutError, i.e. a scrape
+// that returned nothing because the page structure was not recognized rather
+// than because there was genuinely nothing to return.
+func IsLayoutDrift(err error) bool {
+	var le *LayoutError
+	return errors.As(err, &le)
+}

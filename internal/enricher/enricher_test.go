@@ -122,21 +122,34 @@ func TestRefreshKeepsPriorPushedAtWhenSourceCannotObserve(t *testing.T) {
 	}
 }
 
-func TestRefreshSkipsOutOfOrderSnapshot(t *testing.T) {
+func TestRefreshRejectsOutOfOrderObservationWholesale(t *testing.T) {
 	prev := model.Repo{
 		ID: "o/repo", Owner: "o", Name: "repo", URL: "u", Type: model.TypeGuide,
 		Topics: []string{model.TopicLLM}, Source: model.SourceSearch, ClassifiedBy: model.ClassifiedByLLM,
-		AddedAt: old, Stars: 100,
+		AddedAt: old, Stars: 100, PushedAt: recent, IsStale: false,
 		StarSnapshots: []model.StarSnapshot{{T: recent, Stars: 100}},
 	}
-	// now (= a fixed earlier time) is before the last snapshot at `recent`:
-	// appending would break ascending order, so it is skipped.
+	// A replayed/older observation: now is before the last snapshot at `recent`,
+	// AND it would regress stars (50 < 100) and claim a 3-year-old push. The whole
+	// observation must be rejected — snapshot history AND current state untouched.
 	earlier := recent.AddDate(0, -1, 0)
-	updated := Refresh(prev, cand("o/repo", 110, earlier, model.SourceSearch), earlier, DefaultStaleThreshold)
+	stale := cand("o/repo", 50, now.AddDate(-3, 0, 0), model.SourceSearch)
+	updated := Refresh(prev, stale, earlier, DefaultStaleThreshold)
+
 	if len(updated.StarSnapshots) != 1 {
-		t.Errorf("snapshots = %d, want 1 (out-of-order append skipped)", len(updated.StarSnapshots))
+		t.Errorf("snapshots = %d, want 1 (out-of-order observation rejected)", len(updated.StarSnapshots))
+	}
+	// Volatile state must NOT be half-applied: no star regression, no flipped fields.
+	if updated.Stars != 100 {
+		t.Errorf("Stars = %d, want 100 (must not regress on a rejected observation)", updated.Stars)
+	}
+	if !updated.PushedAt.Equal(recent) {
+		t.Errorf("PushedAt = %v, want unchanged %v", updated.PushedAt, recent)
+	}
+	if updated.IsStale {
+		t.Errorf("IsStale = true, want unchanged false (must not flip on a rejected observation)")
 	}
 	if err := updated.Validate(); err != nil {
-		t.Errorf("record invalid after skip: %v", err)
+		t.Errorf("record invalid after rejection: %v", err)
 	}
 }

@@ -52,12 +52,20 @@ func NewRepo(cand collector.Candidate, dec classifier.Decision, now time.Time, s
 // AddedAt, and full snapshot history unchanged. That preservation is what lets
 // the pipeline skip the LLM for re-seen repos.
 //
+// An out-of-order or replayed observation (`now` earlier than the latest
+// snapshot) is rejected WHOLESALE: prev is returned untouched, with neither a
+// snapshot appended nor any volatile field overwritten. The snapshot history and
+// the current state share one accept/reject decision, so a stale observation can
+// never regress stars or flip is_stale while the history correctly refuses it.
+//
 // The returned Repo does not alias prev's snapshot slice, so the caller's prev
-// is never mutated. A snapshot is appended only when `now` is at or after the
-// last recorded snapshot, keeping star_snapshots ascending (model.Repo.Validate).
+// is never mutated.
 func Refresh(prev model.Repo, cand collector.Candidate, now time.Time, staleAfter time.Duration) model.Repo {
-	out := prev // struct copy; slices still shared until reassigned below
+	if n := len(prev.StarSnapshots); n > 0 && now.Before(prev.StarSnapshots[n-1].T) {
+		return prev // out-of-order: accept nothing, change nothing
+	}
 
+	out := prev // struct copy; slices still shared until reassigned below
 	out.Stars = cand.Stars
 	if !cand.PushedAt.IsZero() {
 		out.PushedAt = cand.PushedAt // keep prior pushed_at if this source can't observe it
@@ -74,15 +82,9 @@ func Refresh(prev model.Repo, cand collector.Candidate, now time.Time, staleAfte
 }
 
 // appendSnapshot returns a new slice with next appended, copying history so the
-// input is never mutated. It skips the append when next would break ascending
-// order (next.T strictly before the last snapshot), guarding the append-only
-// invariant against an out-of-order or replayed `now`.
+// input is never mutated. Ordering is the caller's responsibility (Refresh gates
+// out-of-order observations before calling this).
 func appendSnapshot(history []model.StarSnapshot, next model.StarSnapshot) []model.StarSnapshot {
-	if n := len(history); n > 0 && next.T.Before(history[n-1].T) {
-		out := make([]model.StarSnapshot, n)
-		copy(out, history)
-		return out
-	}
 	out := make([]model.StarSnapshot, len(history), len(history)+1)
 	copy(out, history)
 	return append(out, next)

@@ -52,11 +52,14 @@ func NewRepo(cand collector.Candidate, dec classifier.Decision, now time.Time, s
 // AddedAt, and full snapshot history unchanged. That preservation is what lets
 // the pipeline skip the LLM for re-seen repos.
 //
-// An out-of-order or replayed observation (`now` earlier than the latest
-// snapshot) is rejected WHOLESALE: prev is returned untouched, with neither a
-// snapshot appended nor any volatile field overwritten. The snapshot history and
-// the current state share one accept/reject decision, so a stale observation can
-// never regress stars or flip is_stale while the history correctly refuses it.
+// An out-of-order or replayed observation (`now` strictly earlier than the
+// latest snapshot) is rejected WHOLESALE: prev is returned untouched, with
+// neither a snapshot appended nor any volatile field overwritten. The snapshot
+// history and the current state share one accept/reject decision, so a stale
+// observation can never regress stars or flip is_stale while the history
+// correctly refuses it. An equal timestamp is accepted (appended), matching
+// model.Repo.Validate's non-decreasing order; if that contract ever tightens to
+// strictly-increasing, this gate must change in lockstep (a test pins it).
 //
 // The returned Repo does not alias prev's snapshot slice, so the caller's prev
 // is never mutated.

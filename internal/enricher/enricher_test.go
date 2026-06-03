@@ -108,6 +108,27 @@ func TestRefreshAppendsSnapshotAndPreservesClassification(t *testing.T) {
 	}
 }
 
+func TestRefreshAcceptsEqualTimestampSnapshot(t *testing.T) {
+	// Boundary: now == the last snapshot's time. model.Repo.Validate defines
+	// ascending as non-decreasing (it rejects only strictly-earlier), so an equal
+	// timestamp is accepted and appended. This test pins that alignment: if
+	// Validate is ever tightened to strictly-increasing, it will fail and force
+	// Refresh's gate to change too.
+	prev := model.Repo{
+		ID: "o/repo", Owner: "o", Name: "repo", URL: "u", Type: model.TypeGuide,
+		Topics: []string{model.TopicLLM}, Source: model.SourceSearch, ClassifiedBy: model.ClassifiedByLLM,
+		AddedAt: old, Stars: 100, PushedAt: recent,
+		StarSnapshots: []model.StarSnapshot{{T: recent, Stars: 100}},
+	}
+	updated := Refresh(prev, cand("o/repo", 120, recent, model.SourceSearch), recent, DefaultStaleThreshold)
+	if len(updated.StarSnapshots) != 2 {
+		t.Fatalf("snapshots = %d, want 2 (equal timestamp appended)", len(updated.StarSnapshots))
+	}
+	if err := updated.Validate(); err != nil {
+		t.Errorf("equal-timestamp history rejected by Validate: %v", err)
+	}
+}
+
 func TestRefreshKeepsPriorPushedAtWhenSourceCannotObserve(t *testing.T) {
 	prev := model.Repo{
 		ID: "o/repo", Owner: "o", Name: "repo", URL: "u", Type: model.TypeGuide,

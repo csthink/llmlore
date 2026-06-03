@@ -112,6 +112,23 @@ func TestRepoValidate(t *testing.T) {
 		{"bad topic", func(r *Repo) { r.Topics = []string{"blockchain"} }, true},
 		{"bad source", func(r *Repo) { r.Source = "scraper" }, true},
 		{"bad classified_by", func(r *Repo) { r.ClassifiedBy = "human" }, true},
+		{"snapshots out of order", func(r *Repo) {
+			ts := r.AddedAt
+			r.StarSnapshots = []StarSnapshot{
+				{T: ts, Stars: 100},
+				{T: ts.AddDate(0, -1, 0), Stars: 90}, // earlier than predecessor
+			}
+		}, true},
+		{"snapshots equal timestamps ok", func(r *Repo) {
+			ts := r.AddedAt
+			r.StarSnapshots = []StarSnapshot{
+				{T: ts, Stars: 100},
+				{T: ts, Stars: 101}, // equal time is allowed (non-decreasing)
+			}
+		}, false},
+		{"single snapshot ok", func(r *Repo) {
+			r.StarSnapshots = []StarSnapshot{{T: r.AddedAt, Stars: 100}}
+		}, false},
 	}
 	for _, tc := range cases {
 		t.Run(tc.name, func(t *testing.T) {

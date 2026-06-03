@@ -152,6 +152,15 @@ func (r Repo) Validate() error {
 	if !ValidClassifiedBy(r.ClassifiedBy) {
 		return fmt.Errorf("repo %q: invalid classified_by %q", r.ID, r.ClassifiedBy)
 	}
+	// star_snapshots are append-only and must be non-decreasing in time. T4 owns
+	// maintaining that order; this is a cheap defensive check against a snapshot
+	// inserted out of order corrupting the history.
+	for i := 1; i < len(r.StarSnapshots); i++ {
+		if r.StarSnapshots[i].T.Before(r.StarSnapshots[i-1].T) {
+			return fmt.Errorf("repo %q: star_snapshots must be in ascending time order (index %d at %s precedes %d at %s)",
+				r.ID, i, r.StarSnapshots[i].T.Format(time.RFC3339), i-1, r.StarSnapshots[i-1].T.Format(time.RFC3339))
+		}
+	}
 	return nil
 }
 

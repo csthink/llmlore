@@ -136,18 +136,56 @@ func TestSelectAppliesPerTypeCap(t *testing.T) {
 	}
 }
 
-func TestSelectTopicCountingDoesNotChargeFullTopics(t *testing.T) {
-	// Topic cap 1. o/a (llm) is admitted, filling llm. o/b is (llm, agent): llm
-	// is full but agent has room → admitted via agent, and only agent is charged
-	// (llm not charged again). o/c (agent) is then rejected: agent full.
+func TestSelectRejectsRepoWithAnyFullTopic(t *testing.T) {
+	// Visible-card semantics (PROPOSAL-001 option b). Topic cap 1. o/a (llm) is
+	// admitted, filling llm. o/b (llm, agent) is REJECTED wholesale because llm is
+	// already full — even though agent had room. o/c (agent) is then admitted.
 	d := dataset(
 		repo("o/a", 30, model.TypeGuide, model.TopicLLM),
 		repo("o/b", 20, model.TypeGuide, model.TopicLLM, model.TopicAgent),
 		repo("o/c", 10, model.TypeGuide, model.TopicAgent),
 	)
 	got := Select(d, SelectOptions{PerTopicCap: 1})
-	if want := []string{"o/a", "o/b"}; !equal(ids(got.Repos), want) {
-		t.Errorf("got %v, want %v", ids(got.Repos), want)
+	if want := []string{"o/a", "o/c"}; !equal(ids(got.Repos), want) {
+		t.Errorf("got %v, want %v (o/b rejected on full llm topic)", ids(got.Repos), want)
+	}
+}
+
+func TestSelectHighStarTakesTopicSlotFirst(t *testing.T) {
+	// Two repos compete for a single llm slot; the higher-star one wins.
+	d := dataset(
+		repo("o/lo", 40, model.TypeGuide, model.TopicLLM),
+		repo("o/hi", 90, model.TypeGuide, model.TopicLLM),
+	)
+	got := Select(d, SelectOptions{PerTopicCap: 1})
+	if want := []string{"o/hi"}; !equal(ids(got.Repos), want) {
+		t.Errorf("got %v, want %v (high-star takes the slot)", ids(got.Repos), want)
+	}
+}
+
+func TestSelectEveryTopicViewWithinCap(t *testing.T) {
+	// The hard guarantee: after selection, filtering by ANY topic yields <= cap
+	// cards, including for multi-topic repos.
+	const limit = 2
+	d := dataset(
+		repo("o/a", 100, model.TypeGuide, model.TopicLLM, model.TopicAgent),
+		repo("o/b", 90, model.TypeGuide, model.TopicLLM, model.TopicRAG),
+		repo("o/c", 80, model.TypeExample, model.TopicLLM),
+		repo("o/d", 70, model.TypeExample, model.TopicAgent, model.TopicRAG),
+		repo("o/e", 60, model.TypeTutorial, model.TopicRAG),
+	)
+	got := Select(d, SelectOptions{PerTopicCap: limit})
+
+	perTopic := map[string]int{}
+	for _, r := range got.Repos {
+		for _, tp := range r.Topics {
+			perTopic[tp]++
+		}
+	}
+	for topic, n := range perTopic {
+		if n > limit {
+			t.Errorf("topic %q view has %d cards, exceeds cap %d", topic, n, limit)
+		}
 	}
 }
 

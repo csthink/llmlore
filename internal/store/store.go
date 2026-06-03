@@ -142,12 +142,15 @@ type SelectOptions struct {
 // are dropped, then repos are admitted in descending-star order subject to
 // per-type and per-topic caps.
 //
-// Counting rule (the one ambiguous point, fixed here): a repo is admitted when
-// its type is under the type cap AND at least one of its topics is under the
-// topic cap. On admission the type counter increments, and each topic counter
-// increments ONLY for topics still under the cap — a topic already at its cap is
-// not charged again. This stops one popular multi-topic repo from consuming
-// several cold topics' remaining quota.
+// Cap semantics (PROPOSAL-001, option b — ratified): each per-topic / per-type
+// FILTER VIEW shows at most N cards. A repo is admitted only when its type AND
+// EVERY one of its topics is still under cap; if any topic is already full the
+// whole repo is rejected. On admission the type counter and ALL of the repo's
+// topic counters increment. Because high-star repos are considered first, they
+// take the limited slots, and no topic view can ever exceed N (every card
+// carrying topic t was admitted while t was under cap). The trade-off is that a
+// high-star multi-topic repo can be dropped if a single one of its topics is
+// saturated — an intentional choice favouring a hard per-view guarantee.
 func Select(d *model.Dataset, opts SelectOptions) *model.Dataset {
 	ranked := make([]model.Repo, 0, len(d.Repos))
 	for _, r := range d.Repos {
@@ -170,14 +173,12 @@ func Select(d *model.Dataset, opts SelectOptions) *model.Dataset {
 		if !underCap(typeCount[r.Type], opts.PerTypeCap) {
 			continue
 		}
-		if !anyTopicUnderCap(r.Topics, topicCount, opts.PerTopicCap) {
-			continue
+		if !allTopicsUnderCap(r.Topics, topicCount, opts.PerTopicCap) {
+			continue // any saturated topic rejects the whole repo (visible-card cap)
 		}
 		typeCount[r.Type]++
 		for _, t := range r.Topics {
-			if underCap(topicCount[t], opts.PerTopicCap) {
-				topicCount[t]++
-			}
+			topicCount[t]++
 		}
 		kept = append(kept, r)
 	}
@@ -189,15 +190,16 @@ func underCap(count, limit int) bool {
 	return limit <= 0 || count < limit
 }
 
-// anyTopicUnderCap reports whether at least one topic still has room under limit.
-func anyTopicUnderCap(topics []string, counts map[string]int, limit int) bool {
+// allTopicsUnderCap reports whether EVERY topic still has room under limit, so
+// admitting the repo cannot push any topic view past the cap.
+func allTopicsUnderCap(topics []string, counts map[string]int, limit int) bool {
 	if limit <= 0 {
 		return true
 	}
 	for _, t := range topics {
-		if counts[t] < limit {
-			return true
+		if counts[t] >= limit {
+			return false
 		}
 	}
-	return false
+	return true
 }

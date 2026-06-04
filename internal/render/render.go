@@ -48,7 +48,6 @@ type View struct {
 	Total        int
 	NewThisRound int
 	TopicDist    []LabelCount
-	TypeDist     []LabelCount
 	TopByStars   []RankRow
 	Trending     []RankRow
 	Growing      []GrowthRow
@@ -136,9 +135,10 @@ func BuildView(d *model.Dataset, now time.Time) View {
 	v.GeneratedAt = formatTime(d.Meta.GeneratedAt)
 	v.NewThisRound = countNewThisRound(repos, d.Meta.GeneratedAt)
 
-	// Distributions: a repo contributes once per topic it carries, once for its type.
+	// Topic distribution for the overview (spec §6.1): a repo contributes once per
+	// topic it carries. Type distribution is intentionally not computed — §6.1 does
+	// not call for it, and the overview does not render it.
 	v.TopicDist = distribution(repos, func(r model.Repo) []string { return r.Topics })
-	v.TypeDist = distribution(repos, func(r model.Repo) []string { return []string{r.Type} })
 
 	// One star-descending order underlies the top table and the card grid so the
 	// dashboard reads consistently top to bottom.

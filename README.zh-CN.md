@@ -103,7 +103,7 @@ Access Token。只拉**公开** star 的话,**不需要任何 scope**(token 仅�
 
 ## 路线图
 
-T0 脚手架 → T1 数据模型/配置 → T2 采集 → T3 分类 → T4 存储/富化 → T5 渲染/服务 → T6 discover 接线 → T7 my-stars → T8 分发与开放数据。详见 `docs/tasks.md`。
+T0 脚手架 → T1 数据模型/配置 → T2 采集 → T3 分类 → T4 存储/富化 → T5 渲染/服务 → T6 discover 接线 → T7 my-stars → T8 分发与开放数据 → T9 config init 与占位符检查。详见 `docs/tasks.md`。
 
 ## 许可证
 

@@ -128,7 +128,7 @@ candidates* — it never performs any account action on your behalf.
 
 T0 scaffolding → T1 data model/config → T2 collection → T3 classification →
 T4 store/enrich → T5 render/serve → T6 discover wiring → T7 my-stars →
-T8 distribution & open data. See `docs/tasks.md`.
+T8 distribution & open data → T9 config init & placeholder check. See `docs/tasks.md`.
 
 ## License
 

@@ -9,6 +9,7 @@ import (
 	"github.com/csthink/llmlore/internal/classifier"
 	"github.com/csthink/llmlore/internal/collector"
 	"github.com/csthink/llmlore/internal/model"
+	"github.com/csthink/llmlore/internal/store"
 )
 
 func tparse(s string) time.Time {
@@ -187,6 +188,22 @@ func TestRunPipeline_SearchErrorPropagates(t *testing.T) {
 	_, err := runPipeline(context.Background(), emptyDataset(), deps, updateOptions{mode: modeHistorical})
 	if !collector.IsUpstream(err) {
 		t.Fatalf("expected search upstream error to propagate, got %v", err)
+	}
+}
+
+func TestSelectOptionsFor(t *testing.T) {
+	// No --limit: fall back to built-in caps; --min-stars passes through.
+	sel := selectOptionsFor(updateOptions{minStars: 50})
+	if sel.MinStars != 50 {
+		t.Errorf("MinStars = %d, want 50", sel.MinStars)
+	}
+	if sel.PerTypeCap != store.DefaultPerTypeCap || sel.PerTopicCap != store.DefaultPerTopicCap {
+		t.Errorf("zero --limit should use default caps, got type=%d topic=%d", sel.PerTypeCap, sel.PerTopicCap)
+	}
+	// --limit overrides both per-category caps.
+	sel = selectOptionsFor(updateOptions{limit: 5})
+	if sel.PerTypeCap != 5 || sel.PerTopicCap != 5 {
+		t.Errorf("--limit 5 should set both caps to 5, got type=%d topic=%d", sel.PerTypeCap, sel.PerTopicCap)
 	}
 }
 

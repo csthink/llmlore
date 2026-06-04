@@ -40,15 +40,14 @@ type trender interface {
 	Trending(ctx context.Context, opts collector.TrendingOptions) ([]collector.Candidate, error)
 }
 
-// updateOptions holds the resolved flags for one update run.
+// updateOptions holds the resolved flags for one update run. The flag set
+// mirrors spec §1 exactly: --mode / --topic / --min-stars / --limit / --no-llm.
 type updateOptions struct {
 	mode     string
 	topics   []string
 	minStars int
 	limit    int // per-topic/type visible-card cap (0 = store defaults)
 	noLLM    bool
-	noServe  bool
-	port     int
 }
 
 // pipelineDeps are the collaborators runPipeline orchestrates. search/trending
@@ -60,13 +59,14 @@ type pipelineDeps struct {
 	now      time.Time
 }
 
-// newUpdateCmd builds `llmlore update`: run the full pipeline, write the dataset,
-// then render and serve (unless --no-serve).
+// newUpdateCmd builds `llmlore update`: run the full pipeline, write the
+// dataset, and render the dashboard to disk (spec §1). It does NOT serve —
+// viewing is the job of `llmlore` (no args) and `serve`.
 func newUpdateCmd() *cobra.Command {
 	opts := updateOptions{mode: modeHistorical}
 	cmd := &cobra.Command{
 		Use:   "update",
-		Short: "Re-run the full pipeline and regenerate the dataset",
+		Short: "Re-run the full pipeline, regenerate the dataset, and render the dashboard",
 		Args:  cobra.NoArgs,
 		RunE: func(cmd *cobra.Command, _ []string) error {
 			return runUpdate(cmd, opts)
@@ -78,13 +78,12 @@ func newUpdateCmd() *cobra.Command {
 	f.IntVar(&opts.minStars, "min-stars", 0, "lower bound on stars")
 	f.IntVar(&opts.limit, "limit", 0, "per-topic/type visible-card cap (default: built-in caps)")
 	f.BoolVar(&opts.noLLM, "no-llm", false, "force heuristic classification, never call the LLM")
-	f.BoolVar(&opts.noServe, "no-serve", false, "write and render the dataset but do not start the server")
-	f.IntVar(&opts.port, "port", 0, "local server port (default: $LLMLORE_PORT or 7777)")
 	return cmd
 }
 
 // runUpdate wires real collectors/classifier to the pipeline, persists the
-// result, then renders + serves unless --no-serve.
+// result, and renders the dashboard to disk. Serving is intentionally separate
+// (spec §1): run `llmlore` or `serve` to view, or open out/dashboard.html.
 func runUpdate(cmd *cobra.Command, opts updateOptions) error {
 	if err := validateMode(opts.mode); err != nil {
 		return err
@@ -118,10 +117,33 @@ func runUpdate(cmd *cobra.Command, opts updateOptions) error {
 	}
 	logf(cmd, "Wrote %d repositories to %s", len(updated.Repos), dataPath(cfg))
 
-	if opts.noServe {
-		return nil
+	// Render the dashboard to disk. Unlike the serve path's best-effort write,
+	// here the rendered HTML is update's deliverable, so a write failure is fatal.
+	html, err := buildDashboard(updated, time.Now(), selectOptionsFor(opts))
+	if err != nil {
+		return err
 	}
-	return renderAndServe(cmd, cfg, updated, opts.port)
+	if err := writeDashboard(html); err != nil {
+		return fmt.Errorf("write dashboard: %w", err)
+	}
+	logf(cmd, "Rendered dashboard to %s", dashboardOutPath)
+	return nil
+}
+
+// selectOptionsFor maps the run's --min-stars / --limit flags onto the
+// render-time view trim, so those flags actually shape the rendered dashboard.
+// A zero --limit falls back to the built-in per-category caps.
+func selectOptionsFor(opts updateOptions) store.SelectOptions {
+	sel := store.SelectOptions{
+		MinStars:    opts.minStars,
+		PerTypeCap:  store.DefaultPerTypeCap,
+		PerTopicCap: store.DefaultPerTopicCap,
+	}
+	if opts.limit > 0 {
+		sel.PerTypeCap = opts.limit
+		sel.PerTopicCap = opts.limit
+	}
+	return sel
 }
 
 // runPipeline is the pure orchestration core: collect candidates for the mode,

@@ -73,22 +73,34 @@ func loadDataset(cfg *config.Config) (*model.Dataset, error) {
 	return snapshot, nil
 }
 
-// renderAndServe renders the dashboard view of ds and serves it until Ctrl+C.
-// The catalog is trimmed to a readable view (store.Select) before rendering; the
-// full dataset on disk is untouched. port==0 means use the configured port.
-func renderAndServe(cmd *cobra.Command, cfg *config.Config, ds *model.Dataset, port int) error {
-	now := time.Now()
-	view := store.Select(ds, store.SelectOptions{
+// buildDashboard trims ds to a readable view (store.Select) and renders the
+// self-contained HTML. The full dataset on disk is untouched — Select is a
+// view-only operation. It is shared by `serve`/the no-arg default (which then
+// serve the HTML) and `update` (which writes it to disk without serving).
+func buildDashboard(ds *model.Dataset, now time.Time, sel store.SelectOptions) ([]byte, error) {
+	return render.Render(store.Select(ds, sel), now)
+}
+
+// defaultSelectOptions is the readable-view trim used when no per-run caps are
+// given (serve / the no-arg default).
+func defaultSelectOptions() store.SelectOptions {
+	return store.SelectOptions{
 		PerTypeCap:  store.DefaultPerTypeCap,
 		PerTopicCap: store.DefaultPerTopicCap,
-	})
-	html, err := render.Render(view, now)
+	}
+}
+
+// renderAndServe renders the dashboard view of ds, writes it to disk, and serves
+// it until Ctrl+C. The on-disk write is best-effort (a failure must not stop
+// serving). port==0 means use the configured port.
+func renderAndServe(cmd *cobra.Command, cfg *config.Config, ds *model.Dataset, port int) error {
+	html, err := buildDashboard(ds, time.Now(), defaultSelectOptions())
 	if err != nil {
 		return err
 	}
 
 	// Persist the HTML so the on-disk copy stays openable after shutdown
-	// (best-effort: a write failure must not stop serving).
+	// (best-effort here: serving from memory does not depend on the file).
 	if err := writeDashboard(html); err != nil {
 		logf(cmd, "Could not write %s: %v", dashboardOutPath, err)
 	}

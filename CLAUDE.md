@@ -41,6 +41,15 @@
 - **Commit 语言与形式**:一律英文,`<type|Tn>: <summary>`(如 `T2: implement collector`、`docs: simplify workflow`)。一个任务对应一个独立 commit,作为该任务的评审快照。
 - **只提交本任务的改动**:commit 前先 `git status` 看清待提交清单,**只 `git add` 属于当前任务 Tn 的文件**,不要用 `git add -A` / `git add .` 把工作区里其它未提交的改动(如 maintainer 正在编辑的文档)一起带走。若发现工作区有不属于本任务的改动,**停下来问我**,不要擅自提交或还原。
 
+## 发版(release · 维护期)
+
+> 开发期 T0–T8 已全部完成,项目处发版/维护期。**完整手册见 `docs/RELEASE.md`**,这里只放常驻约束。
+
+- **发版 = 维护者动作**:**未经 maintainer 明确确认,不得自行打 tag / 发版。**
+- **怎么发**:`git tag vX.Y.Z && git push origin vX.Y.Z` 即触发全自动(GoReleaser 构建 darwin+linux × amd64/arm64 → 发 Release → 推 `Formula/llmlore.rb` 到共享 tap `csthink/homebrew-tap`)。**版本号来自 tag,无需手改任何版本文件。**
+- **不要擅动**(动了会断发布链,改前先读 `docs/PROPOSAL-003`):`release.yml` 里 goreleaser-action 的 `version: "v2.15.4"` pin、`.goreleaser.yml` 的 `brews[].directory: Formula` 与 `repository.name: homebrew-tap`、secret `HOMEBREW_TAP_GITHUB_TOKEN`(与 llmkeys 的 `HOMEBREW_TAP_TOKEN` **不同名**)。
+- **版本号纪律**:绝不用不同二进制重打同一已存在 tag;面向用户的变化 → bump 新版本再发。
+
 ## 关键文件导航
 
 | 路径 | 作用 |
@@ -50,6 +59,8 @@
 | `docs/design.md` | Go 架构、模块划分、数据流 |
 | `docs/tasks.md` | T0–T8 拆解 + 每任务 owned files + DoD |
 | `docs/workflow.md` | 开发流程、status / review 格式 |
+| `docs/RELEASE.md` | **发版 runbook**(如何切版本、护栏、发版后验证) |
+| `docs/PROPOSAL-003-shared-homebrew-tap.md` | 共享 tap 决策(发版护栏的由来) |
 | `~/.config/llmlore/config.toml` | 用户配置:github 设置 + 自定义 llm provider(**不含 key**) |
 | `data/repos.json` | 开放数据集(提交进仓库) |
 | `~/.local/share/llmlore/my-stars.json` | 个人 star 数据(本地,**永不提交**) |

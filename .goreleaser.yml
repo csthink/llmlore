@@ -48,6 +48,9 @@ changelog:
 
 brews:
   - name: llmlore
+    # v2.15.4's brews default writes to the tap repo root; force Formula/ so
+    # llmlore.rb sits alongside llmkeys.rb (shared-tap convention, PROPOSAL-003).
+    directory: Formula
     repository:
       owner: csthink
       # Shared tap, one Formula/*.rb per tool (alongside llmkeys). See PROPOSAL-003.

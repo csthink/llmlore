@@ -3,6 +3,7 @@ package cli
 import (
 	"context"
 	"errors"
+	"strings"
 	"testing"
 	"time"
 
@@ -204,6 +205,47 @@ func TestSelectOptionsFor(t *testing.T) {
 	sel = selectOptionsFor(updateOptions{limit: 5})
 	if sel.PerTypeCap != 5 || sel.PerTopicCap != 5 {
 		t.Errorf("--limit 5 should set both caps to 5, got type=%d topic=%d", sel.PerTypeCap, sel.PerTopicCap)
+	}
+}
+
+// TestUpdateLimit_ConstrainsRenderedCards proves --limit is effective end to
+// end, not merely registered: it flows selectOptionsFor → buildDashboard →
+// store.Select → render and reduces the number of cards in the rendered HTML.
+// Three repos share one topic/type; --limit 1 must leave exactly one card.
+func TestUpdateLimit_ConstrainsRenderedCards(t *testing.T) {
+	now := tparse("2026-06-01T00:00:00Z")
+	mk := func(id, owner, name string, stars int) model.Repo {
+		return model.Repo{
+			ID: id, URL: "https://github.com/" + id, Owner: owner, Name: name,
+			Stars: stars, Type: model.TypeTutorial, Topics: []string{model.TopicLLM},
+			PushedAt: now, Source: model.SourceSearch, AddedAt: now,
+			ClassifiedBy:  model.ClassifiedByHeuristic,
+			StarSnapshots: []model.StarSnapshot{{T: now, Stars: stars}},
+		}
+	}
+	ds := &model.Dataset{
+		Meta:  model.Meta{SchemaVersion: model.CurrentSchemaVersion, GeneratedAt: now},
+		Repos: []model.Repo{mk("a/x", "a", "x", 300), mk("b/y", "b", "y", 200), mk("c/z", "c", "z", 100)},
+	}
+
+	countCards := func(html []byte) int {
+		return strings.Count(string(html), `<article class="card"`)
+	}
+
+	full, err := buildDashboard(ds, now, selectOptionsFor(updateOptions{}))
+	if err != nil {
+		t.Fatalf("buildDashboard (no limit): %v", err)
+	}
+	if n := countCards(full); n != 3 {
+		t.Fatalf("no --limit: rendered %d cards, want 3", n)
+	}
+
+	limited, err := buildDashboard(ds, now, selectOptionsFor(updateOptions{limit: 1}))
+	if err != nil {
+		t.Fatalf("buildDashboard (limit 1): %v", err)
+	}
+	if n := countCards(limited); n != 1 {
+		t.Errorf("--limit 1: rendered %d cards, want 1 (per-topic visible cap not applied)", n)
 	}
 }
 

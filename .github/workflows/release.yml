@@ -1,9 +1,9 @@
 # Release pipeline: on a pushed `v*` tag, run GoReleaser to build cross-platform
 # single-file binaries, publish a GitHub Release, and push the Homebrew formula
-# to the tap repo csthink/homebrew-llmlore.
+# to the shared tap repo csthink/homebrew-tap (shared with llmkeys; see PROPOSAL-003).
 #
 # Tagging is a maintainer action. Required secrets:
-#   HOMEBREW_TAP_GITHUB_TOKEN — PAT with write access to csthink/homebrew-llmlore
+#   HOMEBREW_TAP_GITHUB_TOKEN — PAT with write access to csthink/homebrew-tap
 #                               (the default GITHUB_TOKEN cannot push cross-repo).
 # The in-repo GitHub Release is created with the default GITHUB_TOKEN.
 name: release

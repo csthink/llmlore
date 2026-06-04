@@ -17,9 +17,8 @@
 ## 安装
 
 ```bash
-# Homebrew(自有 tap)
-brew tap csthink/llmlore
-brew install llmlore
+# Homebrew(csthink 共享 tap)
+brew install csthink/tap/llmlore
 
 # 或从源码
 go install github.com/csthink/llmlore/cmd/llmlore@latest

@@ -26,9 +26,8 @@ in `data/repos.json`; the web page is a read-only view of it.
 ## Install
 
 ```bash
-# Homebrew (own tap)
-brew tap csthink/llmlore
-brew install llmlore
+# Homebrew (shared csthink tap)
+brew install csthink/tap/llmlore
 
 # or from source
 go install github.com/csthink/llmlore/cmd/llmlore@latest

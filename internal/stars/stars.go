@@ -101,6 +101,57 @@ func DefaultDataPath(getenv func(string) string) string {
 	return filepath.Join(base, "llmlore", "my-stars.json")
 }
 
+// DefaultHTMLPath returns ~/.local/share/llmlore/my-stars.html, the local,
+// never-committed location for the rendered my-stars dashboard. It sits beside
+// my-stars.json — deliberately NOT the repo's out/dashboard.html — so personal
+// data never lands inside any repository (privacy red line, AC-8).
+func DefaultHTMLPath(getenv func(string) string) string {
+	return filepath.Join(filepath.Dir(DefaultDataPath(getenv)), "my-stars.html")
+}
+
+// AsCatalog adapts the my-stars dataset to a model.Dataset so the shared
+// dashboard renderer (internal/render) can display it without a my-stars-
+// specific template — satisfying spec §6 ("the my-stars view reuses the same
+// layout, with my-stars.json as the data source"). The Source field is left
+// empty on purpose: starred repos come from neither the search nor the trending
+// discover source, so they populate neither the "Trending on GitHub" lane nor a
+// source filter; the "Fastest growing" lane still works from star_snapshots.
+//
+// The result is for rendering only and is NEVER written back to disk, so it
+// deliberately omits model.Repo's source/added_at invariants (which store.Save
+// would otherwise enforce). Personal data stays in my-stars.json; this is a
+// transient view of it.
+func (d *Dataset) AsCatalog() *model.Dataset {
+	repos := make([]model.Repo, 0, len(d.Repos))
+	for _, r := range d.Repos {
+		repos = append(repos, model.Repo{
+			ID:            r.ID,
+			URL:           r.URL,
+			Owner:         r.Owner,
+			Name:          r.Name,
+			Description:   r.Description,
+			Language:      r.Language,
+			Stars:         r.Stars,
+			Summary:       r.Summary,
+			Type:          r.Type,
+			Topics:        r.Topics,
+			PushedAt:      r.PushedAt,
+			IsStale:       r.IsStale,
+			ClassifiedBy:  r.ClassifiedBy,
+			StarSnapshots: r.StarSnapshots,
+		})
+	}
+	return &model.Dataset{
+		Meta: model.Meta{
+			SchemaVersion: model.CurrentSchemaVersion,
+			GeneratedAt:   d.Meta.GeneratedAt,
+			Mode:          "my-stars",
+			Count:         len(repos),
+		},
+		Repos: repos,
+	}
+}
+
 // Load reads the dataset at path. A missing file is the first-run case and
 // yields an empty, current-schema dataset rather than an error.
 func Load(path string) (*Dataset, error) {

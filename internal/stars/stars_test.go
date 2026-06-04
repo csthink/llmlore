@@ -259,6 +259,37 @@ func TestCrossSplitsAndRanks(t *testing.T) {
 	}
 }
 
+// --- AsCatalog (view adapter) ------------------------------------------------
+
+func TestAsCatalogAdaptsForRendering(t *testing.T) {
+	now := mustTime(t, "2026-06-01T00:00:00Z")
+	ds := &Dataset{
+		Meta: Meta{SchemaVersion: SchemaVersion, GeneratedAt: now, User: "mars"},
+		Repos: []Repo{{
+			ID: "a/b", Owner: "a", Name: "b", Stars: 12,
+			Type: model.TypeTutorial, Topics: []string{model.TopicLLM},
+			Summary: "learn llm", IsStale: true,
+			StarSnapshots: []model.StarSnapshot{{T: now, Stars: 12}},
+		}},
+	}
+	cat := ds.AsCatalog()
+	if cat.Meta.SchemaVersion != model.CurrentSchemaVersion || cat.Meta.Mode != "my-stars" || cat.Meta.Count != 1 {
+		t.Errorf("catalog meta not set for rendering: %+v", cat.Meta)
+	}
+	if len(cat.Repos) != 1 {
+		t.Fatalf("want 1 repo, got %d", len(cat.Repos))
+	}
+	r := cat.Repos[0]
+	if r.ID != "a/b" || r.Type != model.TypeTutorial || r.Summary != "learn llm" || !r.IsStale {
+		t.Errorf("repo fields not carried over: %+v", r)
+	}
+	// Source is intentionally empty: starred repos are not from a discover source,
+	// so they must not appear in the "Trending on GitHub" lane.
+	if r.Source != "" {
+		t.Errorf("source must stay empty for my-stars repos, got %q", r.Source)
+	}
+}
+
 // --- FetchStarred (fake API) -------------------------------------------------
 
 func newStarsServer(t *testing.T, total int, status int) (*Client, *string) {

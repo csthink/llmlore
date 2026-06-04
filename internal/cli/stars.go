@@ -1,13 +1,17 @@
 package cli
 
 import (
+	"context"
 	"fmt"
 	"os"
+	"os/signal"
+	"path/filepath"
 	"time"
 
 	"github.com/spf13/cobra"
 
 	"github.com/csthink/llmlore/internal/config"
+	"github.com/csthink/llmlore/internal/server"
 	"github.com/csthink/llmlore/internal/stars"
 )
 
@@ -28,7 +32,7 @@ func myStarsPath() string {
 func newStarsCmd() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "stars",
-		Short: "Local-only my-stars mode: sync, organize, list stale, search, and cross with discover",
+		Short: "Local-only my-stars mode: sync, organize, list stale, search, view, and cross with discover",
 		Long: "Work with your own starred repositories entirely on this machine.\n" +
 			"Data lives in ~/.local/share/llmlore/my-stars.json and is never committed.\n" +
 			"No subcommand ever stars, unstars, or follows on your behalf.",
@@ -42,6 +46,7 @@ func newStarsCmd() *cobra.Command {
 		newStarsOrganizeCmd(),
 		newStarsStaleCmd(),
 		newStarsSearchCmd(),
+		newStarsViewCmd(),
 		newStarsCrossCmd(),
 	)
 	return cmd
@@ -217,6 +222,71 @@ func printSearchRepo(cmd *cobra.Command, r stars.Repo) {
 		typ = "unclassified"
 	}
 	fmt.Fprintf(cmd.OutOrStdout(), "  %s [%s] %s ★%d — topics:%v lang:%s\n", r.ID, typ, r.URL, r.Stars, r.Topics, lang)
+}
+
+// newStarsViewCmd builds `stars view`: render the local my-stars dataset using
+// the same dashboard layout as discover (spec §6) and serve it locally until
+// Ctrl+C. It reads ONLY ~/.local/share/llmlore/my-stars.json and never touches
+// data/repos.json; the rendered HTML is written beside my-stars.json (never the
+// repo's out/), keeping personal data physically separate (privacy red line).
+func newStarsViewCmd() *cobra.Command {
+	var port int
+	cmd := &cobra.Command{
+		Use:   "view",
+		Short: "Render and serve your my-stars dashboard locally",
+		Args:  cobra.NoArgs,
+		RunE: func(cmd *cobra.Command, _ []string) error {
+			cfg, err := config.Load()
+			if err != nil {
+				return err
+			}
+			return runStarsView(cmd, cfg, port)
+		},
+	}
+	cmd.Flags().IntVar(&port, "port", 0, "local server port (default: $LLMLORE_PORT or 7777)")
+	return cmd
+}
+
+func runStarsView(cmd *cobra.Command, cfg *config.Config, port int) error {
+	path := myStarsPath()
+	ds, err := stars.Load(path)
+	if err != nil {
+		return err
+	}
+	if len(ds.Repos) == 0 {
+		return fmt.Errorf("no starred repositories found at %s; run `llmlore stars sync` first", path)
+	}
+
+	// Reuse the shared dashboard renderer over a model.Dataset adapted from the
+	// personal stars (same layout, my-stars.json as the source — spec §6).
+	html, err := buildDashboard(ds.AsCatalog(), time.Now(), defaultSelectOptions())
+	if err != nil {
+		return err
+	}
+
+	// Persist the HTML beside my-stars.json (~/.local/share/llmlore/), NOT in the
+	// repo's out/, so personal data never lands inside a repository. Best-effort:
+	// serving from memory does not depend on the file.
+	htmlPath := stars.DefaultHTMLPath(os.Getenv)
+	if err := writeLocalHTML(htmlPath, html); err != nil {
+		logf(cmd, "Could not write %s: %v", htmlPath, err)
+	}
+
+	if port == 0 {
+		port = cfg.Port
+	}
+	ctx, stop := signal.NotifyContext(context.Background(), os.Interrupt)
+	defer stop()
+	return server.Serve(ctx, fmt.Sprintf(":%d", port), html, server.OpenBrowser, func(f string, a ...any) { logf(cmd, f, a...) })
+}
+
+// writeLocalHTML writes the rendered my-stars dashboard with owner-only
+// permissions under the local share directory (never the repo).
+func writeLocalHTML(path string, html []byte) error {
+	if err := os.MkdirAll(filepath.Dir(path), 0o700); err != nil {
+		return err
+	}
+	return os.WriteFile(path, html, 0o600)
 }
 
 // newStarsCrossCmd builds `stars cross`: intersect the discover catalog with

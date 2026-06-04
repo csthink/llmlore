@@ -1,8 +1,7 @@
 // Package cli wires up the llmlore command tree.
 //
-// update / serve / pull are implemented in their own files (T6: update.go,
-// serve.go, pull.go); stars is still a placeholder reporting "not implemented
-// yet" in English until T7. The no-arg `llmlore` default loads the dataset,
+// update / serve / pull / stars are implemented in their own files (update.go,
+// serve.go, pull.go, stars.go). The no-arg `llmlore` default loads the dataset,
 // renders the dashboard, and serves it (AC-1).
 package cli
 
@@ -16,6 +15,7 @@ import (
 	"github.com/csthink/llmlore/internal/classifier"
 	"github.com/csthink/llmlore/internal/collector"
 	"github.com/csthink/llmlore/internal/config"
+	"github.com/csthink/llmlore/internal/stars"
 )
 
 // newRootCmd builds the root command and attaches every subcommand. The no-arg
@@ -58,16 +58,6 @@ func newRootCmd() *cobra.Command {
 	return root
 }
 
-func newStarsCmd() *cobra.Command {
-	return &cobra.Command{
-		Use:   "stars",
-		Short: "Local-only my-stars mode (sync / organize / stale / search / view)",
-		RunE: func(*cobra.Command, []string) error {
-			return fmt.Errorf("stars: not implemented yet")
-		},
-	}
-}
-
 // usageError marks an invalid-invocation error so Execute can exit with code 2
 // (spec §1). It wraps the underlying cause for messaging.
 type usageError struct{ err error }
@@ -86,7 +76,7 @@ func exitCode(err error) int {
 		return 2
 	case collector.IsUpstream(err) || classifier.IsUpstream(err) || collector.IsLayoutDrift(err):
 		return 3
-	case classifier.IsMissingConfig(err):
+	case classifier.IsMissingConfig(err) || stars.IsAuth(err):
 		return 4
 	default:
 		return 1

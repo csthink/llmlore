@@ -75,6 +75,21 @@ Collector (search / trending) → Classifier (keep/drop · LLM or heuristic)
 | `LLMLORE_PORT` | Local server port (default 7777) |
 | `LLMLORE_EXCLUDE_STARRED` | Exclude repos you've already starred during discover |
 
+**Optional config file.** Non-secret settings (`provider`, `base_url`, `model`,
+port, discover options) can also live in `~/.config/llmlore/config.toml`. Scaffold
+one with:
+
+```bash
+llmlore config init     # writes a commented template; --force to overwrite
+```
+
+Then edit it and set `provider` to a real name to enable LLM features. Your **API
+key is never stored in the file** — always export `LLMLORE_LLM_API_KEY`.
+Environment variables override the file. An untouched template stays in heuristic
+mode and prints a one-line reminder when you start the server. llmlore speaks the
+OpenAI-compatible `/chat/completions` API, so point `base_url` at OpenAI, DeepSeek,
+SiliconFlow, a local Ollama/vLLM, etc.
+
 **Getting a `LLMLORE_GITHUB_TOKEN`:** create a Personal Access Token at
 <https://github.com/settings/tokens> (Settings → Developer settings → Personal
 access tokens). For public stars only, a token with **no scopes** is enough (it

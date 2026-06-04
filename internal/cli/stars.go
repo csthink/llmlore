@@ -257,6 +257,8 @@ func runStarsView(cmd *cobra.Command, cfg *config.Config, port int) error {
 		return fmt.Errorf("no starred repositories found at %s; run `llmlore stars sync` first", path)
 	}
 
+	nudgeIfPlaceholder(cmd, cfg)
+
 	// Reuse the shared dashboard renderer over a model.Dataset adapted from the
 	// personal stars (same layout, my-stars.json as the source — spec §6).
 	html, err := buildDashboard(ds.AsCatalog(), time.Now(), defaultSelectOptions())

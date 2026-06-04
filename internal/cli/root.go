@@ -53,6 +53,7 @@ func newRootCmd() *cobra.Command {
 		newServeCmd(),
 		newPullCmd(),
 		newStarsCmd(),
+		newConfigCmd(),
 	)
 
 	return root

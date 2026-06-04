@@ -183,6 +183,94 @@ func TestStringFormattingNeverLeaks(t *testing.T) {
 	}
 }
 
+func TestPlaceholderProviderStaysHeuristic(t *testing.T) {
+	dir := t.TempDir()
+	path := filepath.Join(dir, "config.toml")
+	body := "[llm]\nprovider = \"" + ProviderPlaceholder + "\"\nbase_url = \"https://api.openai.com/v1\"\n"
+	if err := os.WriteFile(path, []byte(body), 0o600); err != nil {
+		t.Fatal(err)
+	}
+	cfg, err := load(path, envFunc(nil))
+	if err != nil {
+		t.Fatalf("load: %v", err)
+	}
+	if cfg.LLM.Provider != "" {
+		t.Errorf("placeholder provider must not configure a provider: %q", cfg.LLM.Provider)
+	}
+	if !cfg.LLM.Placeholder {
+		t.Error("placeholder provider must set LLM.Placeholder")
+	}
+	if cfg.UseLLM() || cfg.ClassifierMode() != model.ClassifiedByHeuristic {
+		t.Errorf("placeholder must stay heuristic: UseLLM=%v mode=%q", cfg.UseLLM(), cfg.ClassifierMode())
+	}
+	// An env provider still overrides the placeholder (env wins over file).
+	cfg2, err := load(path, envFunc(map[string]string{EnvLLMProvider: "openai"}))
+	if err != nil {
+		t.Fatalf("load: %v", err)
+	}
+	if cfg2.LLM.Provider != "openai" {
+		t.Errorf("env provider should override placeholder: %q", cfg2.LLM.Provider)
+	}
+}
+
+func TestWriteTemplate(t *testing.T) {
+	dir := t.TempDir()
+	path := filepath.Join(dir, "nested", "config.toml")
+
+	if err := WriteTemplate(path, false); err != nil {
+		t.Fatalf("WriteTemplate: %v", err)
+	}
+	info, err := os.Stat(path)
+	if err != nil {
+		t.Fatalf("stat: %v", err)
+	}
+	if perm := info.Mode().Perm(); perm != 0o600 {
+		t.Errorf("file perm: got %o want 600", perm)
+	}
+
+	data, err := os.ReadFile(path)
+	if err != nil {
+		t.Fatal(err)
+	}
+	body := string(data)
+	// The template must carry the sentinel so the placeholder check can fire...
+	if !strings.Contains(body, ProviderPlaceholder) {
+		t.Error("template missing provider placeholder sentinel")
+	}
+	// ...and must NEVER contain a secret FIELD (red line). The comments mention
+	// "API key" and the LLMLORE_LLM_API_KEY env var deliberately, so we scan only
+	// the actual TOML assignments (non-comment, non-blank lines) for a secret key.
+	for _, line := range strings.Split(body, "\n") {
+		line = strings.TrimSpace(line)
+		if line == "" || strings.HasPrefix(line, "#") || strings.HasPrefix(line, "[") {
+			continue
+		}
+		key, _, ok := strings.Cut(line, "=")
+		if ok && looksSecret(strings.TrimSpace(key)) {
+			t.Errorf("template must not contain a secret field %q:\n%s", strings.TrimSpace(key), body)
+		}
+	}
+	// A freshly written template must load cleanly and stay heuristic (AC-1). The
+	// loader also rejects any secret-looking TOML field, so a clean load is itself
+	// proof the template smuggles no secret to disk.
+	cfg, err := load(path, envFunc(nil))
+	if err != nil {
+		t.Fatalf("load written template: %v", err)
+	}
+	if cfg.UseLLM() || !cfg.LLM.Placeholder {
+		t.Errorf("written template should be heuristic + placeholder: %+v", cfg.LLM)
+	}
+
+	// Refuse to overwrite without force.
+	if err := WriteTemplate(path, false); err != ErrConfigExists {
+		t.Errorf("expected ErrConfigExists, got %v", err)
+	}
+	// Force overwrites.
+	if err := WriteTemplate(path, true); err != nil {
+		t.Errorf("force overwrite: %v", err)
+	}
+}
+
 func TestDefaultConfigPathXDG(t *testing.T) {
 	got := DefaultConfigPath(envFunc(map[string]string{EnvXDGConfigHome: "/xdg"}))
 	if got != filepath.Join("/xdg", "llmlore", "config.toml") {

@@ -8,6 +8,7 @@
 package config
 
 import (
+	"errors"
 	"fmt"
 	"os"
 	"path/filepath"
@@ -23,6 +24,42 @@ const (
 	DefaultPort    = 7777
 	DefaultDataDir = "./data"
 )
+
+// ProviderPlaceholder is the sentinel `provider` value written by
+// `llmlore config init`. An untouched template keeps this value, which the
+// loader treats as "not yet configured" (heuristic mode, exactly like an absent
+// file) while recording LLM.Placeholder so a server start can nudge the user.
+// PROPOSAL-004 (D4).
+const ProviderPlaceholder = "REPLACE_ME"
+
+// ConfigTemplate is the scaffold `llmlore config init` writes. It carries only
+// non-secret settings: there is deliberately NO api-key field, and the comments
+// steer the user to export the key instead (privacy red line). The provider is
+// the ProviderPlaceholder sentinel so an untouched file stays in heuristic mode
+// and triggers the startup nudge (PROPOSAL-004 §2).
+const ConfigTemplate = `# llmlore configuration — non-secret settings only.
+# Your API key is NEVER stored here. Export it instead:
+#   export LLMLORE_LLM_API_KEY=...
+
+[llm]
+# Set ` + "`provider`" + ` to any non-empty name to enable LLM classification + summaries.
+# Leaving the REPLACE_ME placeholder keeps llmlore in heuristic mode.
+# llmlore speaks the OpenAI-compatible /chat/completions API: point ` + "`base_url`" + `
+# at OpenAI, DeepSeek, SiliconFlow, Moonshot, a local Ollama/vLLM, etc.
+provider = "REPLACE_ME"
+base_url = "https://api.openai.com/v1"
+model    = "gpt-4o-mini"
+
+[server]
+port = 7777
+
+[discover]
+exclude_starred = false
+`
+
+// ErrConfigExists is returned by WriteTemplate when the target file already
+// exists and force is false, so the caller can craft a readable message.
+var ErrConfigExists = errors.New("config file already exists")
 
 // Environment variable names. See spec §2.
 const (
@@ -44,6 +81,10 @@ type LLM struct {
 	BaseURL  string // optional custom endpoint for self-hosted / proxy providers
 	Model    string // optional model override
 	APIKey   string // from env only; never read from file, never logged
+	// Placeholder is true when the config file still holds the `config init`
+	// provider sentinel (ProviderPlaceholder). It does NOT enable LLM (provider
+	// stays empty); it only lets a server start nudge the user. PROPOSAL-004.
+	Placeholder bool
 }
 
 // Config is the fully-resolved runtime configuration.
@@ -191,7 +232,12 @@ func applyFile(cfg *Config, path string) error {
 		}
 	}
 
-	if fc.LLM.Provider != "" {
+	if fc.LLM.Provider == ProviderPlaceholder {
+		// An untouched `config init` template: treat provider as unconfigured
+		// (heuristic, exactly like an absent file) but remember to nudge on a
+		// server start. An env LLMLORE_LLM_PROVIDER can still override later.
+		cfg.LLM.Placeholder = true
+	} else if fc.LLM.Provider != "" {
 		cfg.LLM.Provider = fc.LLM.Provider
 	}
 	if fc.LLM.BaseURL != "" {
@@ -236,6 +282,27 @@ func applyEnv(cfg *Config, getenv func(string) string) error {
 			return fmt.Errorf("%s: invalid boolean %q", EnvExcludeStarred, v)
 		}
 		cfg.ExcludeStarred = b
+	}
+	return nil
+}
+
+// WriteTemplate scaffolds ConfigTemplate at path, creating the parent directory
+// 0700 and the file 0600. It refuses to overwrite an existing file unless force
+// is true, returning ErrConfigExists so the caller can craft a readable message.
+// It writes no secret to disk (the template has no key field). PROPOSAL-004 §1.
+func WriteTemplate(path string, force bool) error {
+	if !force {
+		if _, err := os.Stat(path); err == nil {
+			return ErrConfigExists
+		} else if !os.IsNotExist(err) {
+			return fmt.Errorf("check config %s: %w", path, err)
+		}
+	}
+	if err := os.MkdirAll(filepath.Dir(path), 0o700); err != nil {
+		return fmt.Errorf("create config dir: %w", err)
+	}
+	if err := os.WriteFile(path, []byte(ConfigTemplate), 0o600); err != nil {
+		return fmt.Errorf("write config %s: %w", path, err)
 	}
 	return nil
 }

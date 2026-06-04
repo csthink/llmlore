@@ -78,4 +78,4 @@
 - [x] T6 discover 接线 + pull + 内嵌兜底
 - [x] T7 my-stars
 - [x] T8 分发 + 开放数据更新 + README 回填
-- [ ] T9 config init 模板 + 启动时占位符检查(维护期增量)
+- [x] T9 config init 模板 + 启动时占位符检查(维护期增量)

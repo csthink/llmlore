@@ -65,6 +65,18 @@ Collector(search / trending) → Classifier(收/不收·LLM 或启发式)
 | `LLMLORE_PORT` | 本地服务端口(默认 7777) |
 | `LLMLORE_EXCLUDE_STARRED` | discover 时排除你已 star 的 |
 
+**可选配置文件。** 非密设置(`provider`、`base_url`、`model`、端口、discover 选项)
+也可以放在 `~/.config/llmlore/config.toml`。用下面这条命令生成模板:
+
+```bash
+llmlore config init     # 写出一份带注释的模板;--force 可覆盖
+```
+
+然后编辑它、把 `provider` 改成真实名字即可启用 LLM 功能。**key 绝不写进文件** ——
+始终用 `export LLMLORE_LLM_API_KEY` 提供。环境变量优先于文件。未改动的模板会保持启发式
+模式,并在你起服务时打印一行提醒。llmlore 走 OpenAI 兼容的 `/chat/completions` 接口,
+把 `base_url` 指向 OpenAI、DeepSeek、SiliconFlow、本地 Ollama/vLLM 等即可。
+
 **如何获取 `LLMLORE_GITHUB_TOKEN`:** 在 <https://github.com/settings/tokens>
 (Settings → Developer settings → Personal access tokens)创建一个 Personal
 Access Token。只拉**公开** star 的话,**不需要任何 scope**(token 仅用于提限额);

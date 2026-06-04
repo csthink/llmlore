@@ -108,10 +108,23 @@ func defaultSelectOptions() store.SelectOptions {
 	}
 }
 
+// nudgeIfPlaceholder prints a one-line, non-fatal English notice when the loaded
+// config still holds the `config init` placeholder (provider == sentinel). It
+// fires on the server-start paths (no-arg `llmlore`, `serve`, `stars view`) and
+// never blocks: the caller keeps serving in heuristic mode (PROPOSAL-004 / AC-10).
+func nudgeIfPlaceholder(cmd *cobra.Command, cfg *config.Config) {
+	if !cfg.LLM.Placeholder {
+		return
+	}
+	logf(cmd, "Note: %s still has placeholder values — edit it and export %s to enable LLM features. Running in heuristic mode.",
+		config.DefaultConfigPath(os.Getenv), config.EnvLLMAPIKey)
+}
+
 // renderAndServe renders the dashboard view of ds, writes it to disk, and serves
 // it until Ctrl+C. The on-disk write is best-effort (a failure must not stop
 // serving). port==0 means use the configured port.
 func renderAndServe(cmd *cobra.Command, cfg *config.Config, ds *model.Dataset, port int) error {
+	nudgeIfPlaceholder(cmd, cfg)
 	ds, err := applyExcludeStarred(cfg, ds)
 	if err != nil {
 		return err

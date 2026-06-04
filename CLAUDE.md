@@ -66,4 +66,4 @@
 - [x] T5 渲染 + 本地服务
 - [x] T6 discover 接线 + pull + 内嵌兜底
 - [x] T7 my-stars
-- [ ] T8 分发 + 开放数据更新 + README 回填
+- [x] T8 分发 + 开放数据更新 + README 回填

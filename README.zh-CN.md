@@ -1,12 +1,10 @@
 # llmlore
 
-> ⚠️ 初版占位文档,待程序开发完成后完善。English `README.md` 将在开发完成后补充。
-
 **LLM 时代的工具 / 教程资源库** —— 一个开源、手动触发的命令行工具 + 一份持续更新的开放数据集。它把 GitHub 上"教人用 LLM / AI"的优质仓库收集、筛选、打标后,沉淀成结构化数据,并渲染成一个本地仪表盘供浏览。
 
 定位:**一份开放数据集 + 一个查看 / 刷新引擎**。数据本体是 `data/repos.json`,网页是它的只读视图。
 
-> 说明:本工具的命令行与界面文案均为英文;本文档用中文是为方便中文读者。
+> 说明:本工具的命令行与界面文案均为英文;本文档用中文是为方便中文读者。English `README.md` 待补。
 
 ## 特性
 
@@ -18,16 +16,16 @@
 
 ## 安装
 
-> 发布前为占位,正式 tap / 公式名以仓库 Release 为准。
-
 ```bash
 # Homebrew(自有 tap)
-brew tap <owner>/llmlore
+brew tap csthink/llmlore
 brew install llmlore
 
 # 或从源码
-go install github.com/<owner>/llmlore/cmd/llmlore@latest
+go install github.com/csthink/llmlore/cmd/llmlore@latest
 ```
+
+装完先 `llmlore pull` 拉一份预生成数据,再 `llmlore` 直接看仪表盘(零配置)。
 
 ## 快速开始
 
@@ -88,4 +86,4 @@ T0 脚手架 → T1 数据模型/配置 → T2 采集 → T3 分类 → T4 存�
 
 ## 许可证
 
-待定(为进 Homebrew core,需采用符合 DFSG 的开源许可证,如 MIT / Apache-2.0)。
+MIT,见 `LICENSE`。

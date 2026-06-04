@@ -1,0 +1,66 @@
+# GoReleaser configuration for llmlore.
+#
+# On a pushed tag, this produces cross-platform single-file binaries and pushes
+# a Homebrew formula to the tap repo csthink/homebrew-llmlore (users install via
+# `brew tap csthink/llmlore && brew install llmlore`).
+#
+# Releasing / tagging is a maintainer action. Locally validate without releasing:
+#   goreleaser check
+#   goreleaser release --snapshot --clean
+version: 2
+
+project_name: llmlore
+
+before:
+  hooks:
+    - go mod tidy
+
+builds:
+  - id: llmlore
+    main: ./cmd/llmlore
+    binary: llmlore
+    env:
+      - CGO_ENABLED=0
+    goos:
+      - darwin
+      - linux
+    goarch:
+      - amd64
+      - arm64
+
+archives:
+  - id: llmlore
+    formats: [tar.gz]
+    name_template: "{{ .ProjectName }}_{{ .Version }}_{{ .Os }}_{{ .Arch }}"
+
+checksum:
+  name_template: "checksums.txt"
+
+changelog:
+  use: github
+  sort: asc
+  filters:
+    exclude:
+      - "^docs:"
+      - "^test:"
+      - "^chore:"
+
+brews:
+  - name: llmlore
+    repository:
+      owner: csthink
+      name: homebrew-llmlore
+    homepage: "https://github.com/csthink/llmlore"
+    description: "Discover and curate LLM/agent learning repositories from a local HTML dashboard"
+    license: "MIT"
+    # Short English caveats: start command, where data lives, how to refresh.
+    caveats: |
+      Get started:
+        llmlore pull     # download the pre-generated open dataset (no key needed)
+        llmlore          # render + serve the dashboard, opens your browser
+
+      The open dataset is bundled with each release; `llmlore pull` refreshes it.
+      To regenerate locally, set LLMLORE_LLM_API_KEY and run `llmlore update`.
+      Personal star data stays local in ~/.local/share/llmlore/ and is never shared.
+    test: |
+      system "#{bin}/llmlore", "--help"

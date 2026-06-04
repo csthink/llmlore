@@ -1,0 +1,56 @@
+# Scheduled refresh of the open dataset (data/repos.json).
+#
+# Runs the full pipeline with the maintainer's GitHub token + LLM key (stored as
+# repository secrets) and commits the regenerated data/repos.json back to main.
+# Dedup + incremental merge + snapshot appension (T4) make each run cheap: only
+# newly seen repos hit the LLM.
+#
+# Privacy/security red line: keys are injected via `env:` only — never passed on
+# the command line (argv), never logged. Only data/repos.json is committed; the
+# local-only my-stars data is never touched here.
+name: update-data
+
+on:
+  schedule:
+    - cron: "0 3 * * 1" # every Monday 03:00 UTC
+  workflow_dispatch: {} # allow manual runs
+
+permissions:
+  contents: write
+
+concurrency:
+  group: update-data
+  cancel-in-progress: false
+
+jobs:
+  refresh:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+
+      - name: Set up Go
+        uses: actions/setup-go@v6
+        with:
+          go-version: stable
+
+      - name: Build
+        run: go build ./...
+
+      - name: Regenerate dataset
+        env:
+          LLMLORE_GITHUB_TOKEN: ${{ secrets.LLMLORE_GITHUB_TOKEN }}
+          LLMLORE_LLM_API_KEY: ${{ secrets.LLMLORE_LLM_API_KEY }}
+          LLMLORE_LLM_PROVIDER: ${{ vars.LLMLORE_LLM_PROVIDER || 'anthropic' }}
+        run: go run ./cmd/llmlore update --mode both
+
+      - name: Commit updated dataset
+        run: |
+          if git diff --quiet -- data/repos.json; then
+            echo "No dataset changes."
+            exit 0
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add data/repos.json
+          git commit -m "data: scheduled dataset refresh"
+          git push

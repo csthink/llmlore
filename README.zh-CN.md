@@ -4,7 +4,7 @@
 
 定位:**一份开放数据集 + 一个查看 / 刷新引擎**。数据本体是 `data/repos.json`,网页是它的只读视图。
 
-> 说明:本工具的命令行与界面文案均为英文;本文档用中文是为方便中文读者。English `README.md` 待补。
+> 说明:本工具的命令行与界面文案均为英文;本文档用中文是为方便中文读者。English docs: [README.md](README.md)。
 
 ## 特性
 
@@ -64,7 +64,7 @@ Collector(search / trending) → Classifier(收/不收·LLM 或启发式)
 | `LLMLORE_PORT` | 本地服务端口(默认 7777) |
 | `LLMLORE_EXCLUDE_STARRED` | discover 时排除你已 star 的 |
 
-详见 `spec.md`。
+详见 `docs/spec.md`。
 
 ## 数据
 

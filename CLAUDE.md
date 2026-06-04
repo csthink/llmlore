@@ -79,3 +79,4 @@
 - [x] T7 my-stars
 - [x] T8 分发 + 开放数据更新 + README 回填
 - [x] T9 config init 模板 + 启动时占位符检查(维护期增量)
+- [ ] T10 单一组合仪表盘(全网/我的/交叉 tab,PROPOSAL-005)(维护期增量)

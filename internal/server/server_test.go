@@ -73,6 +73,62 @@ func TestServe_ServesHTMLAndShutsDown(t *testing.T) {
 	}
 }
 
+// TestServe_NotFoundPath verifies the handler serves the dashboard only at "/"
+// and returns 404 for any other path.
+func TestServe_NotFoundPath(t *testing.T) {
+	html := []byte("<!DOCTYPE html><html><body>dashboard</body></html>")
+	var (
+		mu     sync.Mutex
+		called bool
+		url    string
+	)
+	opener := func(u string) error {
+		mu.Lock()
+		defer mu.Unlock()
+		called, url = true, u
+		return nil
+	}
+
+	ctx, cancel := context.WithCancel(context.Background())
+	defer cancel()
+	done := make(chan error, 1)
+	go func() { done <- Serve(ctx, "127.0.0.1:0", html, opener, nil) }()
+	base := waitForURL(t, &mu, &called, &url)
+
+	// Root path serves the dashboard.
+	if root := mustGet(t, base+"/"); root != http.StatusOK {
+		t.Errorf("GET / status = %d, want 200", root)
+	}
+	// Any other path is a 404.
+	for _, path := range []string{"/missing", "/index.html", "/foo/bar"} {
+		if code := mustGet(t, base+path); code != http.StatusNotFound {
+			t.Errorf("GET %s status = %d, want 404", path, code)
+		}
+	}
+
+	cancel()
+	select {
+	case err := <-done:
+		if err != nil {
+			t.Errorf("Serve returned %v, want nil", err)
+		}
+	case <-time.After(5 * time.Second):
+		t.Fatal("Serve did not return after cancel")
+	}
+}
+
+// mustGet performs a GET and returns the status code, failing the test on a
+// transport error.
+func mustGet(t *testing.T, url string) int {
+	t.Helper()
+	resp, err := http.Get(url)
+	if err != nil {
+		t.Fatalf("GET %s: %v", url, err)
+	}
+	resp.Body.Close()
+	return resp.StatusCode
+}
+
 // TestServe_BrowserFailureNonFatal ensures a browser that cannot open does not
 // fail the server: it still serves and shuts down cleanly.
 func TestServe_BrowserFailureNonFatal(t *testing.T) {

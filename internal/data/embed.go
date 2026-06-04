@@ -1,8 +1,8 @@
 // Package data provides the offline fallback snapshot embedded into the binary.
 //
-// docs/design.md §8 calls for "二进制内嵌一份快照当离线兜底": when no dataset
-// exists on disk (a fresh brew install that has not run `pull` or `update` yet,
-// AC-1), the binary still has data to render.
+// docs/design.md §8 calls for an embedded snapshot as an offline fallback: when
+// no dataset exists on disk (a fresh brew install that has not run `pull` or
+// `update` yet, AC-1), the binary still has data to render.
 //
 // go:embed can only reach files at or below this file's directory, so the
 // embedded snapshot lives here as internal/data/snapshot.json — a frozen,

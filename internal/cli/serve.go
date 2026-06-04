@@ -19,8 +19,9 @@ import (
 )
 
 // dashboardOutPath is where the rendered HTML is written so it persists on disk
-// after the server stops (AC-7: "磁盘 HTML 仍可双击打开"). It is gitignored
-// (/out/) — the source of truth is data/repos.json, the HTML is regenerable.
+// after the server stops (AC-7: the on-disk HTML stays double-clickable). It is
+// gitignored (/out/) — the source of truth is data/repos.json, the HTML is
+// regenerable.
 const dashboardOutPath = "out/dashboard.html"
 
 // newServeCmd builds `llmlore serve`: render the existing dataset and serve it,

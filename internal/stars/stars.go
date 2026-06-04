@@ -562,6 +562,50 @@ func matches(r Repo, q string) bool {
 	return false
 }
 
+// LoadStarredIDs reads the local my-stars dataset (read-only) and returns the
+// set of starred repo ids. A missing file yields an empty set, not an error, so
+// the discover flow works on a machine that has never run `stars sync`. This is
+// the only door the discover side uses to touch personal data: it reads ids and
+// nothing else, and never writes anything back.
+func LoadStarredIDs(path string) (map[string]bool, error) {
+	ds, err := Load(path)
+	if err != nil {
+		return nil, err
+	}
+	ids := make(map[string]bool, len(ds.Repos))
+	for _, r := range ds.Repos {
+		ids[r.ID] = true
+	}
+	return ids, nil
+}
+
+// ExcludeFrom returns a copy of a discover catalog with every repo whose id is
+// in starred removed. It backs the LLMLORE_EXCLUDE_STARRED option (spec §2,
+// design §6): "exclude already-starred repos when discovering".
+//
+// CRITICAL — this is a VIEW filter, never a write to the source of truth. It is
+// applied only to the in-memory dataset handed to the renderer, so
+// data/repos.json stays the complete, unpersonalized open dataset (CLAUDE.md:
+// data/repos.json is the single source of truth; the HTML is a regenerable
+// view). Personal data thus shapes only what YOU see on the dashboard and is
+// never written into the shared catalog — preserving physical separation. The
+// input dataset and its repos are not mutated; meta is carried over with the
+// count refreshed to match the filtered slice.
+func ExcludeFrom(catalog *model.Dataset, starred map[string]bool) *model.Dataset {
+	if catalog == nil || len(starred) == 0 {
+		return catalog
+	}
+	kept := make([]model.Repo, 0, len(catalog.Repos))
+	for _, r := range catalog.Repos {
+		if !starred[r.ID] {
+			kept = append(kept, r)
+		}
+	}
+	meta := catalog.Meta
+	meta.Count = len(kept)
+	return &model.Dataset{Meta: meta, Repos: kept}
+}
+
 // CrossResult holds the intersection of the discover catalog with the personal
 // stars: repos already starred (which discover could exclude) and high-star
 // catalog repos not yet starred (recommendations).

@@ -15,6 +15,7 @@ import (
 	"github.com/csthink/llmlore/internal/model"
 	"github.com/csthink/llmlore/internal/render"
 	"github.com/csthink/llmlore/internal/server"
+	"github.com/csthink/llmlore/internal/stars"
 	"github.com/csthink/llmlore/internal/store"
 )
 
@@ -73,6 +74,23 @@ func loadDataset(cfg *config.Config) (*model.Dataset, error) {
 	return snapshot, nil
 }
 
+// applyExcludeStarred drops the user's already-starred repos from a discover
+// VIEW when LLMLORE_EXCLUDE_STARRED is set (spec §2 / design §6). It reads the
+// starred id set read-only from ~/.local/share/llmlore/my-stars.json and filters
+// the in-memory dataset only — data/repos.json (the source of truth / open
+// dataset) is never personalized, and no personal data is ever written into it.
+// A machine with no my-stars.json yields an empty set, so discover is unaffected.
+func applyExcludeStarred(cfg *config.Config, ds *model.Dataset) (*model.Dataset, error) {
+	if !cfg.ExcludeStarred {
+		return ds, nil
+	}
+	ids, err := stars.LoadStarredIDs(stars.DefaultDataPath(os.Getenv))
+	if err != nil {
+		return nil, err
+	}
+	return stars.ExcludeFrom(ds, ids), nil
+}
+
 // buildDashboard trims ds to a readable view (store.Select) and renders the
 // self-contained HTML. The full dataset on disk is untouched — Select is a
 // view-only operation. It is shared by `serve`/the no-arg default (which then
@@ -94,6 +112,10 @@ func defaultSelectOptions() store.SelectOptions {
 // it until Ctrl+C. The on-disk write is best-effort (a failure must not stop
 // serving). port==0 means use the configured port.
 func renderAndServe(cmd *cobra.Command, cfg *config.Config, ds *model.Dataset, port int) error {
+	ds, err := applyExcludeStarred(cfg, ds)
+	if err != nil {
+		return err
+	}
 	html, err := buildDashboard(ds, time.Now(), defaultSelectOptions())
 	if err != nil {
 		return err

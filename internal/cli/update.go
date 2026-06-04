@@ -119,7 +119,14 @@ func runUpdate(cmd *cobra.Command, opts updateOptions) error {
 
 	// Render the dashboard to disk. Unlike the serve path's best-effort write,
 	// here the rendered HTML is update's deliverable, so a write failure is fatal.
-	html, err := buildDashboard(updated, time.Now(), selectOptionsFor(opts))
+	// LLMLORE_EXCLUDE_STARRED filters the VIEW only: the full catalog was already
+	// persisted above, so the open dataset stays complete while the dashboard
+	// hides repos the user has already starred (personal data read-only).
+	view, err := applyExcludeStarred(cfg, updated)
+	if err != nil {
+		return err
+	}
+	html, err := buildDashboard(view, time.Now(), selectOptionsFor(opts))
 	if err != nil {
 		return err
 	}

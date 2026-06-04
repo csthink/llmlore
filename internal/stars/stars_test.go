@@ -290,6 +290,53 @@ func TestAsCatalogAdaptsForRendering(t *testing.T) {
 	}
 }
 
+// --- exclude-starred (discover view filter) ----------------------------------
+
+func TestLoadStarredIDs(t *testing.T) {
+	// Missing file → empty set, no error (discover works without a sync).
+	ids, err := LoadStarredIDs(filepath.Join(t.TempDir(), "absent.json"))
+	if err != nil {
+		t.Fatalf("LoadStarredIDs missing: %v", err)
+	}
+	if len(ids) != 0 {
+		t.Errorf("missing file should yield empty set, got %v", ids)
+	}
+
+	path := filepath.Join(t.TempDir(), "my-stars.json")
+	if err := Save(path, &Dataset{Repos: []Repo{{ID: "a/b"}, {ID: "c/d"}}}); err != nil {
+		t.Fatal(err)
+	}
+	ids, err = LoadStarredIDs(path)
+	if err != nil {
+		t.Fatalf("LoadStarredIDs: %v", err)
+	}
+	if len(ids) != 2 || !ids["a/b"] || !ids["c/d"] {
+		t.Errorf("starred id set wrong: %v", ids)
+	}
+}
+
+func TestExcludeFrom(t *testing.T) {
+	catalog := &model.Dataset{
+		Meta:  model.Meta{Count: 3},
+		Repos: []model.Repo{{ID: "a/b"}, {ID: "c/d"}, {ID: "e/f"}},
+	}
+	got := ExcludeFrom(catalog, map[string]bool{"a/b": true, "e/f": true})
+	if len(got.Repos) != 1 || got.Repos[0].ID != "c/d" {
+		t.Errorf("exclusion wrong: %+v", got.Repos)
+	}
+	if got.Meta.Count != 1 {
+		t.Errorf("meta count not refreshed: %d", got.Meta.Count)
+	}
+	// Input must not be mutated.
+	if len(catalog.Repos) != 3 {
+		t.Errorf("ExcludeFrom mutated the input catalog: %+v", catalog.Repos)
+	}
+	// Empty starred set is a no-op (returns the same dataset).
+	if same := ExcludeFrom(catalog, nil); same != catalog {
+		t.Error("empty starred set should return the catalog unchanged")
+	}
+}
+
 // --- FetchStarred (fake API) -------------------------------------------------
 
 func newStarsServer(t *testing.T, total int, status int) (*Client, *string) {

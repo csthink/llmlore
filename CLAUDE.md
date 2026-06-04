@@ -64,6 +64,6 @@
 - [x] T3 分类(heuristic + LLM)
 - [x] T4 存储 + 富化
 - [x] T5 渲染 + 本地服务
-- [ ] T6 discover 接线 + pull + 内嵌兜底
+- [x] T6 discover 接线 + pull + 内嵌兜底
 - [ ] T7 my-stars
 - [ ] T8 分发 + 开放数据更新 + README 回填

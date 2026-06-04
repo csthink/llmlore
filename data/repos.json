@@ -1,0 +1,136 @@
+{
+  "meta": {
+    "schema_version": 1,
+    "generated_at": "2026-06-03T00:00:00Z",
+    "mode": "historical",
+    "count": 6
+  },
+  "repos": [
+    {
+      "id": "microsoft/generative-ai-for-beginners",
+      "url": "https://github.com/microsoft/generative-ai-for-beginners",
+      "owner": "microsoft",
+      "name": "generative-ai-for-beginners",
+      "description": "21 lessons teaching how to build with generative AI and LLMs.",
+      "language": "Jupyter Notebook",
+      "stars": 64000,
+      "summary": "",
+      "type": "tutorial",
+      "topics": ["llm"],
+      "pushed_at": "2026-05-20T00:00:00Z",
+      "is_stale": false,
+      "source": "search",
+      "added_at": "2026-05-01T00:00:00Z",
+      "classified_by": "heuristic",
+      "star_snapshots": [
+        { "t": "2026-05-01T00:00:00Z", "stars": 61000 },
+        { "t": "2026-06-03T00:00:00Z", "stars": 64000 }
+      ]
+    },
+    {
+      "id": "mlabonne/llm-course",
+      "url": "https://github.com/mlabonne/llm-course",
+      "owner": "mlabonne",
+      "name": "llm-course",
+      "description": "Course to get into Large Language Models with roadmaps and notebooks.",
+      "language": "Jupyter Notebook",
+      "stars": 40000,
+      "summary": "",
+      "type": "tutorial",
+      "topics": ["llm"],
+      "pushed_at": "2026-04-15T00:00:00Z",
+      "is_stale": false,
+      "source": "search",
+      "added_at": "2026-05-01T00:00:00Z",
+      "classified_by": "heuristic",
+      "star_snapshots": [
+        { "t": "2026-05-01T00:00:00Z", "stars": 38500 },
+        { "t": "2026-06-03T00:00:00Z", "stars": 40000 }
+      ]
+    },
+    {
+      "id": "openai/openai-cookbook",
+      "url": "https://github.com/openai/openai-cookbook",
+      "owner": "openai",
+      "name": "openai-cookbook",
+      "description": "Examples and guides for using the OpenAI API.",
+      "language": "MDX",
+      "stars": 60000,
+      "summary": "",
+      "type": "example",
+      "topics": ["llm", "prompt"],
+      "pushed_at": "2026-05-25T00:00:00Z",
+      "is_stale": false,
+      "source": "search",
+      "added_at": "2026-05-01T00:00:00Z",
+      "classified_by": "heuristic",
+      "star_snapshots": [
+        { "t": "2026-05-01T00:00:00Z", "stars": 59000 },
+        { "t": "2026-06-03T00:00:00Z", "stars": 60000 }
+      ]
+    },
+    {
+      "id": "anthropics/anthropic-cookbook",
+      "url": "https://github.com/anthropics/anthropic-cookbook",
+      "owner": "anthropics",
+      "name": "anthropic-cookbook",
+      "description": "A collection of notebooks and recipes for building with Claude.",
+      "language": "Jupyter Notebook",
+      "stars": 12000,
+      "summary": "",
+      "type": "example",
+      "topics": ["llm", "prompt"],
+      "pushed_at": "2026-05-10T00:00:00Z",
+      "is_stale": false,
+      "source": "search",
+      "added_at": "2026-05-01T00:00:00Z",
+      "classified_by": "heuristic",
+      "star_snapshots": [
+        { "t": "2026-05-01T00:00:00Z", "stars": 11200 },
+        { "t": "2026-06-03T00:00:00Z", "stars": 12000 }
+      ]
+    },
+    {
+      "id": "NirDiamant/RAG_Techniques",
+      "url": "https://github.com/NirDiamant/RAG_Techniques",
+      "owner": "NirDiamant",
+      "name": "RAG_Techniques",
+      "description": "Hands-on tutorials for advanced Retrieval-Augmented Generation techniques.",
+      "language": "Jupyter Notebook",
+      "stars": 11000,
+      "summary": "",
+      "type": "tutorial",
+      "topics": ["rag"],
+      "pushed_at": "2026-05-18T00:00:00Z",
+      "is_stale": false,
+      "source": "search",
+      "added_at": "2026-05-01T00:00:00Z",
+      "classified_by": "heuristic",
+      "star_snapshots": [
+        { "t": "2026-05-01T00:00:00Z", "stars": 9500 },
+        { "t": "2026-06-03T00:00:00Z", "stars": 11000 }
+      ]
+    },
+    {
+      "id": "microsoft/ai-agents-for-beginners",
+      "url": "https://github.com/microsoft/ai-agents-for-beginners",
+      "owner": "microsoft",
+      "name": "ai-agents-for-beginners",
+      "description": "11 lessons to get started building AI agents.",
+      "language": "Jupyter Notebook",
+      "stars": 25000,
+      "summary": "",
+      "type": "tutorial",
+      "topics": ["agent"],
+      "pushed_at": "2026-05-22T00:00:00Z",
+      "is_stale": false,
+      "source": "trending",
+      "added_at": "2026-05-01T00:00:00Z",
+      "classified_by": "heuristic",
+      "star_snapshots": [
+        { "t": "2026-05-01T00:00:00Z", "stars": 20000 },
+        { "t": "2026-06-03T00:00:00Z", "stars": 25000 }
+      ]
+    }
+  ]
+}

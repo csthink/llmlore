@@ -86,4 +86,4 @@ T0 脚手架 → T1 数据模型/配置 → T2 采集 → T3 分类 → T4 存�
 
 ## 许可证
 
-MIT,见 `LICENSE`。
+MIT,见 [LICENSE](LICENSE)。

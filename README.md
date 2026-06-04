@@ -107,4 +107,4 @@ T8 distribution & open data. See `docs/tasks.md`.
 
 ## License
 
-MIT — see `LICENSE`.
+MIT — see [LICENSE](LICENSE).

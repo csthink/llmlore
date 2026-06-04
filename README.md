@@ -52,7 +52,9 @@ export LLMLORE_LLM_API_KEY=...      # without it, falls back to heuristic filter
 llmlore update --mode historical    # or trending / both
 
 # Organize the repos you've starred (local-only, never committed anywhere)
-llmlore stars sync
+llmlore stars sync --user <login>      # public stars of any user; OR set
+export LLMLORE_GITHUB_TOKEN=...         # a token to sync your own (incl. private) stars
+llmlore stars sync                     # then this fetches your own stars
 llmlore stars organize
 llmlore stars view
 ```
@@ -72,6 +74,15 @@ Collector (search / trending) → Classifier (keep/drop · LLM or heuristic)
 | `LLMLORE_GITHUB_TOKEN` | GitHub token (raise rate limits / read private stars) |
 | `LLMLORE_PORT` | Local server port (default 7777) |
 | `LLMLORE_EXCLUDE_STARRED` | Exclude repos you've already starred during discover |
+
+**Getting a `LLMLORE_GITHUB_TOKEN`:** create a Personal Access Token at
+<https://github.com/settings/tokens> (Settings → Developer settings → Personal
+access tokens). For public stars only, a token with **no scopes** is enough (it
+just raises rate limits); to sync your **own private** stars, use a classic
+token with the **`repo`** scope. Then `export LLMLORE_GITHUB_TOKEN=<token>`.
+The token is read from the environment, kept in memory only, and never written
+to disk, logs, or argv. See
+[GitHub's token docs](https://docs.github.com/en/authentication/keeping-your-account-and-data-secure/managing-your-personal-access-tokens).
 
 See `docs/spec.md` for details.
 

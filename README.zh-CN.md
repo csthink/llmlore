@@ -42,7 +42,9 @@ export LLMLORE_LLM_API_KEY=...      # 不配则降级为启发式筛选
 llmlore update --mode historical    # 或 trending / both
 
 # 整理自己 star 过的仓库(纯本地,不进任何仓库)
-llmlore stars sync
+llmlore stars sync --user <login>      # 拉某用户的公开 star;或
+export LLMLORE_GITHUB_TOKEN=...         # 设 token 拉自己的(含私有)star
+llmlore stars sync                     # 设了 token 后这样拉自己的
 llmlore stars organize
 llmlore stars view
 ```
@@ -62,6 +64,14 @@ Collector(search / trending) → Classifier(收/不收·LLM 或启发式)
 | `LLMLORE_GITHUB_TOKEN` | GitHub token(提限额 / 拉私有 star) |
 | `LLMLORE_PORT` | 本地服务端口(默认 7777) |
 | `LLMLORE_EXCLUDE_STARRED` | discover 时排除你已 star 的 |
+
+**如何获取 `LLMLORE_GITHUB_TOKEN`:** 在 <https://github.com/settings/tokens>
+(Settings → Developer settings → Personal access tokens)创建一个 Personal
+Access Token。只拉**公开** star 的话,**不需要任何 scope**(token 仅用于提限额);
+要拉**自己的私有** star,用 classic token 并勾选 **`repo`** scope。然后
+`export LLMLORE_GITHUB_TOKEN=<token>`。token 从环境变量读取、仅驻内存,
+绝不写入磁盘 / 日志 / argv。详见
+[GitHub 官方 token 文档](https://docs.github.com/en/authentication/keeping-your-account-and-data-secure/managing-your-personal-access-tokens)。
 
 详见 `docs/spec.md`。
 

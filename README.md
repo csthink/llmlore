@@ -90,13 +90,39 @@ mode and prints a one-line reminder when you start the server. llmlore speaks th
 OpenAI-compatible `/chat/completions` API, so point `base_url` at OpenAI, DeepSeek,
 SiliconFlow, a local Ollama/vLLM, etc.
 
-**Getting a `LLMLORE_GITHUB_TOKEN`:** create a Personal Access Token at
-<https://github.com/settings/tokens> (Settings → Developer settings → Personal
-access tokens). For public stars only, a token with **no scopes** is enough (it
-just raises rate limits); to sync your **own private** stars, use a classic
-token with the **`repo`** scope. Then `export LLMLORE_GITHUB_TOKEN=<token>`.
-The token is read from the environment, kept in memory only, and never written
-to disk, logs, or argv. See
+### Getting a `LLMLORE_GITHUB_TOKEN`
+
+The token is **optional**. Without it, `llmlore stars sync --user <login>` still
+works on any user's *public* stars — a token only raises the rate limit and lets
+you sync your *own private* stars.
+
+Use a **personal access token (classic)**, not a fine-grained one: a fine-grained
+token only reaches repositories you own, so private repos you starred but that
+belong to *other* users or orgs would not sync. Create one at **Settings →
+Developer settings → Personal access tokens → Tokens (classic) → Generate new
+token (classic)**:
+
+![Creating a personal access token (classic)](docs/images/github-token-classic.png)
+
+- **Note** — anything memorable, e.g. `llmlore` (as in the screenshot).
+- **Expiration** — your call. The screenshot uses a custom, ~1-year date to avoid
+  frequent regeneration; a shorter window is safer. The token expires either way,
+  so set a reminder to regenerate it when it lapses.
+- **Select scopes**:
+  - For **public stars + a higher rate limit only**: you can leave every scope
+    unchecked — authenticating alone raises the limit.
+  - To also sync your **own private** stars: tick **`repo`** (Full control of
+    private repositories). No other scope is needed; llmlore only reads your
+    starred list and never writes to your account.
+
+Click **Generate token (classic)**, copy it, then:
+
+```bash
+export LLMLORE_GITHUB_TOKEN=<token>
+```
+
+The token is read from the environment, kept in memory only, and **never written
+to disk, logs, or argv**. See
 [GitHub's token docs](https://docs.github.com/en/authentication/keeping-your-account-and-data-secure/managing-your-personal-access-tokens).
 
 See `docs/spec.md` for details.

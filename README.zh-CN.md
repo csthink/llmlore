@@ -77,12 +77,33 @@ llmlore config init     # 写出一份带注释的模板;--force 可覆盖
 模式,并在你起服务时打印一行提醒。llmlore 走 OpenAI 兼容的 `/chat/completions` 接口,
 把 `base_url` 指向 OpenAI、DeepSeek、SiliconFlow、本地 Ollama/vLLM 等即可。
 
-**如何获取 `LLMLORE_GITHUB_TOKEN`:** 在 <https://github.com/settings/tokens>
-(Settings → Developer settings → Personal access tokens)创建一个 Personal
-Access Token。只拉**公开** star 的话,**不需要任何 scope**(token 仅用于提限额);
-要拉**自己的私有** star,用 classic token 并勾选 **`repo`** scope。然后
-`export LLMLORE_GITHUB_TOKEN=<token>`。token 从环境变量读取、仅驻内存,
-绝不写入磁盘 / 日志 / argv。详见
+### 如何获取 `LLMLORE_GITHUB_TOKEN`
+
+token 是**可选**的。不配也能用 `llmlore stars sync --user <login>` 拉任意用户的**公开** star
+——token 只是抬高限额、并让你能同步**自己的私有** star。
+
+请用 **personal access token(classic)**,不要用 fine-grained:fine-grained token 只能访问你
+自己拥有的仓库,因此那些你 star 了但归属**他人 / 组织**的私有仓库不会被同步。在 **Settings →
+Developer settings → Personal access tokens → Tokens (classic) → Generate new token (classic)**
+创建:
+
+![创建 personal access token(classic)](docs/images/github-token-classic.png)
+
+- **Note** —— 起个好记的名字,如 `llmlore`(同截图)。
+- **Expiration** —— 自定。截图用的是自定义的约 1 年期、省得频繁续期;想更安全可设更短。
+  无论如何都会过期,到期前记得续期。
+- **Select scopes**:
+  - 只要**公开 star + 抬限额**:可以**不勾任何 scope**,光是认证就能抬高限额。
+  - 还要同步**自己的私有** star:勾选 **`repo`**(Full control of private repositories)。
+    无需其他 scope;llmlore 只读取你的 star 列表,绝不对你的账号做任何写操作。
+
+点 **Generate token (classic)**,复制后:
+
+```bash
+export LLMLORE_GITHUB_TOKEN=<token>
+```
+
+token 从环境变量读取、仅驻内存,绝不写入磁盘 / 日志 / argv。详见
 [GitHub 官方 token 文档](https://docs.github.com/en/authentication/keeping-your-account-and-data-secure/managing-your-personal-access-tokens)。
 
 详见 `docs/spec.md`。

@@ -1,7 +1,8 @@
 # GoReleaser configuration for llmlore.
 #
-# On a pushed tag, this produces cross-platform single-file binaries and pushes
-# a Homebrew formula to the tap repo csthink/homebrew-llmlore (users install via
+# Driven by .github/workflows/release.yml on a pushed `v*` tag: produces
+# cross-platform single-file binaries + a GitHub Release, then pushes a Homebrew
+# formula to the tap repo csthink/homebrew-llmlore (users install via
 # `brew tap csthink/llmlore && brew install llmlore`).
 #
 # Releasing / tagging is a maintainer action. Locally validate without releasing:
@@ -50,6 +51,9 @@ brews:
     repository:
       owner: csthink
       name: homebrew-llmlore
+      # The default GITHUB_TOKEN cannot push to another repo; release.yml supplies
+      # a PAT with write access to the tap repo as HOMEBREW_TAP_GITHUB_TOKEN.
+      token: "{{ .Env.HOMEBREW_TAP_GITHUB_TOKEN }}"
     homepage: "https://github.com/csthink/llmlore"
     description: "Discover and curate LLM/agent learning repositories from a local HTML dashboard"
     license: "MIT"

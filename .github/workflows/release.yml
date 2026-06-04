@@ -32,7 +32,10 @@ jobs:
       - name: Run GoReleaser
         uses: goreleaser/goreleaser-action@v6
         with:
-          version: "~> v2"
+          # Pinned to the last release before brews: hard-deprecation (v2.16).
+          # `brews:` (Formula generation) still works here; unpin when we migrate
+          # to homebrew_casks. See docs/PROPOSAL-003 (Cask migration is deferred).
+          version: "v2.15.4"
           args: release --clean
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

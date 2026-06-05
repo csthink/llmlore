@@ -355,6 +355,88 @@ func CrossResultFor(catalog, mine *model.Dataset) crossSplit {
 	return c
 }
 
+// TestHumanizeStars covers the GitHub-compact notation (PROPOSAL-006 / T11, D1):
+// exact below 1000; one decimal while the abbreviated value is below 100 and an
+// integer once it reaches 100; trailing ".0" stripped; "k" then "M".
+func TestHumanizeStars(t *testing.T) {
+	cases := []struct {
+		n    int
+		want string
+	}{
+		{0, "0"},
+		{42, "42"},
+		{999, "999"},
+		{1000, "1k"},
+		{1200, "1.2k"},
+		{1949, "1.9k"},
+		{5000, "5k"},
+		{43500, "43.5k"},
+		{99000, "99k"},
+		{218000, "218k"},
+		{377000, "377k"},
+		{1000000, "1M"},
+		{1200000, "1.2M"},
+		{2500000, "2.5M"},
+	}
+	for _, c := range cases {
+		if got := humanizeStars(c.n); got != c.want {
+			t.Errorf("humanizeStars(%d) = %q, want %q", c.n, got, c.want)
+		}
+	}
+}
+
+// TestRenderCombined_Interactivity covers AC-12: each filterable tab carries the
+// search box, sort control, paginated grid (Show more), clickable topic/type
+// hooks, empty-state with clear-filters, sortable data attributes, and compact
+// star counts — all within one self-contained HTML.
+func TestRenderCombined_Interactivity(t *testing.T) {
+	html, err := RenderCombined(sampleDataset(), myStarsDataset(), nil, nil, true, ts("2026-06-01T12:00:00Z"))
+	if err != nil {
+		t.Fatalf("RenderCombined: %v", err)
+	}
+	s := string(html)
+	for _, marker := range []string{
+		`class="f-search"`,           // text search box
+		`class="f-sort"`,             // sort control
+		`value="pushed-desc"`,        // a sort option
+		`class="show-more"`,          // pagination control
+		`class="grid-empty"`,         // zero-result empty state
+		`class="clear-filters"`,      // reset action
+		`class="topic-chip"`,         // multi-select topic filter
+		`data-topic=`,                // clickable topic hooks (chips + card tags)
+		`data-type-tag=`,             // clickable type tag
+		`data-stars="5000"`,          // raw int retained for client-side sort
+		`data-pushed="2026-05-20"`,   // pushed date for sort
+		`data-search="acme/llm-course`, // lowercased search haystack
+		"Showing ", "repositories",   // count note
+		"★ 5k", "★ 1.2k",             // compact card stars
+	} {
+		if !strings.Contains(s, marker) {
+			t.Errorf("combined HTML missing %q", marker)
+		}
+	}
+	// The raw integer must not be the displayed star text anywhere a count shows.
+	if strings.Contains(s, "★ 5000") {
+		t.Error("card star should be compact (5k), not the raw 5000")
+	}
+}
+
+// TestRender_CompactStarsCatalog covers D5: the out/ catalog HTML
+// (dashboard.tmpl) uses the same compact star notation.
+func TestRender_CompactStarsCatalog(t *testing.T) {
+	html, err := Render(sampleDataset(), ts("2026-06-01T12:00:00Z"))
+	if err != nil {
+		t.Fatalf("Render: %v", err)
+	}
+	s := string(html)
+	if !strings.Contains(s, "★ 5k") {
+		t.Error("catalog HTML should render compact card stars (5k)")
+	}
+	if strings.Contains(s, "★ 5000") {
+		t.Error("catalog HTML should not render raw star counts")
+	}
+}
+
 func equalStrings(a, b []string) bool {
 	if len(a) != len(b) {
 		return false

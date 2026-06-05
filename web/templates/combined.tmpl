@@ -65,6 +65,26 @@
   .empty-state h2 { border: none; margin-top: 0; color: var(--text); }
   .empty-state code { background: var(--bg); border: 1px solid var(--border); border-radius: 4px; padding: 1px 6px; color: var(--text); }
   .count-note { color: var(--muted); font-size: 12px; margin-top: 8px; }
+  .filters input[type="text"] { background: var(--bg); color: var(--text); border: 1px solid var(--border); border-radius: 6px; padding: 5px 8px; min-width: 220px; }
+  .filters .f-search { min-width: 240px; }
+  .topic-bar { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; margin-top: 12px; }
+  .topic-bar-label { font-size: 12px; color: var(--muted); text-transform: uppercase; letter-spacing: .04em; }
+  .f-topics { display: flex; flex-wrap: wrap; gap: 6px; }
+  .topic-chip { background: var(--bg); border: 1px solid var(--border); border-radius: 999px; padding: 2px 10px; font: inherit; font-size: 12px; color: var(--muted); cursor: pointer; }
+  .topic-chip:hover { color: var(--text); }
+  .topic-chip.sel { border-color: var(--accent); color: var(--accent); }
+  .dist .chip[data-topic] { cursor: pointer; }
+  .dist .chip[data-topic]:hover { border-color: var(--accent); }
+  .dist .chip.sel { border-color: var(--accent); color: var(--accent); }
+  .card .tag[data-topic], .card .tag.type { cursor: pointer; }
+  .card .tag[data-topic]:hover, .card .tag.type:hover { border-color: var(--accent); }
+  .card .tag.sel { border-color: var(--accent); color: var(--accent); }
+  .show-more { display: block; margin: 20px auto 0; background: var(--panel); color: var(--text); border: 1px solid var(--border); border-radius: 6px; padding: 8px 20px; font: inherit; cursor: pointer; }
+  .show-more:hover { border-color: var(--accent); }
+  .grid-empty { background: var(--panel); border: 1px solid var(--border); border-radius: 8px; padding: 24px; color: var(--muted); text-align: center; margin-top: 16px; }
+  .grid-empty p { margin: 0 0 12px; }
+  .clear-filters { background: none; border: 1px solid var(--accent); color: var(--accent); border-radius: 6px; padding: 6px 14px; font: inherit; cursor: pointer; }
+  .clear-filters:hover { background: rgba(88,166,255,.1); }
 </style>
 </head>
 <body>
@@ -102,47 +122,282 @@
 </main>
 <script>
   (function () {
-    // Per-panel filter wiring: each panel scopes its own controls/cards by class,
-    // so the three tabs never collide on shared element ids.
-    Array.prototype.forEach.call(document.querySelectorAll(".panel"), function (panel) {
-      var topic = panel.querySelector(".f-topic");
-      if (!topic) { return; } // cross panel / empty state has no filter bar
-      var type = panel.querySelector(".f-type");
-      var language = panel.querySelector(".f-language");
-      var active = panel.querySelector(".f-active");
-      var cards = Array.prototype.slice.call(panel.querySelectorAll(".cards .card"));
-      var shown = panel.querySelector(".shown-count");
+    // PROPOSAL-006 / T11. Each tab panel owns its own search/sort/filter/page
+    // state; only the active tab serializes into location.hash, so a reload or a
+    // shared link restores the same view. The hash holds filter keywords only —
+    // never repo contents or personal data. Without JS none of this runs: the
+    // server emits every card visible, so the grid degrades gracefully.
+    var PAGE_SIZE = 60;
+    var DEFAULT_SORT = "stars-desc";
 
-      function apply() {
-        var t = topic.value, ty = type.value, l = language.value, a = active.checked;
-        var n = 0;
-        cards.forEach(function (c) {
-          var topics = (c.getAttribute("data-topics") || "").split(" ");
-          var ok = (!t || topics.indexOf(t) !== -1) &&
-                   (!ty || c.getAttribute("data-type") === ty) &&
-                   (!l || c.getAttribute("data-language") === l) &&
-                   (!a || c.getAttribute("data-active") === "true");
-          c.classList.toggle("hidden", !ok);
-          if (ok) { n++; }
+    // Capture the incoming hash BEFORE wiring panels, because panel setup writes
+    // the hash and would otherwise clobber a shared "#mystars?..." link.
+    var initial = parseHash();
+
+    var panels = {};   // tab name -> controller
+    var activeTab = "catalog";
+
+    function parseHash() {
+      var h = (location.hash || "").replace(/^#/, "");
+      if (!h) { return null; }
+      var qi = h.indexOf("?");
+      var tab = qi < 0 ? h : h.slice(0, qi);
+      var params = {};
+      if (qi >= 0) {
+        h.slice(qi + 1).split("&").forEach(function (kv) {
+          if (!kv) { return; }
+          var i = kv.indexOf("=");
+          var k = i < 0 ? kv : kv.slice(0, i);
+          var v = i < 0 ? "" : decodeURIComponent(kv.slice(i + 1).replace(/\+/g, " "));
+          params[k] = v;
         });
-        if (shown) { shown.textContent = n; }
+      }
+      return { tab: tab, params: params };
+    }
+
+    function setHash(hash) {
+      if (history.replaceState) { history.replaceState(null, "", hash); }
+      else { location.hash = hash; }
+    }
+
+    function optionExists(sel, val) {
+      if (!val) { return false; }
+      for (var i = 0; i < sel.options.length; i++) {
+        if (sel.options[i].value === val) { return true; }
+      }
+      return false;
+    }
+
+    function setupPanel(panelEl) {
+      var name = panelEl.getAttribute("data-panel");
+      var search = panelEl.querySelector(".f-search");
+      if (!search) { return null; } // cross / empty-state panel: no filter bar
+
+      var typeSel = panelEl.querySelector(".f-type");
+      var langSel = panelEl.querySelector(".f-language");
+      var activeChk = panelEl.querySelector(".f-active");
+      var sortSel = panelEl.querySelector(".f-sort");
+      var grid = panelEl.querySelector(".cards");
+      var shownEl = panelEl.querySelector(".shown-count");
+      var totalEl = panelEl.querySelector(".total-count");
+      var showMore = panelEl.querySelector(".show-more");
+      var gridEmpty = panelEl.querySelector(".grid-empty");
+      var topicChips = Array.prototype.slice.call(panelEl.querySelectorAll(".f-topics .topic-chip"));
+      var cards = Array.prototype.slice.call(panelEl.querySelectorAll(".cards .card"));
+
+      cards.forEach(function (c) {
+        var a = c.querySelector(".title a");
+        c._name = (a ? a.textContent : "").trim().toLowerCase();
+        c._stars = parseInt(c.getAttribute("data-stars"), 10) || 0;
+        c._pushed = c.getAttribute("data-pushed") || "";
+        c._search = c.getAttribute("data-search") || "";
+        c._topics = (c.getAttribute("data-topics") || "").split(" ").filter(Boolean);
+        c._type = c.getAttribute("data-type") || "";
+        c._lang = c.getAttribute("data-language") || "";
+        c._active = c.getAttribute("data-active") === "true";
+      });
+
+      var sorted = cards.slice();
+      var selectedTopics = {};
+      var page = 1;
+
+      function topicList() {
+        var out = [];
+        for (var k in selectedTopics) { if (selectedTopics[k]) { out.push(k); } }
+        out.sort();
+        return out;
       }
 
-      [topic, type, language].forEach(function (el) { el.addEventListener("change", apply); });
-      active.addEventListener("change", apply);
+      // Pushed-date comparator with empty dates always sorting last, in both
+      // directions.
+      function cmpPushed(a, b, desc) {
+        var pa = a._pushed, pb = b._pushed;
+        if (pa === pb) { return 0; }
+        if (pa === "") { return 1; }
+        if (pb === "") { return -1; }
+        if (desc) { return pa < pb ? 1 : -1; }
+        return pa < pb ? -1 : 1;
+      }
+
+      // resort reorders the DOM so pagination can simply reveal the first N
+      // matches in document order (filter never changes relative order).
+      function resort() {
+        var s = sortSel.value;
+        sorted.sort(function (a, b) {
+          switch (s) {
+            case "stars-asc": return a._stars - b._stars;
+            case "pushed-desc": return cmpPushed(a, b, true);
+            case "pushed-asc": return cmpPushed(a, b, false);
+            case "name": return a._name < b._name ? -1 : a._name > b._name ? 1 : 0;
+            default: return b._stars - a._stars;
+          }
+        });
+        sorted.forEach(function (c) { grid.appendChild(c); });
+      }
+
+      function matches(c, q) {
+        if (q && c._search.indexOf(q) === -1) { return false; }
+        var ts = topicList();
+        if (ts.length) {
+          var hit = false;
+          for (var i = 0; i < ts.length; i++) {
+            if (c._topics.indexOf(ts[i]) !== -1) { hit = true; break; }
+          }
+          if (!hit) { return false; } // OR semantics: any selected topic matches
+        }
+        if (typeSel.value && c._type !== typeSel.value) { return false; }
+        if (langSel.value && c._lang !== langSel.value) { return false; }
+        if (activeChk.checked && !c._active) { return false; }
+        return true;
+      }
+
+      function highlight() {
+        topicChips.forEach(function (chip) {
+          chip.classList.toggle("sel", !!selectedTopics[chip.getAttribute("data-topic")]);
+        });
+        Array.prototype.forEach.call(panelEl.querySelectorAll(".dist .chip[data-topic]"), function (chip) {
+          chip.classList.toggle("sel", !!selectedTopics[chip.getAttribute("data-topic")]);
+        });
+        cards.forEach(function (c) {
+          Array.prototype.forEach.call(c.querySelectorAll(".tag[data-topic]"), function (tag) {
+            tag.classList.toggle("sel", !!selectedTopics[tag.getAttribute("data-topic")]);
+          });
+          var typeTag = c.querySelector(".tag.type");
+          if (typeTag) {
+            typeTag.classList.toggle("sel", !!typeSel.value && typeTag.getAttribute("data-type-tag") === typeSel.value);
+          }
+        });
+      }
+
+      // Order is fixed: filter -> sort (already applied to the DOM) -> page.
+      function apply() {
+        var q = search.value.trim().toLowerCase();
+        var limit = page * PAGE_SIZE;
+        var matched = 0, revealed = 0;
+        sorted.forEach(function (c) {
+          if (matches(c, q)) {
+            matched++;
+            if (revealed < limit) { c.classList.remove("hidden"); revealed++; }
+            else { c.classList.add("hidden"); }
+          } else {
+            c.classList.add("hidden");
+          }
+        });
+        if (shownEl) { shownEl.textContent = revealed; }
+        if (totalEl) { totalEl.textContent = matched; }
+        if (showMore) { showMore.hidden = matched <= limit; }
+        if (gridEmpty) { gridEmpty.hidden = matched !== 0; }
+        highlight();
+        if (activeTab === name) { writeHash(); }
+      }
+
+      function writeHash() {
+        var parts = [];
+        var q = search.value.trim();
+        if (q) { parts.push("q=" + encodeURIComponent(q)); }
+        var ts = topicList();
+        if (ts.length) { parts.push("topic=" + ts.map(encodeURIComponent).join(",")); }
+        if (typeSel.value) { parts.push("type=" + encodeURIComponent(typeSel.value)); }
+        if (langSel.value) { parts.push("lang=" + encodeURIComponent(langSel.value)); }
+        if (activeChk.checked) { parts.push("active=1"); }
+        if (sortSel.value && sortSel.value !== DEFAULT_SORT) { parts.push("sort=" + sortSel.value); }
+        if (page > 1) { parts.push("page=" + page); }
+        setHash("#" + name + (parts.length ? ("?" + parts.join("&")) : ""));
+      }
+
+      function clearFilters() {
+        search.value = "";
+        selectedTopics = {};
+        typeSel.value = "";
+        langSel.value = "";
+        activeChk.checked = false;
+        page = 1;
+        apply();
+      }
+
+      function onFilterChange() { page = 1; apply(); }
+      search.addEventListener("input", onFilterChange);
+      typeSel.addEventListener("change", onFilterChange);
+      langSel.addEventListener("change", onFilterChange);
+      activeChk.addEventListener("change", onFilterChange);
+      sortSel.addEventListener("change", function () { page = 1; resort(); apply(); });
+      if (showMore) { showMore.addEventListener("click", function () { page++; apply(); }); }
+      Array.prototype.forEach.call(panelEl.querySelectorAll(".clear-filters"), function (b) {
+        b.addEventListener("click", clearFilters);
+      });
+
+      // Delegated clicks: distribution chips, topic chips, and card topic/type
+      // tags all drive the filters. Climb to the element carrying the data attr
+      // so clicks on inner nodes (e.g. a chip's <b>) still register.
+      panelEl.addEventListener("click", function (e) {
+        var t = e.target;
+        while (t && t !== panelEl && !t.hasAttribute("data-topic") && !t.hasAttribute("data-type-tag")) {
+          t = t.parentNode;
+        }
+        if (!t || t === panelEl) { return; }
+        if (t.hasAttribute("data-topic")) {
+          e.preventDefault();
+          var topic = t.getAttribute("data-topic");
+          if (selectedTopics[topic]) { delete selectedTopics[topic]; }
+          else { selectedTopics[topic] = true; }
+          page = 1; apply();
+        } else if (t.hasAttribute("data-type-tag")) {
+          e.preventDefault();
+          var ty = t.getAttribute("data-type-tag");
+          typeSel.value = (typeSel.value === ty) ? "" : ty;
+          page = 1; apply();
+        }
+      });
+
+      function restore(params) {
+        search.value = params.q || "";
+        selectedTopics = {};
+        if (params.topic) {
+          params.topic.split(",").forEach(function (x) { if (x) { selectedTopics[x] = true; } });
+        }
+        typeSel.value = optionExists(typeSel, params.type) ? params.type : "";
+        langSel.value = optionExists(langSel, params.lang) ? params.lang : "";
+        activeChk.checked = params.active === "1";
+        sortSel.value = optionExists(sortSel, params.sort) ? params.sort : DEFAULT_SORT;
+        var p = parseInt(params.page, 10);
+        page = p > 0 ? p : 1;
+        resort();
+        apply();
+      }
+
+      resort();
       apply();
+
+      return { name: name, restore: restore, refreshHash: writeHash };
+    }
+
+    Array.prototype.forEach.call(document.querySelectorAll(".panel"), function (panelEl) {
+      var ctrl = setupPanel(panelEl);
+      if (ctrl) { panels[ctrl.name] = ctrl; }
     });
 
-    // Tab switching: show the clicked panel, hide the rest.
     var tabs = Array.prototype.slice.call(document.querySelectorAll(".tab"));
-    var panels = Array.prototype.slice.call(document.querySelectorAll(".panel"));
+    var panelEls = Array.prototype.slice.call(document.querySelectorAll(".panel"));
+
+    function activate(tabName, params) {
+      var known = false;
+      tabs.forEach(function (t) { if (t.getAttribute("data-tab") === tabName) { known = true; } });
+      if (!known) { tabName = "catalog"; }
+      activeTab = tabName;
+      tabs.forEach(function (t) { t.classList.toggle("active", t.getAttribute("data-tab") === tabName); });
+      panelEls.forEach(function (p) { p.classList.toggle("hidden", p.getAttribute("data-panel") !== tabName); });
+      var ctrl = panels[tabName];
+      if (ctrl && params) { ctrl.restore(params); }
+      else if (ctrl) { ctrl.refreshHash(); }
+      else { setHash("#" + tabName); } // cross / non-filter panel: tab name only
+    }
+
     tabs.forEach(function (tab) {
-      tab.addEventListener("click", function () {
-        var target = tab.getAttribute("data-tab");
-        tabs.forEach(function (t) { t.classList.toggle("active", t === tab); });
-        panels.forEach(function (p) { p.classList.toggle("hidden", p.getAttribute("data-panel") !== target); });
-      });
+      tab.addEventListener("click", function () { activate(tab.getAttribute("data-tab"), null); });
     });
+
+    if (initial) { activate(initial.tab, initial.params); }
+    else { activate("catalog", null); }
   })();
 </script>
 </body>
@@ -165,7 +420,7 @@
       <div class="stat"><div class="n">{{.Mode}}</div><div class="l">Mode</div></div>
     </div>
     <div class="dist">
-      {{range .TopicDist}}<span class="chip">{{.Label}} <b>{{.N}}</b></span>{{end}}
+      {{range .TopicDist}}<span class="chip" data-topic="{{.Label}}">{{.Label}} <b>{{.N}}</b></span>{{end}}
       {{if not .TopicDist}}<span class="empty">No topics yet.</span>{{end}}
     </div>
   </section>
@@ -181,7 +436,7 @@
           <td class="num">{{.Rank}}</td>
           <td><a href="{{.URL}}">{{.ID}}</a>{{if .Stale}}<span class="stale-tag">stale</span>{{end}}</td>
           <td><span class="lang" style="background:{{.LangColor}}"></span>{{if .Language}}{{.Language}}{{else}}—{{end}}</td>
-          <td class="num">{{.Stars}}</td>
+          <td class="num">{{.StarsText}}</td>
         </tr>
         {{end}}
       </tbody>
@@ -203,7 +458,7 @@
             <tr{{if .Stale}} class="stale"{{end}}>
               <td class="num">{{.Rank}}</td>
               <td><a href="{{.URL}}">{{.ID}}</a></td>
-              <td class="num">{{.Stars}}</td>
+              <td class="num">{{.StarsText}}</td>
             </tr>
             {{end}}
           </tbody>
@@ -222,7 +477,7 @@
               <td><a href="{{.URL}}">{{.ID}}</a></td>
               <td class="num">{{.D7}}</td>
               <td class="num">{{.D30}}</td>
-              <td class="num">{{.Stars}}</td>
+              <td class="num">{{.StarsText}}</td>
             </tr>
             {{end}}
           </tbody>
@@ -235,8 +490,17 @@
   <section class="filters-sec">
     <h2>Browse</h2>
     <div class="filters">
-      <label>Topic
-        <select class="f-topic"><option value="">All</option>{{range .Topics}}<option value="{{.}}">{{.}}</option>{{end}}</select>
+      <label>Search
+        <input type="text" class="f-search" placeholder="Search name, owner, description…">
+      </label>
+      <label>Sort
+        <select class="f-sort">
+          <option value="stars-desc">Stars (high→low)</option>
+          <option value="stars-asc">Stars (low→high)</option>
+          <option value="pushed-desc">Recently pushed</option>
+          <option value="pushed-asc">Least recently pushed</option>
+          <option value="name">Name (A→Z)</option>
+        </select>
       </label>
       <label>Type
         <select class="f-type"><option value="">All</option>{{range .Types}}<option value="{{.}}">{{.}}</option>{{end}}</select>
@@ -246,25 +510,36 @@
       </label>
       <label class="check"><input type="checkbox" class="f-active"> Active only</label>
     </div>
-    <div class="count-note"><span class="shown-count">{{len .Cards}}</span> of {{len .Cards}} repositories shown</div>
+    {{if .Topics}}
+    <div class="topic-bar">
+      <span class="topic-bar-label">Topics</span>
+      <div class="f-topics">{{range .Topics}}<button type="button" class="topic-chip" data-topic="{{.}}">{{.}}</button>{{end}}</div>
+    </div>
+    {{end}}
+    <div class="count-note">Showing <span class="shown-count">{{len .Cards}}</span> of <span class="total-count">{{len .Cards}}</span> repositories</div>
   </section>
 
   <section class="catalog-sec">
     <div class="cards">
       {{range .Cards}}
-      <article class="card" data-type="{{.Type}}" data-topics="{{.TopicsAttr}}" data-language="{{.Language}}" data-active="{{.Active}}">
+      <article class="card" data-type="{{.Type}}" data-topics="{{.TopicsAttr}}" data-language="{{.Language}}" data-active="{{.Active}}" data-stars="{{.Stars}}" data-pushed="{{.PushedAt}}" data-search="{{.SearchAttr}}">
         <div class="title"><a href="{{.URL}}">{{.ID}}</a>{{if .Stale}}<span class="stale-tag">stale</span>{{end}}</div>
         {{if .Summary}}<div class="summary">{{.Summary}}</div>{{end}}
         {{if .Description}}<div class="desc">{{.Description}}</div>{{end}}
         <div class="meta">
-          <span class="tag type">{{.Type}}</span>
-          {{range .Topics}}<span class="tag">{{.}}</span>{{end}}
+          <span class="tag type" data-type-tag="{{.Type}}">{{.Type}}</span>
+          {{range .Topics}}<span class="tag" data-topic="{{.}}">{{.}}</span>{{end}}
           <span><span class="lang" style="background:{{.LangColor}}"></span>{{if .Language}}{{.Language}}{{else}}—{{end}}</span>
-          <span>★ {{.Stars}}</span>
+          <span>★ {{.StarsText}}</span>
           {{if .PushedAt}}<span>pushed {{.PushedAt}}</span>{{end}}
         </div>
       </article>
       {{end}}
+    </div>
+    <button type="button" class="show-more" hidden>Show more</button>
+    <div class="grid-empty" hidden>
+      <p>No repositories match these filters.</p>
+      <button type="button" class="clear-filters">Clear filters</button>
     </div>
     {{if not .Cards}}<div class="empty">No repositories in this dataset.</div>{{end}}
   </section>
@@ -283,7 +558,7 @@
           <td class="num">{{.Rank}}</td>
           <td><a href="{{.URL}}">{{.ID}}</a></td>
           <td><span class="lang" style="background:{{.LangColor}}"></span>{{if .Language}}{{.Language}}{{else}}—{{end}}</td>
-          <td class="num">{{.Stars}}</td>
+          <td class="num">{{.StarsText}}</td>
         </tr>
         {{end}}
       </tbody>
@@ -304,7 +579,7 @@
           <td><a href="{{.URL}}">{{.ID}}</a></td>
           <td>{{if .Type}}{{.Type}}{{else}}—{{end}}</td>
           <td><span class="lang" style="background:{{.LangColor}}"></span>{{if .Language}}{{.Language}}{{else}}—{{end}}</td>
-          <td class="num">{{.Stars}}</td>
+          <td class="num">{{.StarsText}}</td>
         </tr>
         {{end}}
       </tbody>

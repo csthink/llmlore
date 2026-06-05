@@ -88,7 +88,7 @@
           <td class="num">{{.Rank}}</td>
           <td><a href="{{.URL}}">{{.ID}}</a>{{if .Stale}}<span class="stale-tag">stale</span>{{end}}</td>
           <td><span class="lang" style="background:{{.LangColor}}"></span>{{if .Language}}{{.Language}}{{else}}—{{end}}</td>
-          <td class="num">{{.Stars}}</td>
+          <td class="num">{{.StarsText}}</td>
         </tr>
         {{end}}
       </tbody>
@@ -111,7 +111,7 @@
             <tr{{if .Stale}} class="stale"{{end}}>
               <td class="num">{{.Rank}}</td>
               <td><a href="{{.URL}}">{{.ID}}</a></td>
-              <td class="num">{{.Stars}}</td>
+              <td class="num">{{.StarsText}}</td>
             </tr>
             {{end}}
           </tbody>
@@ -130,7 +130,7 @@
               <td><a href="{{.URL}}">{{.ID}}</a></td>
               <td class="num">{{.D7}}</td>
               <td class="num">{{.D30}}</td>
-              <td class="num">{{.Stars}}</td>
+              <td class="num">{{.StarsText}}</td>
             </tr>
             {{end}}
           </tbody>
@@ -170,7 +170,7 @@
           <span class="tag type">{{.Type}}</span>
           {{range .Topics}}<span class="tag">{{.}}</span>{{end}}
           <span><span class="lang" style="background:{{.LangColor}}"></span>{{if .Language}}{{.Language}}{{else}}—{{end}}</span>
-          <span>★ {{.Stars}}</span>
+          <span>★ {{.StarsText}}</span>
           {{if .PushedAt}}<span>pushed {{.PushedAt}}</span>{{end}}
         </div>
       </article>

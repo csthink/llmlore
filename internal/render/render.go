@@ -14,6 +14,7 @@ import (
 	"fmt"
 	"html/template"
 	"sort"
+	"strconv"
 	"strings"
 	"time"
 
@@ -64,6 +65,8 @@ type LabelCount struct {
 }
 
 // RankRow is one line in the "Top by stars" / "Trending on GitHub" tables.
+// StarsText is the GitHub-compact rendering of Stars (PROPOSAL-006 / T11); Stars
+// is retained as the raw int for any caller that needs to sort.
 type RankRow struct {
 	Rank      int
 	ID        string
@@ -71,17 +74,19 @@ type RankRow struct {
 	Language  string
 	LangColor string
 	Stars     int
+	StarsText string
 	Stale     bool
 }
 
 // GrowthRow is one line in the "Fastest growing" table. D7/D30 are pre-formatted
 // (e.g. "+128", "0", or "—" when the window predates the repo's history).
 type GrowthRow struct {
-	ID    string
-	URL   string
-	Stars int
-	D7    string
-	D30   string
+	ID        string
+	URL       string
+	Stars     int
+	StarsText string
+	D7        string
+	D30       string
 }
 
 // Card is one repository card in the filterable grid (spec §6.5). The *Attr
@@ -96,10 +101,12 @@ type Card struct {
 	Summary     string
 	Language    string
 	LangColor   string
-	Stars       int
+	Stars       int    // raw count, retained in data-stars for client-side sort
+	StarsText   string // GitHub-compact display (PROPOSAL-006 / T11)
 	Type        string
 	Topics      []string
 	TopicsAttr  string // space-joined topics for the data attribute
+	SearchAttr  string // lowercased id+owner+name+description+summary for text search
 	Active      bool   // !is_stale; drives the "active only" filter
 	Stale       bool
 	PushedAt    string // YYYY-MM-DD, empty when unknown
@@ -153,6 +160,7 @@ type CrossRow struct {
 	Language  string
 	LangColor string
 	Stars     int
+	StarsText string
 }
 
 // RenderCombined builds the single combined dashboard (Catalog / My stars /
@@ -201,6 +209,7 @@ func crossRows(repos []model.Repo) []CrossRow {
 			Language:  r.Language,
 			LangColor: languageColor(r.Language),
 			Stars:     r.Stars,
+			StarsText: humanizeStars(r.Stars),
 		})
 	}
 	return out
@@ -316,6 +325,7 @@ func rankRow(rank int, r model.Repo) RankRow {
 		Language:  r.Language,
 		LangColor: languageColor(r.Language),
 		Stars:     r.Stars,
+		StarsText: humanizeStars(r.Stars),
 		Stale:     r.IsStale,
 	}
 }
@@ -338,11 +348,12 @@ func growthRows(ranked []model.Repo, now time.Time) []GrowthRow {
 		}
 		scoredRows = append(scoredRows, scored{
 			row: GrowthRow{
-				ID:    r.ID,
-				URL:   r.URL,
-				Stars: r.Stars,
-				D7:    formatDelta(g7, ok7),
-				D30:   formatDelta(g30, ok30),
+				ID:        r.ID,
+				URL:       r.URL,
+				Stars:     r.Stars,
+				StarsText: humanizeStars(r.Stars),
+				D7:        formatDelta(g7, ok7),
+				D30:       formatDelta(g30, ok30),
 			},
 			d30: g30,
 			d7:  g7,
@@ -421,9 +432,11 @@ func cards(ranked []model.Repo) []Card {
 			Language:    r.Language,
 			LangColor:   languageColor(r.Language),
 			Stars:       r.Stars,
+			StarsText:   humanizeStars(r.Stars),
 			Type:        r.Type,
 			Topics:      r.Topics,
 			TopicsAttr:  strings.Join(r.Topics, " "),
+			SearchAttr:  searchAttr(r),
 			Active:      !r.IsStale,
 			Stale:       r.IsStale,
 			PushedAt:    formatDate(r.PushedAt),
@@ -439,6 +452,38 @@ func sortedKeys(set map[string]bool) []string {
 	}
 	sort.Strings(out)
 	return out
+}
+
+// searchAttr is the lowercased haystack the client-side text search matches a
+// card against: id, owner, name, description, and summary joined by spaces
+// (PROPOSAL-006 / T11).
+func searchAttr(r model.Repo) string {
+	return strings.ToLower(strings.Join([]string{r.ID, r.Owner, r.Name, r.Description, r.Summary}, " "))
+}
+
+// humanizeStars renders a star count in GitHub's compact notation (PROPOSAL-006
+// / T11, decision D1): below 1000 the exact integer; from 1000 the value over
+// 1000 with a "k" suffix, and from 1,000,000 over 1,000,000 with "M". The
+// abbreviated value keeps one decimal while it is below 100 (1.2k, 43.5k) and is
+// rounded to an integer once it reaches 100 (218k, 377k); a trailing ".0" is
+// stripped (5000 → 5k).
+func humanizeStars(n int) string {
+	if n < 1000 {
+		return strconv.Itoa(n)
+	}
+	if n < 1_000_000 {
+		return abbrevStars(float64(n)/1000.0) + "k"
+	}
+	return abbrevStars(float64(n)/1_000_000.0) + "M"
+}
+
+// abbrevStars formats the already-scaled value for humanizeStars: one decimal
+// below 100, integer at or above 100, trailing ".0" removed.
+func abbrevStars(v float64) string {
+	if v < 100 {
+		return strings.TrimSuffix(strconv.FormatFloat(v, 'f', 1, 64), ".0")
+	}
+	return strconv.FormatFloat(v, 'f', 0, 64)
 }
 
 func formatDelta(delta int, ok bool) string {

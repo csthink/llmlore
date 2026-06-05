@@ -61,9 +61,21 @@ func runCombinedView(cmd *cobra.Command, cfg *config.Config, port int) error {
 	}
 	hasStars := len(mine.Repos) > 0
 
+	// The Catalog tab is the discover view, so it honors LLMLORE_EXCLUDE_STARRED
+	// (spec §2 / design §6): when set, repos the user has already starred are
+	// dropped from this tab. This is safe here because the combined HTML is
+	// written local-only (0600) — never out/ — so personalizing it leaks
+	// nothing into a shareable artifact (privacy red line / AC-11). The Cross tab
+	// below deliberately uses the FULL catalog so its already/recommended split
+	// stays complete regardless of this filter.
+	catalogForView, err := applyExcludeStarred(cfg, catalog)
+	if err != nil {
+		return err
+	}
+
 	// Catalog tab keeps the readable caps; the My-stars tab is uncapped (D3) so
 	// the full personal collection shows. Cross is computed unbounded (limit 0).
-	catalogView := store.Select(catalog, defaultSelectOptions())
+	catalogView := store.Select(catalogForView, defaultSelectOptions())
 	var myView *model.Dataset
 	var cross stars.CrossResult
 	if hasStars {

@@ -3,6 +3,7 @@ package cli
 import (
 	"context"
 	"errors"
+	"os"
 	"strings"
 	"testing"
 	"time"
@@ -10,6 +11,7 @@ import (
 	"github.com/csthink/llmlore/internal/classifier"
 	"github.com/csthink/llmlore/internal/collector"
 	"github.com/csthink/llmlore/internal/model"
+	"github.com/csthink/llmlore/internal/stars"
 	"github.com/csthink/llmlore/internal/store"
 )
 
@@ -246,6 +248,58 @@ func TestUpdateLimit_ConstrainsRenderedCards(t *testing.T) {
 	}
 	if n := countCards(limited); n != 1 {
 		t.Errorf("--limit 1: rendered %d cards, want 1 (per-topic visible cap not applied)", n)
+	}
+}
+
+// TestRenderCatalogToOut_NeverPersonalized is the privacy-red-line regression
+// guard for AC-11: update's out/ HTML must carry no personal data. Even with
+// LLMLORE_EXCLUDE_STARRED=true and a my-stars.json that contains a catalog repo,
+// the rendered out/dashboard.html must still include every catalog repo — i.e.
+// it must NOT consult my-stars (otherwise the omitted repos would leak the
+// user's stars into a shareable file).
+func TestRenderCatalogToOut_NeverPersonalized(t *testing.T) {
+	// Isolate the working dir (out/dashboard.html is relative) and HOME.
+	t.Chdir(t.TempDir())
+	home := t.TempDir()
+	t.Setenv("XDG_DATA_HOME", "")
+	t.Setenv("HOME", home)
+	t.Setenv("LLMLORE_EXCLUDE_STARRED", "true")
+
+	// Seed a personal star that overlaps the catalog: if update personalized the
+	// out/ view, "a/b" would be dropped.
+	if err := stars.Save(stars.DefaultDataPath(os.Getenv), &stars.Dataset{
+		Repos: []stars.Repo{{ID: "a/b", Owner: "a", Name: "b"}},
+	}); err != nil {
+		t.Fatalf("seed my-stars: %v", err)
+	}
+
+	now := tparse("2026-06-01T00:00:00Z")
+	mk := func(id, owner, name string, stars int) model.Repo {
+		return model.Repo{
+			ID: id, URL: "https://github.com/" + id, Owner: owner, Name: name,
+			Stars: stars, Type: model.TypeTutorial, Topics: []string{model.TopicLLM},
+			PushedAt: now, Source: model.SourceSearch, AddedAt: now,
+			ClassifiedBy:  model.ClassifiedByHeuristic,
+			StarSnapshots: []model.StarSnapshot{{T: now, Stars: stars}},
+		}
+	}
+	updated := &model.Dataset{
+		Meta:  model.Meta{SchemaVersion: model.CurrentSchemaVersion, GeneratedAt: now},
+		Repos: []model.Repo{mk("a/b", "a", "b", 300), mk("c/d", "c", "d", 200)},
+	}
+
+	if err := renderCatalogToOut(updated, updateOptions{}, now); err != nil {
+		t.Fatalf("renderCatalogToOut: %v", err)
+	}
+	html, err := os.ReadFile(dashboardOutPath)
+	if err != nil {
+		t.Fatalf("read %s: %v", dashboardOutPath, err)
+	}
+	s := string(html)
+	for _, id := range []string{"a/b", "c/d"} {
+		if !strings.Contains(s, id) {
+			t.Errorf("out/ dashboard must include %q (no personalization), but it is missing — personal data leak risk", id)
+		}
 	}
 }
 

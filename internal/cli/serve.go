@@ -54,6 +54,11 @@ func loadDataset(cfg *config.Config) (*model.Dataset, error) {
 // the in-memory dataset only — data/repos.json (the source of truth / open
 // dataset) is never personalized, and no personal data is ever written into it.
 // A machine with no my-stars.json yields an empty set, so discover is unaffected.
+//
+// It is applied ONLY on the local `view` path (the combined dashboard's Catalog
+// tab), whose HTML is written local-only (0600), never out/. The `update` path
+// must NOT call this: its HTML lands in out/, where the set of omitted repos
+// would leak the user's stars (privacy red line / AC-11).
 func applyExcludeStarred(cfg *config.Config, ds *model.Dataset) (*model.Dataset, error) {
 	if !cfg.ExcludeStarred {
 		return ds, nil

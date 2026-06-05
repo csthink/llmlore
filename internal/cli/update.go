@@ -117,23 +117,31 @@ func runUpdate(cmd *cobra.Command, opts updateOptions) error {
 	}
 	logf(cmd, "Wrote %d repositories to %s", len(updated.Repos), dataPath(cfg))
 
-	// Render the dashboard to disk. Unlike the serve path's best-effort write,
-	// here the rendered HTML is update's deliverable, so a write failure is fatal.
-	// LLMLORE_EXCLUDE_STARRED filters the VIEW only: the full catalog was already
-	// persisted above, so the open dataset stays complete while the dashboard
-	// hides repos the user has already starred (personal data read-only).
-	view, err := applyExcludeStarred(cfg, updated)
-	if err != nil {
+	if err := renderCatalogToOut(updated, opts, time.Now()); err != nil {
 		return err
 	}
-	html, err := buildDashboard(view, time.Now(), selectOptionsFor(opts))
+	logf(cmd, "Rendered dashboard to %s", dashboardOutPath)
+	return nil
+}
+
+// renderCatalogToOut renders update's deliverable — the full catalog dashboard —
+// and writes it to out/. Unlike the local view's best-effort write, this HTML is
+// the command's output, so a write failure is fatal.
+//
+// It takes neither *config.Config nor any my-stars input ON PURPOSE: out/ HTML
+// is shareable, so it MUST carry no personal data. In particular it does NOT
+// apply LLMLORE_EXCLUDE_STARRED — that filter reads my-stars.json, and the set
+// of repos it omits would leak the user's stars into out/ (privacy red line /
+// AC-11). Exclude-starred is honored only on the local `view` path, whose HTML
+// never leaves ~/.local/share/llmlore/.
+func renderCatalogToOut(updated *model.Dataset, opts updateOptions, now time.Time) error {
+	html, err := buildDashboard(updated, now, selectOptionsFor(opts))
 	if err != nil {
 		return err
 	}
 	if err := writeDashboard(html); err != nil {
 		return fmt.Errorf("write dashboard: %w", err)
 	}
-	logf(cmd, "Rendered dashboard to %s", dashboardOutPath)
 	return nil
 }
 

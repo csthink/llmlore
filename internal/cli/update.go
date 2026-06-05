@@ -61,7 +61,7 @@ type pipelineDeps struct {
 
 // newUpdateCmd builds `llmlore update`: run the full pipeline, write the
 // dataset, and render the dashboard to disk (spec §1). It does NOT serve —
-// viewing is the job of `llmlore` (no args) and `serve`.
+// viewing is the job of `llmlore view` (and the no-arg `llmlore`).
 func newUpdateCmd() *cobra.Command {
 	opts := updateOptions{mode: modeHistorical}
 	cmd := &cobra.Command{
@@ -83,7 +83,8 @@ func newUpdateCmd() *cobra.Command {
 
 // runUpdate wires real collectors/classifier to the pipeline, persists the
 // result, and renders the dashboard to disk. Serving is intentionally separate
-// (spec §1): run `llmlore` or `serve` to view, or open out/dashboard.html.
+// (spec §1): run `llmlore view` (or the no-arg `llmlore`) to view, or open
+// out/dashboard.html.
 func runUpdate(cmd *cobra.Command, opts updateOptions) error {
 	if err := validateMode(opts.mode); err != nil {
 		return err

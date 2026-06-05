@@ -16,11 +16,11 @@ import (
 	"github.com/csthink/llmlore/internal/store"
 )
 
-// dashboardOutPath is where the rendered catalog HTML is written so it persists
-// on disk after the server stops (AC-7: the on-disk HTML stays double-clickable).
+// dashboardOutPath is where `update` writes its rendered catalog HTML, so a
+// shareable copy persists on disk (AC-7: the on-disk HTML stays double-clickable).
 // It is gitignored (/out/) — the source of truth is data/repos.json, the HTML is
 // regenerable. Only the catalog-only `update` HTML lands here; the combined
-// dashboard (which embeds personal data) is written to the local share dir
+// `view` dashboard (which embeds personal data) is written to the local share dir
 // instead (privacy red line — see view.go / writeLocalHTML).
 const dashboardOutPath = "out/dashboard.html"
 
@@ -71,15 +71,15 @@ func applyExcludeStarred(cfg *config.Config, ds *model.Dataset) (*model.Dataset,
 }
 
 // buildDashboard trims ds to a readable view (store.Select) and renders the
-// self-contained HTML. The full dataset on disk is untouched — Select is a
-// view-only operation. It is shared by `serve`/the no-arg default (which then
-// serve the HTML) and `update` (which writes it to disk without serving).
+// single-dataset catalog HTML. The full dataset on disk is untouched — Select is
+// a view-only operation. It backs `update`'s out/ deliverable (renderCatalogToOut);
+// the combined `view` dashboard renders via render.RenderCombined instead.
 func buildDashboard(ds *model.Dataset, now time.Time, sel store.SelectOptions) ([]byte, error) {
 	return render.Render(store.Select(ds, sel), now)
 }
 
 // defaultSelectOptions is the readable-view trim used when no per-run caps are
-// given (serve / the no-arg default).
+// given (the `view` Catalog tab / the no-arg default).
 func defaultSelectOptions() store.SelectOptions {
 	return store.SelectOptions{
 		PerTypeCap:  store.DefaultPerTypeCap,

@@ -77,7 +77,7 @@ const (
 // (Provider, BaseURL, Model) may come from the TOML file; APIKey comes ONLY
 // from the environment and is never persisted.
 type LLM struct {
-	Provider string // e.g. "anthropic", "openai"; empty => heuristic fallback
+	Provider string // any non-empty label enables LLM mode (e.g. "openai"); the endpoint is OpenAI-compatible via BaseURL; empty => heuristic fallback
 	BaseURL  string // optional custom endpoint for self-hosted / proxy providers
 	Model    string // optional model override
 	APIKey   string // from env only; never read from file, never logged

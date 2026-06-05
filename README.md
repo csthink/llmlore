@@ -46,8 +46,11 @@ llmlore                 # open the combined dashboard (Catalog / My stars / Cros
 # Same combined dashboard, explicit command + custom port
 llmlore view --port 7777
 
-# Bring your own key to fetch / regenerate the latest data
-export LLMLORE_LLM_PROVIDER=anthropic
+# Bring your own key to fetch / regenerate the latest data.
+# llmlore speaks the OpenAI-compatible /chat/completions API; `provider` is just
+# a non-empty label that enables LLM mode. Point base_url at any compatible
+# endpoint (OpenAI, DeepSeek, SiliconFlow, a local Ollama/vLLM, ...).
+export LLMLORE_LLM_PROVIDER=openai
 export LLMLORE_LLM_API_KEY=...      # without it, falls back to heuristic filtering
 llmlore update --mode historical    # or trending / both
 

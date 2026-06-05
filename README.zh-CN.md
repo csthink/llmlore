@@ -36,8 +36,11 @@ llmlore                 # 打开组合仪表盘(Catalog / My stars / Cross);Ctrl
 # 同一个组合仪表盘,显式命令 + 自定义端口
 llmlore view --port 7777
 
-# 自配 key 拉取 / 重新生成最新数据
-export LLMLORE_LLM_PROVIDER=anthropic
+# 自配 key 拉取 / 重新生成最新数据。
+# llmlore 走 OpenAI 兼容的 /chat/completions 接口;`provider` 只是一个启用 LLM 的
+# 非空标识。把 base_url 指向任意兼容端点即可(OpenAI、DeepSeek、SiliconFlow、本地
+# Ollama/vLLM 等)。
+export LLMLORE_LLM_PROVIDER=openai
 export LLMLORE_LLM_API_KEY=...      # 不配则降级为启发式筛选
 llmlore update --mode historical    # 或 trending / both
 

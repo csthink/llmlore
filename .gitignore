@@ -32,6 +32,9 @@ my-stars.json
 # ---- Task relay scratch (review inputs, not source) ----
 .relay/
 
+# ---- Design docs (kept local-only; removed from git history, no longer public) ----
+/docs/
+
 # ---- Generated dashboard output (regenerable; source of truth is data/repos.json) ----
 /out/
 *.dashboard.html

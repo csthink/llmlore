@@ -1,0 +1,314 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>llmlore — combined dashboard</title>
+<style>
+  :root {
+    --bg: #0d1117; --panel: #161b22; --border: #30363d;
+    --text: #e6edf3; --muted: #8b949e; --accent: #58a6ff; --stale: #6e7681;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; background: var(--bg); color: var(--text);
+    font: 14px/1.5 -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
+  }
+  a { color: var(--accent); text-decoration: none; }
+  a:hover { text-decoration: underline; }
+  header { padding: 24px 28px 0; border-bottom: 1px solid var(--border); }
+  header h1 { margin: 0 0 4px; font-size: 20px; }
+  header .sub { color: var(--muted); font-size: 13px; }
+  .tabs { display: flex; gap: 4px; margin-top: 16px; }
+  .tab {
+    background: none; border: none; border-bottom: 2px solid transparent;
+    color: var(--muted); font: inherit; font-size: 14px; padding: 8px 14px;
+    cursor: pointer;
+  }
+  .tab:hover { color: var(--text); }
+  .tab.active { color: var(--text); border-bottom-color: var(--accent); }
+  main { max-width: 1100px; margin: 0 auto; padding: 24px 28px 64px; }
+  .panel.hidden { display: none; }
+  section { margin-bottom: 36px; }
+  section h2 { font-size: 16px; border-bottom: 1px solid var(--border); padding-bottom: 8px; }
+  .stats { display: flex; flex-wrap: wrap; gap: 16px; }
+  .stat { background: var(--panel); border: 1px solid var(--border); border-radius: 8px; padding: 14px 18px; min-width: 130px; }
+  .stat .n { font-size: 22px; font-weight: 600; }
+  .stat .l { color: var(--muted); font-size: 12px; text-transform: uppercase; letter-spacing: .04em; }
+  .dist { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 12px; }
+  .chip { background: var(--panel); border: 1px solid var(--border); border-radius: 999px; padding: 3px 10px; font-size: 12px; color: var(--muted); }
+  .chip b { color: var(--text); }
+  table { width: 100%; border-collapse: collapse; }
+  th, td { text-align: left; padding: 7px 10px; border-bottom: 1px solid var(--border); font-size: 13px; }
+  th { color: var(--muted); font-weight: 500; }
+  td.num { text-align: right; font-variant-numeric: tabular-nums; }
+  .lang { display: inline-block; width: 10px; height: 10px; border-radius: 50%; margin-right: 6px; vertical-align: middle; }
+  .stale { color: var(--stale); }
+  .stale-tag { color: var(--stale); font-size: 11px; border: 1px solid var(--stale); border-radius: 4px; padding: 0 5px; margin-left: 6px; }
+  .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; }
+  @media (max-width: 760px) { .two-col { grid-template-columns: 1fr; } }
+  .filters { display: flex; flex-wrap: wrap; gap: 12px; align-items: center; background: var(--panel); border: 1px solid var(--border); border-radius: 8px; padding: 12px 16px; }
+  .filters label { font-size: 12px; color: var(--muted); display: flex; flex-direction: column; gap: 4px; }
+  .filters select { background: var(--bg); color: var(--text); border: 1px solid var(--border); border-radius: 6px; padding: 5px 8px; }
+  .filters .check { flex-direction: row; align-items: center; gap: 6px; margin-top: 16px; }
+  .cards { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 16px; margin-top: 16px; }
+  .card { background: var(--panel); border: 1px solid var(--border); border-radius: 8px; padding: 16px; display: flex; flex-direction: column; gap: 8px; }
+  .card.hidden { display: none; }
+  .card .title { font-size: 15px; font-weight: 600; }
+  .card .desc { color: var(--muted); font-size: 13px; }
+  .card .summary { font-size: 13px; }
+  .card .meta { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; font-size: 12px; color: var(--muted); margin-top: auto; }
+  .tag { background: var(--bg); border: 1px solid var(--border); border-radius: 4px; padding: 1px 7px; font-size: 11px; color: var(--text); }
+  .tag.type { border-color: var(--accent); color: var(--accent); }
+  .empty { color: var(--muted); font-style: italic; padding: 8px 0; }
+  .empty-state { background: var(--panel); border: 1px solid var(--border); border-radius: 8px; padding: 28px; color: var(--muted); }
+  .empty-state h2 { border: none; margin-top: 0; color: var(--text); }
+  .empty-state code { background: var(--bg); border: 1px solid var(--border); border-radius: 4px; padding: 1px 6px; color: var(--text); }
+  .count-note { color: var(--muted); font-size: 12px; margin-top: 8px; }
+</style>
+</head>
+<body>
+<header>
+  <h1>llmlore</h1>
+  <div class="sub">A curated catalog of repositories for learning to build with LLMs &amp; AI · mode: {{.Mode}} · generated {{.GeneratedAt}}</div>
+  <nav class="tabs">
+    <button class="tab active" data-tab="catalog">Catalog</button>
+    <button class="tab" data-tab="mystars">My stars</button>
+    <button class="tab" data-tab="cross">Cross</button>
+  </nav>
+</header>
+<main>
+
+  <div class="panel" data-panel="catalog">
+    {{template "panelBody" .Catalog}}
+  </div>
+
+  <div class="panel hidden" data-panel="mystars">
+    {{if .HasStars}}
+      {{template "panelBody" .MyStars}}
+    {{else}}
+      {{template "starsEmpty" .}}
+    {{end}}
+  </div>
+
+  <div class="panel hidden" data-panel="cross">
+    {{if .HasStars}}
+      {{template "crossBody" .Cross}}
+    {{else}}
+      {{template "starsEmpty" .}}
+    {{end}}
+  </div>
+
+</main>
+<script>
+  (function () {
+    // Per-panel filter wiring: each panel scopes its own controls/cards by class,
+    // so the three tabs never collide on shared element ids.
+    Array.prototype.forEach.call(document.querySelectorAll(".panel"), function (panel) {
+      var topic = panel.querySelector(".f-topic");
+      if (!topic) { return; } // cross panel / empty state has no filter bar
+      var type = panel.querySelector(".f-type");
+      var language = panel.querySelector(".f-language");
+      var active = panel.querySelector(".f-active");
+      var cards = Array.prototype.slice.call(panel.querySelectorAll(".cards .card"));
+      var shown = panel.querySelector(".shown-count");
+
+      function apply() {
+        var t = topic.value, ty = type.value, l = language.value, a = active.checked;
+        var n = 0;
+        cards.forEach(function (c) {
+          var topics = (c.getAttribute("data-topics") || "").split(" ");
+          var ok = (!t || topics.indexOf(t) !== -1) &&
+                   (!ty || c.getAttribute("data-type") === ty) &&
+                   (!l || c.getAttribute("data-language") === l) &&
+                   (!a || c.getAttribute("data-active") === "true");
+          c.classList.toggle("hidden", !ok);
+          if (ok) { n++; }
+        });
+        if (shown) { shown.textContent = n; }
+      }
+
+      [topic, type, language].forEach(function (el) { el.addEventListener("change", apply); });
+      active.addEventListener("change", apply);
+      apply();
+    });
+
+    // Tab switching: show the clicked panel, hide the rest.
+    var tabs = Array.prototype.slice.call(document.querySelectorAll(".tab"));
+    var panels = Array.prototype.slice.call(document.querySelectorAll(".panel"));
+    tabs.forEach(function (tab) {
+      tab.addEventListener("click", function () {
+        var target = tab.getAttribute("data-tab");
+        tabs.forEach(function (t) { t.classList.toggle("active", t === tab); });
+        panels.forEach(function (p) { p.classList.toggle("hidden", p.getAttribute("data-panel") !== target); });
+      });
+    });
+  })();
+</script>
+</body>
+</html>
+
+{{define "starsEmpty"}}
+<div class="empty-state">
+  <h2>No local stars yet</h2>
+  <p>This tab shows your own starred repositories, which stay on this machine and are never committed.</p>
+  <p>Run <code>llmlore stars sync</code> to fetch your stars, then <code>llmlore stars organize</code> to label them by type and topic. Reopen this dashboard and the My stars and Cross tabs will populate.</p>
+</div>
+{{end}}
+
+{{define "panelBody"}}
+  <section class="overview">
+    <h2>Overview</h2>
+    <div class="stats">
+      <div class="stat"><div class="n">{{.Total}}</div><div class="l">Total repos</div></div>
+      <div class="stat"><div class="n">{{.NewThisRound}}</div><div class="l">New this round</div></div>
+      <div class="stat"><div class="n">{{.Mode}}</div><div class="l">Mode</div></div>
+    </div>
+    <div class="dist">
+      {{range .TopicDist}}<span class="chip">{{.Label}} <b>{{.N}}</b></span>{{end}}
+      {{if not .TopicDist}}<span class="empty">No topics yet.</span>{{end}}
+    </div>
+  </section>
+
+  <section class="top">
+    <h2>Top by stars</h2>
+    {{if .TopByStars}}
+    <table>
+      <thead><tr><th>#</th><th>Repository</th><th>Language</th><th class="num">Stars</th></tr></thead>
+      <tbody>
+        {{range .TopByStars}}
+        <tr{{if .Stale}} class="stale"{{end}}>
+          <td class="num">{{.Rank}}</td>
+          <td><a href="{{.URL}}">{{.ID}}</a>{{if .Stale}}<span class="stale-tag">stale</span>{{end}}</td>
+          <td><span class="lang" style="background:{{.LangColor}}"></span>{{if .Language}}{{.Language}}{{else}}—{{end}}</td>
+          <td class="num">{{.Stars}}</td>
+        </tr>
+        {{end}}
+      </tbody>
+    </table>
+    {{else}}<div class="empty">No repositories to rank yet.</div>{{end}}
+  </section>
+
+  <section class="trends">
+    <h2>Trends</h2>
+    <div class="two-col">
+      <div>
+        <h3>Trending on GitHub</h3>
+        <p class="count-note">Repositories currently surfaced by GitHub trending — a "hot on GitHub right now" discovery signal. For windowed magnitude, see Fastest growing.</p>
+        {{if .Trending}}
+        <table>
+          <thead><tr><th>#</th><th>Repository</th><th class="num">Stars</th></tr></thead>
+          <tbody>
+            {{range .Trending}}
+            <tr{{if .Stale}} class="stale"{{end}}>
+              <td class="num">{{.Rank}}</td>
+              <td><a href="{{.URL}}">{{.ID}}</a></td>
+              <td class="num">{{.Stars}}</td>
+            </tr>
+            {{end}}
+          </tbody>
+        </table>
+        {{else}}<div class="empty">No trending-sourced repositories in this dataset.</div>{{end}}
+      </div>
+      <div>
+        <h3>Fastest growing</h3>
+        <p class="count-note">Star gain computed from our own snapshot history.</p>
+        {{if .Growing}}
+        <table>
+          <thead><tr><th>Repository</th><th class="num">+7d</th><th class="num">+30d</th><th class="num">Stars</th></tr></thead>
+          <tbody>
+            {{range .Growing}}
+            <tr>
+              <td><a href="{{.URL}}">{{.ID}}</a></td>
+              <td class="num">{{.D7}}</td>
+              <td class="num">{{.D30}}</td>
+              <td class="num">{{.Stars}}</td>
+            </tr>
+            {{end}}
+          </tbody>
+        </table>
+        {{else}}<div class="empty">Not enough snapshot history to compute growth yet.</div>{{end}}
+      </div>
+    </div>
+  </section>
+
+  <section class="filters-sec">
+    <h2>Browse</h2>
+    <div class="filters">
+      <label>Topic
+        <select class="f-topic"><option value="">All</option>{{range .Topics}}<option value="{{.}}">{{.}}</option>{{end}}</select>
+      </label>
+      <label>Type
+        <select class="f-type"><option value="">All</option>{{range .Types}}<option value="{{.}}">{{.}}</option>{{end}}</select>
+      </label>
+      <label>Language
+        <select class="f-language"><option value="">All</option>{{range .Languages}}<option value="{{.}}">{{.}}</option>{{end}}</select>
+      </label>
+      <label class="check"><input type="checkbox" class="f-active"> Active only</label>
+    </div>
+    <div class="count-note"><span class="shown-count">{{len .Cards}}</span> of {{len .Cards}} repositories shown</div>
+  </section>
+
+  <section class="catalog-sec">
+    <div class="cards">
+      {{range .Cards}}
+      <article class="card" data-type="{{.Type}}" data-topics="{{.TopicsAttr}}" data-language="{{.Language}}" data-active="{{.Active}}">
+        <div class="title"><a href="{{.URL}}">{{.ID}}</a>{{if .Stale}}<span class="stale-tag">stale</span>{{end}}</div>
+        {{if .Summary}}<div class="summary">{{.Summary}}</div>{{end}}
+        {{if .Description}}<div class="desc">{{.Description}}</div>{{end}}
+        <div class="meta">
+          <span class="tag type">{{.Type}}</span>
+          {{range .Topics}}<span class="tag">{{.}}</span>{{end}}
+          <span><span class="lang" style="background:{{.LangColor}}"></span>{{if .Language}}{{.Language}}{{else}}—{{end}}</span>
+          <span>★ {{.Stars}}</span>
+          {{if .PushedAt}}<span>pushed {{.PushedAt}}</span>{{end}}
+        </div>
+      </article>
+      {{end}}
+    </div>
+    {{if not .Cards}}<div class="empty">No repositories in this dataset.</div>{{end}}
+  </section>
+{{end}}
+
+{{define "crossBody"}}
+  <section class="cross-starred">
+    <h2>Already starred ({{len .AlreadyStarred}})</h2>
+    <p class="count-note">Catalog repositories you have already starred. Set LLMLORE_EXCLUDE_STARRED to drop these from discover.</p>
+    {{if .AlreadyStarred}}
+    <table>
+      <thead><tr><th>#</th><th>Repository</th><th>Language</th><th class="num">Stars</th></tr></thead>
+      <tbody>
+        {{range .AlreadyStarred}}
+        <tr>
+          <td class="num">{{.Rank}}</td>
+          <td><a href="{{.URL}}">{{.ID}}</a></td>
+          <td><span class="lang" style="background:{{.LangColor}}"></span>{{if .Language}}{{.Language}}{{else}}—{{end}}</td>
+          <td class="num">{{.Stars}}</td>
+        </tr>
+        {{end}}
+      </tbody>
+    </table>
+    {{else}}<div class="empty">None of the catalog repositories are in your stars yet.</div>{{end}}
+  </section>
+
+  <section class="cross-recommended">
+    <h2>Recommended ({{len .Recommended}})</h2>
+    <p class="count-note">Popular catalog repositories you have not starred yet. Freshness depends on your last <code>llmlore update</code> or <code>llmlore pull</code>.</p>
+    {{if .Recommended}}
+    <table>
+      <thead><tr><th>#</th><th>Repository</th><th>Type</th><th>Language</th><th class="num">Stars</th></tr></thead>
+      <tbody>
+        {{range .Recommended}}
+        <tr>
+          <td class="num">{{.Rank}}</td>
+          <td><a href="{{.URL}}">{{.ID}}</a></td>
+          <td>{{if .Type}}{{.Type}}{{else}}—{{end}}</td>
+          <td><span class="lang" style="background:{{.LangColor}}"></span>{{if .Language}}{{.Language}}{{else}}—{{end}}</td>
+          <td class="num">{{.Stars}}</td>
+        </tr>
+        {{end}}
+      </tbody>
+    </table>
+    {{else}}<div class="empty">No recommendations: you have starred everything in the catalog.</div>{{end}}
+  </section>
+{{end}}

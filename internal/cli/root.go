@@ -1,8 +1,9 @@
 // Package cli wires up the llmlore command tree.
 //
-// update / serve / pull / stars are implemented in their own files (update.go,
-// serve.go, pull.go, stars.go). The no-arg `llmlore` default loads the dataset,
-// renders the dashboard, and serves it (AC-1).
+// update / view / pull / stars are implemented in their own files (update.go,
+// view.go, pull.go, stars.go). The no-arg `llmlore` default opens the combined
+// dashboard (Catalog / My stars / Cross tabs) — the same path as `llmlore view`
+// (AC-1 / PROPOSAL-005).
 package cli
 
 import (
@@ -19,8 +20,8 @@ import (
 )
 
 // newRootCmd builds the root command and attaches every subcommand. The no-arg
-// run loads the dataset (on-disk, falling back to the embedded snapshot) and
-// serves the dashboard (AC-1).
+// run opens the combined dashboard (Catalog / My stars / Cross), the same as
+// `llmlore view` (AC-1 / PROPOSAL-005).
 func newRootCmd() *cobra.Command {
 	root := &cobra.Command{
 		Use:   "llmlore",
@@ -35,11 +36,7 @@ func newRootCmd() *cobra.Command {
 			if err != nil {
 				return err
 			}
-			ds, err := loadDataset(cfg)
-			if err != nil {
-				return err
-			}
-			return renderAndServe(cmd, cfg, ds, 0)
+			return runCombinedView(cmd, cfg, 0)
 		},
 	}
 
@@ -50,7 +47,7 @@ func newRootCmd() *cobra.Command {
 
 	root.AddCommand(
 		newUpdateCmd(),
-		newServeCmd(),
+		newViewCmd(),
 		newPullCmd(),
 		newStarsCmd(),
 		newConfigCmd(),

@@ -251,6 +251,110 @@ func TestRender_AllEnglish(t *testing.T) {
 	}
 }
 
+// myStarsDataset builds a tiny personal dataset whose repos do NOT overlap the
+// catalog, so the Cross split is unambiguous (all catalog repos recommended).
+func myStarsDataset() *model.Dataset {
+	gen := ts("2026-06-01T00:00:00Z")
+	return &model.Dataset{
+		Meta: model.Meta{SchemaVersion: model.CurrentSchemaVersion, GeneratedAt: gen, Mode: "my-stars", Count: 1},
+		Repos: []model.Repo{
+			{
+				ID: "me/my-secret-tool", URL: "https://github.com/me/my-secret-tool",
+				Owner: "me", Name: "my-secret-tool", Description: "A personal star",
+				Language: "Go", Stars: 42, Type: model.TypeTemplate,
+				Topics: []string{model.TopicAgent}, AddedAt: gen,
+			},
+		},
+	}
+}
+
+// TestRenderCombined_TabsAndData covers AC-11: one self-contained HTML with the
+// three tabs, mode "combined", catalog + my-stars data, and the Cross split.
+func TestRenderCombined_TabsAndData(t *testing.T) {
+	catalog := sampleDataset()
+	mine := myStarsDataset()
+	cross := CrossResultFor(catalog, mine)
+	html, err := RenderCombined(catalog, mine, cross.already, cross.recommended, true, ts("2026-06-01T12:00:00Z"))
+	if err != nil {
+		t.Fatalf("RenderCombined: %v", err)
+	}
+	s := string(html)
+	for _, marker := range []string{
+		`data-tab="catalog"`, `data-tab="mystars"`, `data-tab="cross"`,
+		`data-panel="catalog"`, `data-panel="mystars"`, `data-panel="cross"`,
+		"mode: combined", "Already starred", "Recommended",
+		"acme/llm-course",      // catalog repo
+		"me/my-secret-tool",    // personal repo (My stars tab)
+	} {
+		if !strings.Contains(s, marker) {
+			t.Errorf("combined HTML missing %q", marker)
+		}
+	}
+}
+
+// TestRenderCombined_DegradedNoStars covers the privacy/degraded invariant: with
+// no local stars the My-stars and Cross tabs show an empty hint (never an error),
+// the Catalog tab still works, and no personal repo leaks into the HTML.
+func TestRenderCombined_DegradedNoStars(t *testing.T) {
+	catalog := sampleDataset()
+	html, err := RenderCombined(catalog, nil, nil, nil, false, ts("2026-06-01T12:00:00Z"))
+	if err != nil {
+		t.Fatalf("RenderCombined: %v", err)
+	}
+	s := string(html)
+	if !strings.Contains(s, "No local stars yet") || !strings.Contains(s, "llmlore stars sync") {
+		t.Error("degraded combined HTML missing empty-state hint")
+	}
+	if !strings.Contains(s, "acme/llm-course") {
+		t.Error("Catalog tab must still populate when there are no stars")
+	}
+	if strings.Contains(s, "my-secret-tool") {
+		t.Error("no personal data must appear when hasStars is false")
+	}
+}
+
+// TestRenderCombined_SelfContainedEnglish covers AC-7/AC-9 for the combined view.
+func TestRenderCombined_SelfContainedEnglish(t *testing.T) {
+	html, err := RenderCombined(sampleDataset(), myStarsDataset(), nil, nil, true, ts("2026-06-01T12:00:00Z"))
+	if err != nil {
+		t.Fatalf("RenderCombined: %v", err)
+	}
+	s := string(html)
+	for _, bad := range []string{"<link", "src=\"http"} {
+		if strings.Contains(s, bad) {
+			t.Errorf("combined HTML references external asset via %q (not self-contained)", bad)
+		}
+	}
+	for i, r := range s {
+		if unicode.Is(unicode.Han, r) {
+			t.Fatalf("found CJK rune %q at byte %d — UI text must be English (AC-9)", r, i)
+		}
+	}
+}
+
+// crossSplit is a tiny test-only mirror of stars.Cross (the render package must
+// not import stars), splitting the catalog into already-starred vs recommended.
+type crossSplit struct {
+	already     []model.Repo
+	recommended []model.Repo
+}
+
+func CrossResultFor(catalog, mine *model.Dataset) crossSplit {
+	starred := map[string]bool{}
+	for _, r := range mine.Repos {
+		starred[r.ID] = true
+	}
+	var c crossSplit
+	for _, r := range catalog.Repos {
+		if starred[r.ID] {
+			c.already = append(c.already, r)
+		} else {
+			c.recommended = append(c.recommended, r)
+		}
+	}
+	return c
+}
+
 func equalStrings(a, b []string) bool {
 	if len(a) != len(b) {
 		return false

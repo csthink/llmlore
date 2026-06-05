@@ -41,10 +41,10 @@ After installing, run `llmlore pull` to fetch the pre-generated data, then
 ```bash
 # Download the pre-generated open dataset, then open the dashboard (zero config)
 llmlore pull
-llmlore                 # render + serve locally + open your browser; Ctrl+C to stop
+llmlore                 # open the combined dashboard (Catalog / My stars / Cross); Ctrl+C to stop
 
-# Just view the data already on disk
-llmlore serve --port 7777
+# Same combined dashboard, explicit command + custom port
+llmlore view --port 7777
 
 # Bring your own key to fetch / regenerate the latest data
 export LLMLORE_LLM_PROVIDER=anthropic
@@ -56,7 +56,7 @@ llmlore stars sync --user <login>      # public stars of any user; OR set
 export LLMLORE_GITHUB_TOKEN=...         # a token to sync your own (incl. private) stars
 llmlore stars sync                     # then this fetches your own stars
 llmlore stars organize
-llmlore stars view
+llmlore view                           # your stars show up in the My stars / Cross tabs
 ```
 
 ## How it works

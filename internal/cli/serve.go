@@ -1,10 +1,8 @@
 package cli
 
 import (
-	"context"
 	"fmt"
 	"os"
-	"os/signal"
 	"path/filepath"
 	"time"
 
@@ -14,41 +12,17 @@ import (
 	"github.com/csthink/llmlore/internal/data"
 	"github.com/csthink/llmlore/internal/model"
 	"github.com/csthink/llmlore/internal/render"
-	"github.com/csthink/llmlore/internal/server"
 	"github.com/csthink/llmlore/internal/stars"
 	"github.com/csthink/llmlore/internal/store"
 )
 
-// dashboardOutPath is where the rendered HTML is written so it persists on disk
-// after the server stops (AC-7: the on-disk HTML stays double-clickable). It is
-// gitignored (/out/) — the source of truth is data/repos.json, the HTML is
-// regenerable.
+// dashboardOutPath is where the rendered catalog HTML is written so it persists
+// on disk after the server stops (AC-7: the on-disk HTML stays double-clickable).
+// It is gitignored (/out/) — the source of truth is data/repos.json, the HTML is
+// regenerable. Only the catalog-only `update` HTML lands here; the combined
+// dashboard (which embeds personal data) is written to the local share dir
+// instead (privacy red line — see view.go / writeLocalHTML).
 const dashboardOutPath = "out/dashboard.html"
-
-// newServeCmd builds `llmlore serve`: render the existing dataset and serve it,
-// without refreshing data (spec §1). It is also the path the no-arg `llmlore`
-// default takes (AC-1).
-func newServeCmd() *cobra.Command {
-	var port int
-	cmd := &cobra.Command{
-		Use:   "serve",
-		Short: "Serve the existing dashboard without refreshing data",
-		Args:  cobra.NoArgs,
-		RunE: func(cmd *cobra.Command, _ []string) error {
-			cfg, err := config.Load()
-			if err != nil {
-				return err
-			}
-			ds, err := loadDataset(cfg)
-			if err != nil {
-				return err
-			}
-			return renderAndServe(cmd, cfg, ds, port)
-		},
-	}
-	cmd.Flags().IntVar(&port, "port", 0, "local server port (default: $LLMLORE_PORT or 7777)")
-	return cmd
-}
 
 // dataPath returns the on-disk dataset path for a config's data dir.
 func dataPath(cfg *config.Config) string {
@@ -110,45 +84,14 @@ func defaultSelectOptions() store.SelectOptions {
 
 // nudgeIfPlaceholder prints a one-line, non-fatal English notice when the loaded
 // config still holds the `config init` placeholder (provider == sentinel). It
-// fires on the server-start paths (no-arg `llmlore`, `serve`, `stars view`) and
-// never blocks: the caller keeps serving in heuristic mode (PROPOSAL-004 / AC-10).
+// fires on the dashboard-open path (no-arg `llmlore` / `view`) and never blocks:
+// the caller keeps serving in heuristic mode (PROPOSAL-004 / AC-10).
 func nudgeIfPlaceholder(cmd *cobra.Command, cfg *config.Config) {
 	if !cfg.LLM.Placeholder {
 		return
 	}
 	logf(cmd, "Note: %s still has placeholder values — edit it and export %s to enable LLM features. Running in heuristic mode.",
 		config.DefaultConfigPath(os.Getenv), config.EnvLLMAPIKey)
-}
-
-// renderAndServe renders the dashboard view of ds, writes it to disk, and serves
-// it until Ctrl+C. The on-disk write is best-effort (a failure must not stop
-// serving). port==0 means use the configured port.
-func renderAndServe(cmd *cobra.Command, cfg *config.Config, ds *model.Dataset, port int) error {
-	nudgeIfPlaceholder(cmd, cfg)
-	ds, err := applyExcludeStarred(cfg, ds)
-	if err != nil {
-		return err
-	}
-	html, err := buildDashboard(ds, time.Now(), defaultSelectOptions())
-	if err != nil {
-		return err
-	}
-
-	// Persist the HTML so the on-disk copy stays openable after shutdown
-	// (best-effort here: serving from memory does not depend on the file).
-	if err := writeDashboard(html); err != nil {
-		logf(cmd, "Could not write %s: %v", dashboardOutPath, err)
-	}
-
-	if port == 0 {
-		port = cfg.Port
-	}
-	addr := fmt.Sprintf(":%d", port)
-
-	// Ctrl+C cancels the context, which Serve turns into a graceful shutdown.
-	ctx, stop := signal.NotifyContext(context.Background(), os.Interrupt)
-	defer stop()
-	return server.Serve(ctx, addr, html, server.OpenBrowser, func(f string, a ...any) { logf(cmd, f, a...) })
 }
 
 // writeDashboard writes the rendered HTML to dashboardOutPath, creating the

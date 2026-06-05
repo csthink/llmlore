@@ -121,6 +121,91 @@ func Render(d *model.Dataset, now time.Time) ([]byte, error) {
 	return buf.Bytes(), nil
 }
 
+// CombinedView is the fully-derived model for the single combined dashboard
+// (PROPOSAL-005 / T10): a Catalog tab, a My-stars tab, and a Cross tab behind a
+// client-side tab switch. Mode is always "combined" (D5). When HasStars is false
+// (no local my-stars data) the My-stars and Cross tabs render an empty hint
+// rather than data, and MyStars/Cross are left zero — the Catalog tab is always
+// populated.
+type CombinedView struct {
+	Mode        string
+	GeneratedAt string
+	HasStars    bool
+	Catalog     View
+	MyStars     View
+	Cross       CrossView
+}
+
+// CrossView is the Cross tab's model: catalog repos the user has already starred
+// and high-star catalog repos they have not (recommendations). Both lists are
+// pre-ranked render rows so the template carries no logic.
+type CrossView struct {
+	AlreadyStarred []CrossRow
+	Recommended    []CrossRow
+}
+
+// CrossRow is one line in a Cross-tab table.
+type CrossRow struct {
+	Rank      int
+	ID        string
+	URL       string
+	Type      string
+	Language  string
+	LangColor string
+	Stars     int
+}
+
+// RenderCombined builds the single combined dashboard (Catalog / My stars /
+// Cross tabs) and returns the self-contained HTML. catalog is the (already
+// trimmed) open catalog; myStars is the (already selected, uncapped) personal
+// dataset and may be nil; alreadyStarred/recommended are the Cross split. When
+// hasStars is false the personal tabs show an empty hint and myStars/cross
+// inputs are ignored. The output inlines all CSS/JS (AC-7) and is English-only
+// (AC-9). This function never decides where the file lands on disk — the caller
+// (which knows the file embeds personal data) owns the privacy-safe write path.
+func RenderCombined(catalog, myStars *model.Dataset, alreadyStarred, recommended []model.Repo, hasStars bool, now time.Time) ([]byte, error) {
+	cv := CombinedView{
+		Mode:     "combined",
+		HasStars: hasStars,
+		Catalog:  BuildView(catalog, now),
+	}
+	cv.GeneratedAt = cv.Catalog.GeneratedAt
+	if hasStars {
+		cv.MyStars = BuildView(myStars, now)
+		cv.Cross = CrossView{
+			AlreadyStarred: crossRows(alreadyStarred),
+			Recommended:    crossRows(recommended),
+		}
+	}
+	tmpl, err := template.ParseFS(web.TemplatesFS, "templates/*.tmpl")
+	if err != nil {
+		return nil, fmt.Errorf("parse dashboard template: %w", err)
+	}
+	var buf bytes.Buffer
+	if err := tmpl.ExecuteTemplate(&buf, "combined.tmpl", cv); err != nil {
+		return nil, fmt.Errorf("render combined dashboard: %w", err)
+	}
+	return buf.Bytes(), nil
+}
+
+// crossRows converts repos to ranked Cross-tab rows (1-based rank in input
+// order, which the caller has already sorted by stars descending).
+func crossRows(repos []model.Repo) []CrossRow {
+	out := make([]CrossRow, 0, len(repos))
+	for i, r := range repos {
+		out = append(out, CrossRow{
+			Rank:      i + 1,
+			ID:        r.ID,
+			URL:       r.URL,
+			Type:      r.Type,
+			Language:  r.Language,
+			LangColor: languageColor(r.Language),
+			Stars:     r.Stars,
+		})
+	}
+	return out
+}
+
 // BuildView derives the dashboard model from d as of now. It is pure: same
 // inputs, same output, no I/O. A nil or empty dataset yields a valid, empty
 // dashboard rather than an error.

@@ -31,10 +31,10 @@ go install github.com/csthink/llmlore/cmd/llmlore@latest
 ```bash
 # 下载预生成的开放数据,然后打开仪表盘(零配置)
 llmlore pull
-llmlore                 # 渲染 + 起本地服务 + 自动开浏览器;Ctrl+C 停止
+llmlore                 # 打开组合仪表盘(Catalog / My stars / Cross);Ctrl+C 停止
 
-# 仅查看本地已有数据
-llmlore serve --port 7777
+# 同一个组合仪表盘,显式命令 + 自定义端口
+llmlore view --port 7777
 
 # 自配 key 拉取 / 重新生成最新数据
 export LLMLORE_LLM_PROVIDER=anthropic
@@ -46,7 +46,7 @@ llmlore stars sync --user <login>      # 拉某用户的公开 star;或
 export LLMLORE_GITHUB_TOKEN=...         # 设 token 拉自己的(含私有)star
 llmlore stars sync                     # 设了 token 后这样拉自己的
 llmlore stars organize
-llmlore stars view
+llmlore view                           # 个人 star 会出现在 My stars / Cross tab
 ```
 
 ## 工作原理

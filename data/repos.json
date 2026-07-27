@@ -1,9 +1,9 @@
 {
   "meta": {
     "schema_version": 1,
-    "generated_at": "2026-07-20T06:00:17.937109802Z",
+    "generated_at": "2026-07-27T06:17:53.770210603Z",
     "mode": "both",
-    "count": 151
+    "count": 156
   },
   "repos": [
     {
@@ -42,7 +42,7 @@
       "name": "llm-course",
       "description": "Course to get into Large Language Models (LLMs) with roadmaps and Colab notebooks.",
       "language": "Jupyter Notebook",
-      "stars": 81103,
+      "stars": 81260,
       "summary": "",
       "type": "tutorial",
       "topics": [
@@ -89,6 +89,10 @@
         {
           "t": "2026-07-20T06:00:17.937109802Z",
           "stars": 81103
+        },
+        {
+          "t": "2026-07-27T06:17:53.770210603Z",
+          "stars": 81260
         }
       ]
     },
@@ -159,13 +163,13 @@
       "name": "RAG_Techniques",
       "description": "This repository showcases various advanced techniques for Retrieval-Augmented Generation (RAG) systems. Each technique has a detailed notebook tutorial.",
       "language": "Jupyter Notebook",
-      "stars": 28712,
+      "stars": 28831,
       "summary": "",
       "type": "tutorial",
       "topics": [
         "rag"
       ],
-      "pushed_at": "2026-07-14T18:50:33Z",
+      "pushed_at": "2026-07-26T13:49:15Z",
       "is_stale": false,
       "source": "search",
       "added_at": "2026-05-01T00:00:00Z",
@@ -206,6 +210,10 @@
         {
           "t": "2026-07-20T06:00:17.937109802Z",
           "stars": 28712
+        },
+        {
+          "t": "2026-07-27T06:17:53.770210603Z",
+          "stars": 28831
         }
       ]
     },
@@ -245,13 +253,13 @@
       "name": "ECC",
       "description": "The agent harness performance optimization system. Skills, instincts, memory, security, and research-first development for Claude Code, Codex, Opencode, Cursor and beyond.",
       "language": "JavaScript",
-      "stars": 231316,
+      "stars": 233746,
       "summary": "",
       "type": "guide",
       "topics": [
         "agent"
       ],
-      "pushed_at": "2026-07-20T04:56:39Z",
+      "pushed_at": "2026-07-27T04:56:28Z",
       "is_stale": false,
       "source": "search",
       "added_at": "2026-06-08T07:24:17.326865975Z",
@@ -284,6 +292,10 @@
         {
           "t": "2026-07-20T06:00:17.937109802Z",
           "stars": 231316
+        },
+        {
+          "t": "2026-07-27T06:17:53.770210603Z",
+          "stars": 233746
         }
       ]
     },
@@ -294,13 +306,13 @@
       "name": "hermes-agent",
       "description": "The agent that grows with you",
       "language": "Python",
-      "stars": 217376,
+      "stars": 221056,
       "summary": "",
       "type": "guide",
       "topics": [
         "agent"
       ],
-      "pushed_at": "2026-07-20T05:13:32Z",
+      "pushed_at": "2026-07-27T06:15:12Z",
       "is_stale": false,
       "source": "search",
       "added_at": "2026-06-08T07:24:17.326865975Z",
@@ -333,6 +345,10 @@
         {
           "t": "2026-07-20T06:00:17.937109802Z",
           "stars": 217376
+        },
+        {
+          "t": "2026-07-27T06:17:53.770210603Z",
+          "stars": 221056
         }
       ]
     },
@@ -343,14 +359,14 @@
       "name": "AutoGPT",
       "description": "AutoGPT is the vision of accessible AI for everyone, to use and to build on. Our mission is to provide the tools, so that you can focus on what matters.",
       "language": "Python",
-      "stars": 185617,
+      "stars": 185704,
       "summary": "",
       "type": "guide",
       "topics": [
         "multimodal",
         "llm"
       ],
-      "pushed_at": "2026-07-19T14:56:38Z",
+      "pushed_at": "2026-07-26T17:49:58Z",
       "is_stale": false,
       "source": "search",
       "added_at": "2026-06-08T07:24:17.326865975Z",
@@ -383,6 +399,10 @@
         {
           "t": "2026-07-20T06:00:17.937109802Z",
           "stars": 185617
+        },
+        {
+          "t": "2026-07-27T06:17:53.770210603Z",
+          "stars": 185704
         }
       ]
     },
@@ -393,13 +413,13 @@
       "name": "ollama",
       "description": "Get up and running with Kimi-K2.6, GLM-5.2, MiniMax, DeepSeek, gpt-oss, Qwen, Gemma and other models.",
       "language": "Go",
-      "stars": 176483,
+      "stars": 176962,
       "summary": "",
       "type": "guide",
       "topics": [
         "llm"
       ],
-      "pushed_at": "2026-07-18T00:23:54Z",
+      "pushed_at": "2026-07-27T00:02:27Z",
       "is_stale": false,
       "source": "search",
       "added_at": "2026-06-08T07:24:17.326865975Z",
@@ -432,6 +452,10 @@
         {
           "t": "2026-07-20T06:00:17.937109802Z",
           "stars": 176483
+        },
+        {
+          "t": "2026-07-27T06:17:53.770210603Z",
+          "stars": 176962
         }
       ]
     },
@@ -442,7 +466,7 @@
       "name": "andrej-karpathy-skills",
       "description": "A single CLAUDE.md file to improve Claude Code behavior, derived from Andrej Karpathy's observations on LLM coding pitfalls.",
       "language": "",
-      "stars": 194457,
+      "stars": 196645,
       "summary": "",
       "type": "guide",
       "topics": [
@@ -481,6 +505,10 @@
         {
           "t": "2026-07-20T06:00:17.937109802Z",
           "stars": 194457
+        },
+        {
+          "t": "2026-07-27T06:17:53.770210603Z",
+          "stars": 196645
         }
       ]
     },
@@ -491,14 +519,14 @@
       "name": "prompts.chat",
       "description": "f.k.a. Awesome ChatGPT Prompts. Share, discover, and collect prompts from the community. Free and open source — self-host for your organization with complete privacy.",
       "language": "HTML",
-      "stars": 166038,
+      "stars": 166410,
       "summary": "",
       "type": "template",
       "topics": [
         "prompt",
         "llm"
       ],
-      "pushed_at": "2026-07-20T04:19:59Z",
+      "pushed_at": "2026-07-27T04:19:55Z",
       "is_stale": false,
       "source": "search",
       "added_at": "2026-06-08T07:24:17.326865975Z",
@@ -531,6 +559,10 @@
         {
           "t": "2026-07-20T06:00:17.937109802Z",
           "stars": 166038
+        },
+        {
+          "t": "2026-07-27T06:17:53.770210603Z",
+          "stars": 166410
         }
       ]
     },
@@ -541,14 +573,14 @@
       "name": "transformers",
       "description": "🤗 Transformers: the model-definition framework for state-of-the-art machine learning models in text, vision, audio, and multimodal models, for both inference and training. ",
       "language": "Python",
-      "stars": 162751,
+      "stars": 163019,
       "summary": "",
       "type": "tutorial",
       "topics": [
         "multimodal",
         "infra"
       ],
-      "pushed_at": "2026-07-17T16:52:51Z",
+      "pushed_at": "2026-07-27T06:15:33Z",
       "is_stale": false,
       "source": "search",
       "added_at": "2026-06-08T07:24:17.326865975Z",
@@ -581,6 +613,10 @@
         {
           "t": "2026-07-20T06:00:17.937109802Z",
           "stars": 162751
+        },
+        {
+          "t": "2026-07-27T06:17:53.770210603Z",
+          "stars": 163019
         }
       ]
     },
@@ -589,15 +625,15 @@
       "url": "https://github.com/langgenius/dify",
       "owner": "langgenius",
       "name": "dify",
-      "description": "Production-ready platform for agentic workflow development.",
+      "description": "Build Agentic workflows, RAG pipelines, with rich AI model and tool support on one collaborative workspace. Deploy on cloud, VPC, or self-hosted, so teams move from prototype to production without rebuilding the stack.",
       "language": "TypeScript",
-      "stars": 149397,
+      "stars": 150359,
       "summary": "",
       "type": "guide",
       "topics": [
         "agent"
       ],
-      "pushed_at": "2026-07-20T05:59:46Z",
+      "pushed_at": "2026-07-27T06:05:33Z",
       "is_stale": false,
       "source": "search",
       "added_at": "2026-06-08T07:24:17.326865975Z",
@@ -630,6 +666,10 @@
         {
           "t": "2026-07-20T06:00:17.937109802Z",
           "stars": 149397
+        },
+        {
+          "t": "2026-07-27T06:17:53.770210603Z",
+          "stars": 150359
         }
       ]
     },
@@ -640,13 +680,13 @@
       "name": "open-webui",
       "description": "User-friendly AI Interface (Supports Ollama, OpenAI API, ...)",
       "language": "Python",
-      "stars": 146012,
+      "stars": 146862,
       "summary": "",
       "type": "guide",
       "topics": [
         "other"
       ],
-      "pushed_at": "2026-07-20T05:33:54Z",
+      "pushed_at": "2026-07-27T06:17:22Z",
       "is_stale": false,
       "source": "search",
       "added_at": "2026-06-08T07:24:17.326865975Z",
@@ -679,6 +719,10 @@
         {
           "t": "2026-07-20T06:00:17.937109802Z",
           "stars": 146012
+        },
+        {
+          "t": "2026-07-27T06:17:53.770210603Z",
+          "stars": 146862
         }
       ]
     },
@@ -689,13 +733,13 @@
       "name": "langchain",
       "description": "The agent engineering platform.",
       "language": "Python",
-      "stars": 142127,
+      "stars": 142645,
       "summary": "",
       "type": "guide",
       "topics": [
         "agent"
       ],
-      "pushed_at": "2026-07-19T08:47:28Z",
+      "pushed_at": "2026-07-27T01:24:03Z",
       "is_stale": false,
       "source": "search",
       "added_at": "2026-06-08T07:24:17.326865975Z",
@@ -728,6 +772,10 @@
         {
           "t": "2026-07-20T06:00:17.937109802Z",
           "stars": 142127
+        },
+        {
+          "t": "2026-07-27T06:17:53.770210603Z",
+          "stars": 142645
         }
       ]
     },
@@ -738,14 +786,14 @@
       "name": "llama.cpp",
       "description": "LLM inference in C/C++",
       "language": "C++",
-      "stars": 120992,
+      "stars": 121709,
       "summary": "",
       "type": "guide",
       "topics": [
         "infra",
         "llm"
       ],
-      "pushed_at": "2026-07-20T05:48:57Z",
+      "pushed_at": "2026-07-27T06:13:59Z",
       "is_stale": false,
       "source": "search",
       "added_at": "2026-06-08T07:24:17.326865975Z",
@@ -778,6 +826,10 @@
         {
           "t": "2026-07-20T06:00:17.937109802Z",
           "stars": 120992
+        },
+        {
+          "t": "2026-07-27T06:17:53.770210603Z",
+          "stars": 121709
         }
       ]
     },
@@ -786,9 +838,9 @@
       "url": "https://github.com/Shubhamsaboo/awesome-llm-apps",
       "owner": "Shubhamsaboo",
       "name": "awesome-llm-apps",
-      "description": "100+ AI Agent & RAG apps you can actually run — clone, customize, ship.",
+      "description": "100+ AI Agents, Agent Skills and RAG Apps - Free and Open Source.",
       "language": "Python",
-      "stars": 124669,
+      "stars": 127948,
       "summary": "",
       "type": "guide",
       "topics": [
@@ -796,7 +848,7 @@
         "rag",
         "llm"
       ],
-      "pushed_at": "2026-07-19T18:47:08Z",
+      "pushed_at": "2026-07-23T08:12:10Z",
       "is_stale": false,
       "source": "search",
       "added_at": "2026-06-08T07:24:17.326865975Z",
@@ -829,6 +881,10 @@
         {
           "t": "2026-07-20T06:00:17.937109802Z",
           "stars": 124669
+        },
+        {
+          "t": "2026-07-27T06:17:53.770210603Z",
+          "stars": 127948
         }
       ]
     },
@@ -839,13 +895,13 @@
       "name": "browser-use",
       "description": "🌐 Make websites accessible for AI agents. Automate tasks online with ease.",
       "language": "Python",
-      "stars": 105615,
+      "stars": 106944,
       "summary": "",
       "type": "guide",
       "topics": [
         "agent"
       ],
-      "pushed_at": "2026-07-17T05:32:02Z",
+      "pushed_at": "2026-07-26T03:17:39Z",
       "is_stale": false,
       "source": "search",
       "added_at": "2026-06-08T07:24:17.326865975Z",
@@ -878,6 +934,10 @@
         {
           "t": "2026-07-20T06:00:17.937109802Z",
           "stars": 105615
+        },
+        {
+          "t": "2026-07-27T06:17:53.770210603Z",
+          "stars": 106944
         }
       ]
     },
@@ -888,13 +948,13 @@
       "name": "LLMs-from-scratch",
       "description": "Implement a ChatGPT-like LLM in PyTorch from scratch, step by step",
       "language": "Jupyter Notebook",
-      "stars": 99404,
+      "stars": 99914,
       "summary": "",
       "type": "tutorial",
       "topics": [
         "llm"
       ],
-      "pushed_at": "2026-07-11T20:45:39Z",
+      "pushed_at": "2026-07-27T00:38:42Z",
       "is_stale": false,
       "source": "search",
       "added_at": "2026-06-08T07:24:17.326865975Z",
@@ -927,6 +987,10 @@
         {
           "t": "2026-07-20T06:00:17.937109802Z",
           "stars": 99404
+        },
+        {
+          "t": "2026-07-27T06:17:53.770210603Z",
+          "stars": 99914
         }
       ]
     },
@@ -937,7 +1001,7 @@
       "name": "TradingAgents",
       "description": "TradingAgents: Multi-Agents LLM Financial Trading Framework",
       "language": "Python",
-      "stars": 93725,
+      "stars": 94677,
       "summary": "",
       "type": "guide",
       "topics": [
@@ -977,6 +1041,10 @@
         {
           "t": "2026-07-20T06:00:17.937109802Z",
           "stars": 93725
+        },
+        {
+          "t": "2026-07-27T06:17:53.770210603Z",
+          "stars": 94677
         }
       ]
     },
@@ -987,14 +1055,14 @@
       "name": "vllm",
       "description": "A high-throughput and memory-efficient inference and serving engine for LLMs",
       "language": "Python",
-      "stars": 86670,
+      "stars": 87267,
       "summary": "",
       "type": "guide",
       "topics": [
         "infra",
         "llm"
       ],
-      "pushed_at": "2026-07-20T04:17:18Z",
+      "pushed_at": "2026-07-27T06:06:32Z",
       "is_stale": false,
       "source": "search",
       "added_at": "2026-06-08T07:24:17.326865975Z",
@@ -1027,6 +1095,10 @@
         {
           "t": "2026-07-20T06:00:17.937109802Z",
           "stars": 86670
+        },
+        {
+          "t": "2026-07-27T06:17:53.770210603Z",
+          "stars": 87267
         }
       ]
     },
@@ -1037,7 +1109,7 @@
       "name": "ragflow",
       "description": "RAGFlow is a leading open-source Retrieval-Augmented Generation (RAG) engine that fuses cutting-edge RAG with Agent capabilities to create a superior context layer for LLMs",
       "language": "Go",
-      "stars": 85435,
+      "stars": 86086,
       "summary": "",
       "type": "guide",
       "topics": [
@@ -1046,7 +1118,7 @@
         "eval",
         "llm"
       ],
-      "pushed_at": "2026-07-20T05:41:46Z",
+      "pushed_at": "2026-07-27T06:09:02Z",
       "is_stale": false,
       "source": "search",
       "added_at": "2026-06-08T07:24:17.326865975Z",
@@ -1079,6 +1151,10 @@
         {
           "t": "2026-07-20T06:00:17.937109802Z",
           "stars": 85435
+        },
+        {
+          "t": "2026-07-27T06:17:53.770210603Z",
+          "stars": 86086
         }
       ]
     },
@@ -1087,16 +1163,16 @@
       "url": "https://github.com/harry0703/MoneyPrinterTurbo",
       "owner": "harry0703",
       "name": "MoneyPrinterTurbo",
-      "description": "利用AI大模型，一键生成高清短视频 Generate short videos with one click using AI LLM.",
+      "description": "利用 AI 大模型和自动化工作流，根据主题或关键词一键生成高清短视频。Generate HD short videos from a topic or keyword with an automated AI workflow.",
       "language": "Python",
-      "stars": 98203,
+      "stars": 99454,
       "summary": "",
       "type": "guide",
       "topics": [
         "multimodal",
         "llm"
       ],
-      "pushed_at": "2026-07-18T04:54:33Z",
+      "pushed_at": "2026-07-27T05:57:22Z",
       "is_stale": false,
       "source": "search",
       "added_at": "2026-06-08T07:24:17.326865975Z",
@@ -1129,6 +1205,10 @@
         {
           "t": "2026-07-20T06:00:17.937109802Z",
           "stars": 98203
+        },
+        {
+          "t": "2026-07-27T06:17:53.770210603Z",
+          "stars": 99454
         }
       ]
     },
@@ -1139,14 +1219,14 @@
       "name": "PaddleOCR",
       "description": "Turn any PDF or image document into structured data for your AI. A powerful, lightweight OCR toolkit that bridges the gap between images/PDFs and LLMs. Supports 100+ languages.",
       "language": "Python",
-      "stars": 85829,
+      "stars": 86305,
       "summary": "",
       "type": "guide",
       "topics": [
         "multimodal",
         "llm"
       ],
-      "pushed_at": "2026-07-15T06:38:12Z",
+      "pushed_at": "2026-07-22T11:59:34Z",
       "is_stale": false,
       "source": "search",
       "added_at": "2026-06-08T07:24:17.326865975Z",
@@ -1179,6 +1259,10 @@
         {
           "t": "2026-07-20T06:00:17.937109802Z",
           "stars": 85829
+        },
+        {
+          "t": "2026-07-27T06:17:53.770210603Z",
+          "stars": 86305
         }
       ]
     },
@@ -1189,7 +1273,7 @@
       "name": "gpt4all",
       "description": "GPT4All: Run Local LLMs on Any Device. Open-source and available for commercial use.",
       "language": "C++",
-      "stars": 77393,
+      "stars": 77405,
       "summary": "",
       "type": "guide",
       "topics": [
@@ -1228,6 +1312,10 @@
         {
           "t": "2026-07-20T06:00:17.937109802Z",
           "stars": 77393
+        },
+        {
+          "t": "2026-07-27T06:17:53.770210603Z",
+          "stars": 77405
         }
       ]
     },
@@ -1238,14 +1326,14 @@
       "name": "LlamaFactory",
       "description": "Unified Efficient Fine-Tuning of 100+ LLMs & VLMs (ACL 2024)",
       "language": "Python",
-      "stars": 73382,
+      "stars": 73534,
       "summary": "",
       "type": "guide",
       "topics": [
         "multimodal",
         "llm"
       ],
-      "pushed_at": "2026-07-17T14:50:13Z",
+      "pushed_at": "2026-07-24T08:30:00Z",
       "is_stale": false,
       "source": "search",
       "added_at": "2026-06-08T07:24:17.326865975Z",
@@ -1278,6 +1366,10 @@
         {
           "t": "2026-07-20T06:00:17.937109802Z",
           "stars": 73382
+        },
+        {
+          "t": "2026-07-27T06:17:53.770210603Z",
+          "stars": 73534
         }
       ]
     },
@@ -1288,7 +1380,7 @@
       "name": "gpt_academic",
       "description": "为GPT/GLM等LLM大语言模型提供实用化交互接口，特别优化论文阅读/润色/写作体验，模块化设计，支持自定义快捷按钮&函数插件，支持Python和C++等项目剖析&自译解功能，PDF/LaTex论文翻译&总结功能，支持并行问询多种LLM模型，支持chatglm3等本地模型。接入通义千问, deepseekcoder, 讯飞星火, 文心一言, llama2, rwkv, claude2, moss等。",
       "language": "Python",
-      "stars": 71105,
+      "stars": 71141,
       "summary": "",
       "type": "guide",
       "topics": [
@@ -1327,6 +1419,10 @@
         {
           "t": "2026-07-20T06:00:17.937109802Z",
           "stars": 71105
+        },
+        {
+          "t": "2026-07-27T06:17:53.770210603Z",
+          "stars": 71141
         }
       ]
     },
@@ -1337,7 +1433,7 @@
       "name": "deer-flow",
       "description": "An open-source long-horizon SuperAgent harness that researches, codes, and creates. With the help of sandboxes, memories, tools, skill, subagents and message gateway, it handles different levels of tasks that could take minutes to hours.",
       "language": "Python",
-      "stars": 77409,
+      "stars": 77934,
       "summary": "",
       "type": "guide",
       "topics": [
@@ -1345,7 +1441,7 @@
         "rag",
         "infra"
       ],
-      "pushed_at": "2026-07-20T00:20:23Z",
+      "pushed_at": "2026-07-27T06:10:24Z",
       "is_stale": false,
       "source": "search",
       "added_at": "2026-06-08T07:24:17.326865975Z",
@@ -1378,6 +1474,10 @@
         {
           "t": "2026-07-20T06:00:17.937109802Z",
           "stars": 77409
+        },
+        {
+          "t": "2026-07-27T06:17:53.770210603Z",
+          "stars": 77934
         }
       ]
     },
@@ -1388,13 +1488,13 @@
       "name": "caveman",
       "description": "🪨 why use many token when few token do trick — Claude Code skill that cuts 65% of tokens by talking like caveman",
       "language": "JavaScript",
-      "stars": 90915,
+      "stars": 93277,
       "summary": "",
       "type": "guide",
       "topics": [
         "other"
       ],
-      "pushed_at": "2026-07-03T11:10:42Z",
+      "pushed_at": "2026-07-26T16:53:51Z",
       "is_stale": false,
       "source": "search",
       "added_at": "2026-06-08T07:24:17.326865975Z",
@@ -1427,6 +1527,10 @@
         {
           "t": "2026-07-20T06:00:17.937109802Z",
           "stars": 90915
+        },
+        {
+          "t": "2026-07-27T06:17:53.770210603Z",
+          "stars": 93277
         }
       ]
     },
@@ -1437,7 +1541,7 @@
       "name": "MetaGPT",
       "description": "🌟 The Multi-Agent Framework: First AI Software Company, Towards Natural Language Programming",
       "language": "Python",
-      "stars": 69431,
+      "stars": 69530,
       "summary": "",
       "type": "guide",
       "topics": [
@@ -1477,6 +1581,10 @@
         {
           "t": "2026-07-20T06:00:17.937109802Z",
           "stars": 69431
+        },
+        {
+          "t": "2026-07-27T06:17:53.770210603Z",
+          "stars": 69530
         }
       ]
     },
@@ -1487,13 +1595,13 @@
       "name": "crawl4ai",
       "description": "🚀🤖 Crawl4AI: Open-source LLM Friendly Web Crawler & Scraper. Don't be shy, join here: https://discord.gg/jP8KfhDhyN",
       "language": "Python",
-      "stars": 73341,
+      "stars": 75169,
       "summary": "",
       "type": "guide",
       "topics": [
         "llm"
       ],
-      "pushed_at": "2026-07-15T08:41:10Z",
+      "pushed_at": "2026-07-25T06:40:46Z",
       "is_stale": false,
       "source": "search",
       "added_at": "2026-06-08T07:24:17.326865975Z",
@@ -1526,6 +1634,10 @@
         {
           "t": "2026-07-20T06:00:17.937109802Z",
           "stars": 73341
+        },
+        {
+          "t": "2026-07-27T06:17:53.770210603Z",
+          "stars": 75169
         }
       ]
     },
@@ -1536,14 +1648,14 @@
       "name": "MinerU",
       "description": "Transforms complex documents like PDFs and Office docs into LLM-ready markdown/JSON for your Agentic workflows.",
       "language": "Python",
-      "stars": 75148,
+      "stars": 75816,
       "summary": "",
       "type": "guide",
       "topics": [
         "agent",
         "llm"
       ],
-      "pushed_at": "2026-07-17T07:32:08Z",
+      "pushed_at": "2026-07-25T03:52:10Z",
       "is_stale": false,
       "source": "search",
       "added_at": "2026-06-08T07:24:17.326865975Z",
@@ -1576,6 +1688,10 @@
         {
           "t": "2026-07-20T06:00:17.937109802Z",
           "stars": 75148
+        },
+        {
+          "t": "2026-07-27T06:17:53.770210603Z",
+          "stars": 75816
         }
       ]
     },
@@ -1584,15 +1700,15 @@
       "url": "https://github.com/unslothai/unsloth",
       "owner": "unslothai",
       "name": "unsloth",
-      "description": "Unsloth Studio is a web UI for training and running open models like Gemma 4, Qwen3.6, DeepSeek, gpt-oss locally.",
+      "description": "Unsloth is a local UI for training and running Gemma 4, Qwen3.6, DeepSeek, Kimi, GLM and other models.",
       "language": "Python",
-      "stars": 68440,
+      "stars": 68944,
       "summary": "",
       "type": "guide",
       "topics": [
         "llm"
       ],
-      "pushed_at": "2026-07-20T05:57:00Z",
+      "pushed_at": "2026-07-27T06:15:53Z",
       "is_stale": false,
       "source": "search",
       "added_at": "2026-06-08T07:24:17.326865975Z",
@@ -1625,6 +1741,10 @@
         {
           "t": "2026-07-20T06:00:17.937109802Z",
           "stars": 68440
+        },
+        {
+          "t": "2026-07-27T06:17:53.770210603Z",
+          "stars": 68944
         }
       ]
     },
@@ -1635,7 +1755,7 @@
       "name": "learn-claude-code",
       "description": "Bash is all you need -  A nano claude code–like 「agent harness」, built from 0 to 1",
       "language": "Python",
-      "stars": 71563,
+      "stars": 72329,
       "summary": "",
       "type": "tutorial",
       "topics": [
@@ -1674,6 +1794,10 @@
         {
           "t": "2026-07-20T06:00:17.937109802Z",
           "stars": 71563
+        },
+        {
+          "t": "2026-07-27T06:17:53.770210603Z",
+          "stars": 72329
         }
       ]
     },
@@ -1684,14 +1808,14 @@
       "name": "pathway",
       "description": "Python ETL framework for stream processing, real-time analytics, LLM pipelines, and RAG.",
       "language": "Python",
-      "stars": 62620,
+      "stars": 62616,
       "summary": "",
       "type": "guide",
       "topics": [
         "rag",
         "llm"
       ],
-      "pushed_at": "2026-07-19T05:42:39Z",
+      "pushed_at": "2026-07-27T05:30:19Z",
       "is_stale": false,
       "source": "search",
       "added_at": "2026-06-08T07:24:17.326865975Z",
@@ -1724,6 +1848,10 @@
         {
           "t": "2026-07-20T06:00:17.937109802Z",
           "stars": 62620
+        },
+        {
+          "t": "2026-07-27T06:17:53.770210603Z",
+          "stars": 62616
         }
       ]
     },
@@ -1734,14 +1862,14 @@
       "name": "anything-llm",
       "description": "Stop renting your intelligence. Own it with AnythingLLM. Everything you need for a powerful local-first agent experience ",
       "language": "JavaScript",
-      "stars": 63580,
+      "stars": 63925,
       "summary": "",
       "type": "guide",
       "topics": [
         "agent",
         "llm"
       ],
-      "pushed_at": "2026-07-18T05:27:31Z",
+      "pushed_at": "2026-07-25T04:37:54Z",
       "is_stale": false,
       "source": "search",
       "added_at": "2026-06-08T07:24:17.326865975Z",
@@ -1774,6 +1902,10 @@
         {
           "t": "2026-07-20T06:00:17.937109802Z",
           "stars": 63580
+        },
+        {
+          "t": "2026-07-27T06:17:53.770210603Z",
+          "stars": 63925
         }
       ]
     },
@@ -1784,7 +1916,7 @@
       "name": "pi",
       "description": "AI agent toolkit: unified LLM API, agent loop, TUI, coding agent CLI",
       "language": "TypeScript",
-      "stars": 72917,
+      "stars": 78369,
       "summary": "",
       "type": "guide",
       "topics": [
@@ -1792,7 +1924,7 @@
         "ai-coding",
         "llm"
       ],
-      "pushed_at": "2026-07-19T23:50:37Z",
+      "pushed_at": "2026-07-26T16:29:45Z",
       "is_stale": false,
       "source": "search",
       "added_at": "2026-06-08T07:24:17.326865975Z",
@@ -1825,6 +1957,10 @@
         {
           "t": "2026-07-20T06:00:17.937109802Z",
           "stars": 72917
+        },
+        {
+          "t": "2026-07-27T06:17:53.770210603Z",
+          "stars": 78369
         }
       ]
     },
@@ -1835,14 +1971,14 @@
       "name": "rtk",
       "description": "CLI proxy that reduces LLM token consumption by 60-90% on common dev commands. Single Rust binary, zero dependencies",
       "language": "Rust",
-      "stars": 71912,
+      "stars": 73379,
       "summary": "",
       "type": "guide",
       "topics": [
         "infra",
         "llm"
       ],
-      "pushed_at": "2026-07-19T10:26:29Z",
+      "pushed_at": "2026-07-26T15:47:23Z",
       "is_stale": false,
       "source": "search",
       "added_at": "2026-06-08T07:24:17.326865975Z",
@@ -1875,6 +2011,10 @@
         {
           "t": "2026-07-20T06:00:17.937109802Z",
           "stars": 71912
+        },
+        {
+          "t": "2026-07-27T06:17:53.770210603Z",
+          "stars": 73379
         }
       ]
     },
@@ -1885,7 +2025,7 @@
       "name": "llm-app",
       "description": "Ready-to-run cloud templates for RAG, AI pipelines, and enterprise search with live data. 🐳Docker-friendly.⚡Always in sync with Sharepoint, Google Drive, S3, Kafka, PostgreSQL, real-time data APIs, and more.",
       "language": "Jupyter Notebook",
-      "stars": 59025,
+      "stars": 58974,
       "summary": "",
       "type": "template",
       "topics": [
@@ -1925,6 +2065,10 @@
         {
           "t": "2026-07-20T06:00:17.937109802Z",
           "stars": 59025
+        },
+        {
+          "t": "2026-07-27T06:17:53.770210603Z",
+          "stars": 58974
         }
       ]
     },
@@ -1935,7 +2079,7 @@
       "name": "TrendRadar",
       "description": "⭐AI-driven public opinion & trend monitor with multi-platform aggregation, RSS, and smart alerts.🎯 告别信息过载，你的 AI 舆情监控助手与热点筛选工具！聚合多平台热点 +  RSS 订阅，支持关键词精准筛选。AI 智能筛选新闻 + AI 翻译 +  AI 分析简报直推手机，也支持接入 MCP 架构，赋能 AI 自然语言对话分析、情感洞察与趋势预测等。支持 Docker ，数据本地/云端自持。集成微信/飞书/钉钉/Telegram/邮件/ntfy/bark/slack 等渠道智能推送。",
       "language": "Python",
-      "stars": 60699,
+      "stars": 60917,
       "summary": "",
       "type": "guide",
       "topics": [
@@ -1974,6 +2118,10 @@
         {
           "t": "2026-07-20T06:00:17.937109802Z",
           "stars": 60699
+        },
+        {
+          "t": "2026-07-27T06:17:53.770210603Z",
+          "stars": 60917
         }
       ]
     },
@@ -1984,13 +2132,13 @@
       "name": "mem0",
       "description": "Universal memory layer for AI Agents",
       "language": "TypeScript",
-      "stars": 61251,
+      "stars": 61796,
       "summary": "",
       "type": "guide",
       "topics": [
         "agent"
       ],
-      "pushed_at": "2026-07-19T19:44:18Z",
+      "pushed_at": "2026-07-25T12:24:49Z",
       "is_stale": false,
       "source": "search",
       "added_at": "2026-06-08T07:24:17.326865975Z",
@@ -2023,6 +2171,10 @@
         {
           "t": "2026-07-20T06:00:17.937109802Z",
           "stars": 61251
+        },
+        {
+          "t": "2026-07-27T06:17:53.770210603Z",
+          "stars": 61796
         }
       ]
     },
@@ -2033,7 +2185,7 @@
       "name": "hello-agents",
       "description": "📚 《从零开始构建智能体》——从零开始的智能体原理与实践教程",
       "language": "Python",
-      "stars": 67277,
+      "stars": 68811,
       "summary": "",
       "type": "guide",
       "topics": [
@@ -2072,6 +2224,10 @@
         {
           "t": "2026-07-20T06:00:17.937109802Z",
           "stars": 67277
+        },
+        {
+          "t": "2026-07-27T06:17:53.770210603Z",
+          "stars": 68811
         }
       ]
     },
@@ -2082,13 +2238,13 @@
       "name": "context7",
       "description": "Context7 Platform -- Up-to-date code documentation for LLMs and AI code editors",
       "language": "TypeScript",
-      "stars": 59455,
+      "stars": 59808,
       "summary": "",
       "type": "guide",
       "topics": [
         "llm"
       ],
-      "pushed_at": "2026-07-19T16:35:07Z",
+      "pushed_at": "2026-07-25T03:38:35Z",
       "is_stale": false,
       "source": "search",
       "added_at": "2026-06-08T07:24:17.326865975Z",
@@ -2121,6 +2277,10 @@
         {
           "t": "2026-07-20T06:00:17.937109802Z",
           "stars": 59455
+        },
+        {
+          "t": "2026-07-27T06:17:53.770210603Z",
+          "stars": 59808
         }
       ]
     },
@@ -2131,13 +2291,13 @@
       "name": "mempalace",
       "description": "The best-benchmarked open-source AI memory system. And it's free.",
       "language": "Python",
-      "stars": 57489,
+      "stars": 57775,
       "summary": "",
       "type": "guide",
       "topics": [
         "eval"
       ],
-      "pushed_at": "2026-07-17T10:51:41Z",
+      "pushed_at": "2026-07-26T20:42:37Z",
       "is_stale": false,
       "source": "search",
       "added_at": "2026-06-08T07:24:17.326865975Z",
@@ -2170,6 +2330,10 @@
         {
           "t": "2026-07-20T06:00:17.937109802Z",
           "stars": 57489
+        },
+        {
+          "t": "2026-07-27T06:17:53.770210603Z",
+          "stars": 57775
         }
       ]
     },
@@ -2180,13 +2344,13 @@
       "name": "minimind",
       "description": "🧠「大模型」2小时完全从0训练64M的小参数LLM！Train a 64M-parameter LLM from scratch in just 2h!",
       "language": "Python",
-      "stars": 53625,
+      "stars": 53877,
       "summary": "",
       "type": "tutorial",
       "topics": [
         "llm"
       ],
-      "pushed_at": "2026-06-28T10:03:46Z",
+      "pushed_at": "2026-07-23T03:11:40Z",
       "is_stale": false,
       "source": "search",
       "added_at": "2026-06-08T07:24:17.326865975Z",
@@ -2219,6 +2383,10 @@
         {
           "t": "2026-07-20T06:00:17.937109802Z",
           "stars": 53625
+        },
+        {
+          "t": "2026-07-27T06:17:53.770210603Z",
+          "stars": 53877
         }
       ]
     },
@@ -2229,13 +2397,13 @@
       "name": "llama_index",
       "description": "LlamaIndex is the leading document agent and OCR platform",
       "language": "Python",
-      "stars": 50950,
+      "stars": 51135,
       "summary": "",
       "type": "guide",
       "topics": [
         "agent"
       ],
-      "pushed_at": "2026-07-16T05:24:11Z",
+      "pushed_at": "2026-07-26T02:17:58Z",
       "is_stale": false,
       "source": "search",
       "added_at": "2026-06-08T07:24:17.326865975Z",
@@ -2268,6 +2436,10 @@
         {
           "t": "2026-07-20T06:00:17.937109802Z",
           "stars": 50950
+        },
+        {
+          "t": "2026-07-27T06:17:53.770210603Z",
+          "stars": 51135
         }
       ]
     },
@@ -2278,7 +2450,7 @@
       "name": "litellm",
       "description": "The fastest, litest AI Gateway. Rust core with Python SDK. Call 100+ LLM APIs in OpenAI (or native) format with cost tracking, guardrails, load balancing, and logging [Bedrock, Azure, OpenAI, Anthropic, OpenAI, VertexAI, vLLM, Nvidia NIM]",
       "language": "Python",
-      "stars": 54054,
+      "stars": 54787,
       "summary": "",
       "type": "guide",
       "topics": [
@@ -2286,7 +2458,7 @@
         "infra",
         "llm"
       ],
-      "pushed_at": "2026-07-20T00:10:02Z",
+      "pushed_at": "2026-07-27T04:05:24Z",
       "is_stale": false,
       "source": "search",
       "added_at": "2026-06-08T07:24:17.326865975Z",
@@ -2319,6 +2491,10 @@
         {
           "t": "2026-07-20T06:00:17.937109802Z",
           "stars": 54054
+        },
+        {
+          "t": "2026-07-27T06:17:53.770210603Z",
+          "stars": 54787
         }
       ]
     },
@@ -2329,14 +2505,14 @@
       "name": "goose",
       "description": "an open source, extensible AI agent that goes beyond code suggestions - install, execute, edit, and test with any LLM",
       "language": "Rust",
-      "stars": 51306,
+      "stars": 51769,
       "summary": "",
       "type": "guide",
       "topics": [
         "agent",
         "llm"
       ],
-      "pushed_at": "2026-07-20T05:41:25Z",
+      "pushed_at": "2026-07-27T01:42:52Z",
       "is_stale": false,
       "source": "search",
       "added_at": "2026-06-08T07:24:17.326865975Z",
@@ -2369,6 +2545,10 @@
         {
           "t": "2026-07-20T06:00:17.937109802Z",
           "stars": 51306
+        },
+        {
+          "t": "2026-07-27T06:17:53.770210603Z",
+          "stars": 51769
         }
       ]
     },
@@ -2379,7 +2559,7 @@
       "name": "textgen",
       "description": "Open-source desktop app for local LLMs. Text, vision, tool-calling, OpenAI/Anthropic-compatible API. 100% private.",
       "language": "Python",
-      "stars": 47463,
+      "stars": 47497,
       "summary": "",
       "type": "guide",
       "topics": [
@@ -2419,6 +2599,10 @@
         {
           "t": "2026-07-20T06:00:17.937109802Z",
           "stars": 47463
+        },
+        {
+          "t": "2026-07-27T06:17:53.770210603Z",
+          "stars": 47497
         }
       ]
     },
@@ -2429,14 +2613,14 @@
       "name": "cherry-studio",
       "description": "AI productivity studio with smart chat, autonomous agents, and 300+ assistants. Unified access to frontier LLMs",
       "language": "TypeScript",
-      "stars": 48776,
+      "stars": 49027,
       "summary": "",
       "type": "guide",
       "topics": [
         "agent",
         "llm"
       ],
-      "pushed_at": "2026-07-20T05:58:18Z",
+      "pushed_at": "2026-07-27T06:08:06Z",
       "is_stale": false,
       "source": "search",
       "added_at": "2026-06-08T07:24:17.326865975Z",
@@ -2469,6 +2653,10 @@
         {
           "t": "2026-07-20T06:00:17.937109802Z",
           "stars": 48776
+        },
+        {
+          "t": "2026-07-27T06:17:53.770210603Z",
+          "stars": 49027
         }
       ]
     },
@@ -2479,14 +2667,14 @@
       "name": "LocalAI",
       "description": "LocalAI is the open-source AI engine. Run any model - LLMs, vision, voice, image, video - on any hardware. No GPU required.",
       "language": "Go",
-      "stars": 47696,
+      "stars": 47914,
       "summary": "",
       "type": "guide",
       "topics": [
         "multimodal",
         "llm"
       ],
-      "pushed_at": "2026-07-20T03:11:55Z",
+      "pushed_at": "2026-07-27T00:04:53Z",
       "is_stale": false,
       "source": "search",
       "added_at": "2026-06-08T07:24:17.326865975Z",
@@ -2519,6 +2707,10 @@
         {
           "t": "2026-07-20T06:00:17.937109802Z",
           "stars": 47696
+        },
+        {
+          "t": "2026-07-27T06:17:53.770210603Z",
+          "stars": 47914
         }
       ]
     },
@@ -2527,9 +2719,9 @@
       "url": "https://github.com/jeecgboot/JeecgBoot",
       "owner": "jeecgboot",
       "name": "JeecgBoot",
-      "description": "【低代码 V2.0】AI低代码平台，AI Skills 一句话生成整个系统；一键生成前后端代码甚至整个模块。 AI Skills 一句话画流程、设计表单、生成报表、大屏。内置 AI应用平台涵盖：AI聊天、知识库、流程编排、MCP插件等，兼容主流大模型。引领AI低代码「Skills 生成 → 在线配置 → 代码生成 → 手工合并->AI修改」开发模式，解决 Java 项目 90% 重复工作，提高效率又不失灵活。",
+      "description": "【低代码迈入v2.0时代，一句话即可生成整个系统】企业级AI低代码平台，一键生成前后端代码甚至整个系统。 AI Skills 一句话画流程、设计表单、生成报表、大屏。内置 AI应用平台涵盖：AI聊天、知识库、流程编排、MCP插件等，兼容主流大模型。引领AI低代码「Skills 生成 → 在线配置 → 代码生成 → 手工合并->AI修改」开发模式，解决 Java 项目 90% 重复工作，提高效率又不失灵活。",
       "language": "Java",
-      "stars": 47131,
+      "stars": 47190,
       "summary": "",
       "type": "guide",
       "topics": [
@@ -2568,6 +2760,10 @@
         {
           "t": "2026-07-20T06:00:17.937109802Z",
           "stars": 47131
+        },
+        {
+          "t": "2026-07-27T06:17:53.770210603Z",
+          "stars": 47190
         }
       ]
     },
@@ -2578,13 +2774,13 @@
       "name": "awesome-claude-code",
       "description": "A hand-picked collection of the finest of resources for the most awesome of agents, Claude Code, the undisputed champion of coding companions, from the unstoppable team at Anthropic PBC. A delectable showcase of top tier skills, ambidextrous agents, scintillating status lines, top notch developer tooling, and also we have plugins",
       "language": "Python",
-      "stars": 50445,
+      "stars": 51028,
       "summary": "",
       "type": "guide",
       "topics": [
         "agent"
       ],
-      "pushed_at": "2026-07-20T04:17:40Z",
+      "pushed_at": "2026-07-27T04:17:27Z",
       "is_stale": false,
       "source": "search",
       "added_at": "2026-06-08T07:24:17.326865975Z",
@@ -2617,6 +2813,10 @@
         {
           "t": "2026-07-20T06:00:17.937109802Z",
           "stars": 50445
+        },
+        {
+          "t": "2026-07-27T06:17:53.770210603Z",
+          "stars": 51028
         }
       ]
     },
@@ -2627,14 +2827,14 @@
       "name": "CowAgent",
       "description": "Open-source super AI assistant & Agent Harness. Plans tasks, runs tools and skills, self-evolves with memory and knowledge. Multi-model, multi-channel. Lightweight, extensible, one-line install. (formerly chatgpt-on-wechat)",
       "language": "Python",
-      "stars": 46049,
+      "stars": 46151,
       "summary": "",
       "type": "guide",
       "topics": [
         "agent",
         "llm"
       ],
-      "pushed_at": "2026-07-20T04:15:25Z",
+      "pushed_at": "2026-07-26T13:29:07Z",
       "is_stale": false,
       "source": "search",
       "added_at": "2026-06-08T07:24:17.326865975Z",
@@ -2667,6 +2867,10 @@
         {
           "t": "2026-07-20T06:00:17.937109802Z",
           "stars": 46049
+        },
+        {
+          "t": "2026-07-27T06:17:53.770210603Z",
+          "stars": 46151
         }
       ]
     },
@@ -2677,13 +2881,13 @@
       "name": "milvus",
       "description": "Milvus is a high-performance, cloud-native vector database built for scalable vector ANN search",
       "language": "Go",
-      "stars": 45276,
+      "stars": 45386,
       "summary": "",
       "type": "guide",
       "topics": [
         "rag"
       ],
-      "pushed_at": "2026-07-20T05:26:41Z",
+      "pushed_at": "2026-07-27T05:20:20Z",
       "is_stale": false,
       "source": "search",
       "added_at": "2026-06-08T07:24:17.326865975Z",
@@ -2716,6 +2920,10 @@
         {
           "t": "2026-07-20T06:00:17.937109802Z",
           "stars": 45276
+        },
+        {
+          "t": "2026-07-27T06:17:53.770210603Z",
+          "stars": 45386
         }
       ]
     },
@@ -2726,13 +2934,13 @@
       "name": "nanobot",
       "description": "Lightweight, open-source AI agent for your tools, chats, and workflows.",
       "language": "Python",
-      "stars": 45908,
+      "stars": 46282,
       "summary": "",
       "type": "guide",
       "topics": [
         "agent"
       ],
-      "pushed_at": "2026-07-20T05:51:53Z",
+      "pushed_at": "2026-07-27T05:53:09Z",
       "is_stale": false,
       "source": "search",
       "added_at": "2026-06-08T07:24:17.326865975Z",
@@ -2765,6 +2973,10 @@
         {
           "t": "2026-07-20T06:00:17.937109802Z",
           "stars": 45908
+        },
+        {
+          "t": "2026-07-27T06:17:53.770210603Z",
+          "stars": 46282
         }
       ]
     },
@@ -2775,13 +2987,13 @@
       "name": "jan",
       "description": "Jan is an open source alternative to ChatGPT that runs 100% offline on your computer.",
       "language": "TypeScript",
-      "stars": 43643,
+      "stars": 43724,
       "summary": "",
       "type": "guide",
       "topics": [
         "llm"
       ],
-      "pushed_at": "2026-07-20T05:22:46Z",
+      "pushed_at": "2026-07-27T06:17:51Z",
       "is_stale": false,
       "source": "search",
       "added_at": "2026-06-08T07:24:17.326865975Z",
@@ -2814,6 +3026,10 @@
         {
           "t": "2026-07-20T06:00:17.937109802Z",
           "stars": 43643
+        },
+        {
+          "t": "2026-07-27T06:17:53.770210603Z",
+          "stars": 43724
         }
       ]
     },
@@ -2824,13 +3040,13 @@
       "name": "ray",
       "description": "Ray is an AI compute engine. Ray consists of a core distributed runtime and a set of AI Libraries for accelerating ML workloads.",
       "language": "Python",
-      "stars": 43290,
+      "stars": 43361,
       "summary": "",
       "type": "guide",
       "topics": [
         "other"
       ],
-      "pushed_at": "2026-07-19T21:56:41Z",
+      "pushed_at": "2026-07-27T06:08:58Z",
       "is_stale": false,
       "source": "search",
       "added_at": "2026-06-08T07:24:17.326865975Z",
@@ -2863,6 +3079,10 @@
         {
           "t": "2026-07-20T06:00:17.937109802Z",
           "stars": 43290
+        },
+        {
+          "t": "2026-07-27T06:17:53.770210603Z",
+          "stars": 43361
         }
       ]
     },
@@ -2871,9 +3091,9 @@
       "url": "https://github.com/asgeirtj/system_prompts_leaks",
       "owner": "asgeirtj",
       "name": "system_prompts_leaks",
-      "description": "Extracted system prompts from Anthropic - Claude Fable 5, Opus 4.8, Claude Code, Claude Design. OpenAI - ChatGPT GPT-5.6, Codex GPT-5.6, GPT-5.5. Google - Gemini 3.5 Flash, 3.1 Pro, Antigravity. xAI - Grok, Cursor, Copilot, VS Code, Perplexity, and more. Updated regularly.",
+      "description": "Extracted system prompts from Anthropic - Claude Fable 5, Opus 5, Claude Design, Claude Code. OpenAI - ChatGPT GPT-5.6-Sol, Codex. Google - Gemini 3.5 Flash, 3.1 Pro, Antigravity. xAI - Grok, Cursor, Copilot, VS Code, Perplexity, and more. Updated regularly.",
       "language": "JavaScript",
-      "stars": 59120,
+      "stars": 60781,
       "summary": "",
       "type": "template",
       "topics": [
@@ -2881,7 +3101,7 @@
         "prompt",
         "llm"
       ],
-      "pushed_at": "2026-07-19T16:20:19Z",
+      "pushed_at": "2026-07-27T02:47:38Z",
       "is_stale": false,
       "source": "search",
       "added_at": "2026-06-08T07:24:17.326865975Z",
@@ -2914,6 +3134,10 @@
         {
           "t": "2026-07-20T06:00:17.937109802Z",
           "stars": 59120
+        },
+        {
+          "t": "2026-07-27T06:17:53.770210603Z",
+          "stars": 60781
         }
       ]
     },
@@ -2924,13 +3148,13 @@
       "name": "daily_stock_analysis",
       "description": "LLM 驱动的多市场股票智能分析系统：多源行情、实时新闻、决策看板与自动推送，支持零成本定时运行。  LLM-powered multi-market stock analysis system with multi-source market data, real-time news, decision dashboard, automated notifications, and cost-free scheduled runs.",
       "language": "Python",
-      "stars": 57941,
+      "stars": 59131,
       "summary": "",
       "type": "guide",
       "topics": [
         "llm"
       ],
-      "pushed_at": "2026-07-19T14:29:14Z",
+      "pushed_at": "2026-07-26T18:35:37Z",
       "is_stale": false,
       "source": "search",
       "added_at": "2026-06-08T07:24:17.326865975Z",
@@ -2963,6 +3187,10 @@
         {
           "t": "2026-07-20T06:00:17.937109802Z",
           "stars": 57941
+        },
+        {
+          "t": "2026-07-27T06:17:53.770210603Z",
+          "stars": 59131
         }
       ]
     },
@@ -2973,7 +3201,7 @@
       "name": "dive-into-llms",
       "description": "《动手学大模型Dive into LLMs》系列编程实践教程",
       "language": "Jupyter Notebook",
-      "stars": 43350,
+      "stars": 45680,
       "summary": "",
       "type": "guide",
       "topics": [
@@ -3012,6 +3240,10 @@
         {
           "t": "2026-07-20T06:00:17.937109802Z",
           "stars": 43350
+        },
+        {
+          "t": "2026-07-27T06:17:53.770210603Z",
+          "stars": 45680
         }
       ]
     },
@@ -3022,7 +3254,7 @@
       "name": "ChatTTS",
       "description": "A generative speech model for daily dialogue.",
       "language": "Python",
-      "stars": 39651,
+      "stars": 39683,
       "summary": "",
       "type": "guide",
       "topics": [
@@ -3061,6 +3293,10 @@
         {
           "t": "2026-07-20T06:00:17.937109802Z",
           "stars": 39651
+        },
+        {
+          "t": "2026-07-27T06:17:53.770210603Z",
+          "stars": 39683
         }
       ]
     },
@@ -3071,14 +3307,14 @@
       "name": "BitNet",
       "description": "Official inference framework for 1-bit LLMs",
       "language": "C++",
-      "stars": 39760,
+      "stars": 39786,
       "summary": "",
       "type": "guide",
       "topics": [
         "infra",
         "llm"
       ],
-      "pushed_at": "2026-07-17T03:43:50Z",
+      "pushed_at": "2026-07-27T05:52:06Z",
       "is_stale": false,
       "source": "search",
       "added_at": "2026-06-08T07:24:17.326865975Z",
@@ -3111,6 +3347,10 @@
         {
           "t": "2026-07-20T06:00:17.937109802Z",
           "stars": 39760
+        },
+        {
+          "t": "2026-07-27T06:17:53.770210603Z",
+          "stars": 39786
         }
       ]
     },
@@ -3121,7 +3361,7 @@
       "name": "quivr",
       "description": "Opiniated RAG for integrating GenAI in your apps 🧠   Focus on your product rather than the RAG. Easy integration in existing products with customisation!  Any LLM: GPT4, Groq, Llama. Any Vectorstore: PGVector, Faiss. Any Files. Anyway you want.",
       "language": "Python",
-      "stars": 39228,
+      "stars": 39363,
       "summary": "",
       "type": "guide",
       "topics": [
@@ -3161,6 +3401,10 @@
         {
           "t": "2026-07-20T06:00:17.937109802Z",
           "stars": 39228
+        },
+        {
+          "t": "2026-07-27T06:17:53.770210603Z",
+          "stars": 39363
         }
       ]
     },
@@ -3171,7 +3415,7 @@
       "name": "Langchain-Chatchat",
       "description": "Langchain-Chatchat（原Langchain-ChatGLM）基于 Langchain 与 ChatGLM, Qwen 与 Llama 等语言模型的 RAG 与 Agent 应用 | Langchain-Chatchat (formerly langchain-ChatGLM), local knowledge based LLM (like ChatGLM, Qwen and Llama) RAG and Agent app with langchain ",
       "language": "Python",
-      "stars": 38443,
+      "stars": 38478,
       "summary": "",
       "type": "guide",
       "topics": [
@@ -3212,6 +3456,10 @@
         {
           "t": "2026-07-20T06:00:17.937109802Z",
           "stars": 38443
+        },
+        {
+          "t": "2026-07-27T06:17:53.770210603Z",
+          "stars": 38478
         }
       ]
     },
@@ -3221,15 +3469,15 @@
       "owner": "QuantumNous",
       "name": "new-api",
       "description": "A unified AI model hub for aggregation & distribution. It supports cross-converting various LLMs into OpenAI-compatible, Claude-compatible, or Gemini-compatible formats. A centralized gateway for personal and enterprise model management. 🍥",
-      "language": "Go",
-      "stars": 42738,
+      "language": "TypeScript",
+      "stars": 43511,
       "summary": "",
       "type": "guide",
       "topics": [
         "infra",
         "llm"
       ],
-      "pushed_at": "2026-07-20T05:09:28Z",
+      "pushed_at": "2026-07-26T16:23:53Z",
       "is_stale": false,
       "source": "search",
       "added_at": "2026-06-08T07:24:17.326865975Z",
@@ -3262,6 +3510,10 @@
         {
           "t": "2026-07-20T06:00:17.937109802Z",
           "stars": 42738
+        },
+        {
+          "t": "2026-07-27T06:17:53.770210603Z",
+          "stars": 43511
         }
       ]
     },
@@ -3272,14 +3524,14 @@
       "name": "CodeWhale",
       "description": "Open-source, community-driven agent harness",
       "language": "Rust",
-      "stars": 39944,
+      "stars": 40144,
       "summary": "",
       "type": "guide",
       "topics": [
         "agent",
         "ai-coding"
       ],
-      "pushed_at": "2026-07-20T05:55:12Z",
+      "pushed_at": "2026-07-26T20:27:36Z",
       "is_stale": false,
       "source": "search",
       "added_at": "2026-06-08T07:24:17.326865975Z",
@@ -3312,6 +3564,10 @@
         {
           "t": "2026-07-20T06:00:17.937109802Z",
           "stars": 39944
+        },
+        {
+          "t": "2026-07-27T06:17:53.770210603Z",
+          "stars": 40144
         }
       ]
     },
@@ -3322,7 +3578,7 @@
       "name": "LLM101n",
       "description": "LLM101n: Let's build a Storyteller",
       "language": "",
-      "stars": 37478,
+      "stars": 37504,
       "summary": "",
       "type": "tutorial",
       "topics": [
@@ -3361,6 +3617,10 @@
         {
           "t": "2026-07-20T06:00:17.937109802Z",
           "stars": 37478
+        },
+        {
+          "t": "2026-07-27T06:17:53.770210603Z",
+          "stars": 37504
         }
       ]
     },
@@ -3371,13 +3631,13 @@
       "name": "langextract",
       "description": "A Python library for extracting structured information from unstructured text using LLMs with precise source grounding and interactive visualization.",
       "language": "Python",
-      "stars": 37579,
+      "stars": 37874,
       "summary": "",
       "type": "guide",
       "topics": [
         "llm"
       ],
-      "pushed_at": "2026-07-02T07:59:47Z",
+      "pushed_at": "2026-07-25T21:17:50Z",
       "is_stale": false,
       "source": "search",
       "added_at": "2026-06-08T07:24:17.326865975Z",
@@ -3410,6 +3670,10 @@
         {
           "t": "2026-07-20T06:00:17.937109802Z",
           "stars": 37579
+        },
+        {
+          "t": "2026-07-27T06:17:53.770210603Z",
+          "stars": 37874
         }
       ]
     },
@@ -3420,14 +3684,14 @@
       "name": "LightRAG",
       "description": "[EMNLP2025] \"LightRAG: Simple and Fast Retrieval-Augmented Generation\"",
       "language": "Python",
-      "stars": 37862,
+      "stars": 38204,
       "summary": "",
       "type": "guide",
       "topics": [
         "rag",
         "eval"
       ],
-      "pushed_at": "2026-07-20T04:54:33Z",
+      "pushed_at": "2026-07-27T06:06:54Z",
       "is_stale": false,
       "source": "search",
       "added_at": "2026-06-08T07:24:17.326865975Z",
@@ -3460,6 +3724,10 @@
         {
           "t": "2026-07-20T06:00:17.937109802Z",
           "stars": 37862
+        },
+        {
+          "t": "2026-07-27T06:17:53.770210603Z",
+          "stars": 38204
         }
       ]
     },
@@ -3470,7 +3738,7 @@
       "name": "AgentGPT",
       "description": "🤖 Assemble, configure, and deploy autonomous AI Agents in your browser.",
       "language": "TypeScript",
-      "stars": 36281,
+      "stars": 36294,
       "summary": "",
       "type": "guide",
       "topics": [
@@ -3511,6 +3779,10 @@
         {
           "t": "2026-07-20T06:00:17.937109802Z",
           "stars": 36281
+        },
+        {
+          "t": "2026-07-27T06:17:53.770210603Z",
+          "stars": 36294
         }
       ]
     },
@@ -3521,7 +3793,7 @@
       "name": "ai-engineering-hub",
       "description": "In-depth tutorials on LLMs, RAGs and real-world AI agent applications.",
       "language": "Jupyter Notebook",
-      "stars": 36606,
+      "stars": 36718,
       "summary": "",
       "type": "tutorial",
       "topics": [
@@ -3562,6 +3834,10 @@
         {
           "t": "2026-07-20T06:00:17.937109802Z",
           "stars": 36606
+        },
+        {
+          "t": "2026-07-27T06:17:53.770210603Z",
+          "stars": 36718
         }
       ]
     },
@@ -3572,7 +3848,7 @@
       "name": "khoj",
       "description": "Your AI second brain. Self-hostable. Get answers from the web or your docs. Build custom agents, schedule automations, do deep research. Turn any online or local LLM into your personal, autonomous AI (gpt, claude, gemini, llama, qwen, mistral). Get started - free.",
       "language": "Python",
-      "stars": 35883,
+      "stars": 36051,
       "summary": "",
       "type": "guide",
       "topics": [
@@ -3612,6 +3888,10 @@
         {
           "t": "2026-07-20T06:00:17.937109802Z",
           "stars": 35883
+        },
+        {
+          "t": "2026-07-27T06:17:53.770210603Z",
+          "stars": 36051
         }
       ]
     },
@@ -3622,7 +3902,7 @@
       "name": "one-api",
       "description": "LLM API 管理 & 分发系统，支持 OpenAI、Azure、Anthropic Claude、Google Gemini、DeepSeek、字节豆包、ChatGLM、文心一言、讯飞星火、通义千问、360 智脑、腾讯混元等主流模型，统一 API 适配，可用于 key 管理与二次分发。单可执行文件，提供 Docker 镜像，一键部署，开箱即用。LLM API management & key redistribution system, unifying multiple providers under a single API. Single binary, Docker-ready, with an English UI.",
       "language": "JavaScript",
-      "stars": 35824,
+      "stars": 35980,
       "summary": "",
       "type": "guide",
       "topics": [
@@ -3661,6 +3941,10 @@
         {
           "t": "2026-07-20T06:00:17.937109802Z",
           "stars": 35824
+        },
+        {
+          "t": "2026-07-27T06:17:53.770210603Z",
+          "stars": 35980
         }
       ]
     },
@@ -3671,14 +3955,14 @@
       "name": "AstrBot",
       "description": "AI Agent Assistant & development framework that integrates lots of IM platforms, LLMs, plugins and AI feature, and can be your openclaw alternative. ✨",
       "language": "Python",
-      "stars": 36768,
+      "stars": 38161,
       "summary": "",
       "type": "guide",
       "topics": [
         "agent",
         "llm"
       ],
-      "pushed_at": "2026-07-20T05:08:15Z",
+      "pushed_at": "2026-07-27T02:42:02Z",
       "is_stale": false,
       "source": "search",
       "added_at": "2026-06-08T07:24:17.326865975Z",
@@ -3711,6 +3995,10 @@
         {
           "t": "2026-07-20T06:00:17.937109802Z",
           "stars": 36768
+        },
+        {
+          "t": "2026-07-27T06:17:53.770210603Z",
+          "stars": 38161
         }
       ]
     },
@@ -3721,13 +4009,13 @@
       "name": "langgraph",
       "description": "Build resilient agents.",
       "language": "Python",
-      "stars": 37643,
+      "stars": 38217,
       "summary": "",
       "type": "guide",
       "topics": [
         "agent"
       ],
-      "pushed_at": "2026-07-19T23:31:21Z",
+      "pushed_at": "2026-07-26T00:52:48Z",
       "is_stale": false,
       "source": "search",
       "added_at": "2026-06-08T07:24:17.326865975Z",
@@ -3760,6 +4048,10 @@
         {
           "t": "2026-07-20T06:00:17.937109802Z",
           "stars": 37643
+        },
+        {
+          "t": "2026-07-27T06:17:53.770210603Z",
+          "stars": 38217
         }
       ]
     },
@@ -3770,14 +4062,14 @@
       "name": "CopilotKit",
       "description": "The Frontend Stack for Agents & Generative UI. React, Angular, Mobile, Slack, and more.  Makers of the AG-UI Protocol",
       "language": "TypeScript",
-      "stars": 36165,
+      "stars": 36300,
       "summary": "",
       "type": "guide",
       "topics": [
         "agent",
         "ai-coding"
       ],
-      "pushed_at": "2026-07-20T03:44:41Z",
+      "pushed_at": "2026-07-27T05:39:37Z",
       "is_stale": false,
       "source": "search",
       "added_at": "2026-06-08T07:24:17.326865975Z",
@@ -3810,6 +4102,10 @@
         {
           "t": "2026-07-20T06:00:17.937109802Z",
           "stars": 36165
+        },
+        {
+          "t": "2026-07-27T06:17:53.770210603Z",
+          "stars": 36300
         }
       ]
     },
@@ -3849,14 +4145,14 @@
       "name": "graphrag",
       "description": "A modular graph-based Retrieval-Augmented Generation (RAG) system",
       "language": "Python",
-      "stars": 34522,
+      "stars": 34888,
       "summary": "",
       "type": "guide",
       "topics": [
         "rag",
         "eval"
       ],
-      "pushed_at": "2026-07-18T01:23:47Z",
+      "pushed_at": "2026-07-26T07:09:24Z",
       "is_stale": false,
       "source": "search",
       "added_at": "2026-06-08T07:24:17.326865975Z",
@@ -3889,6 +4185,10 @@
         {
           "t": "2026-07-20T06:00:17.937109802Z",
           "stars": 34522
+        },
+        {
+          "t": "2026-07-27T06:17:53.770210603Z",
+          "stars": 34888
         }
       ]
     },
@@ -3899,14 +4199,14 @@
       "name": "ChatDev",
       "description": "ChatDev 2.0: Dev All through LLM-powered Multi-Agent Collaboration",
       "language": "Python",
-      "stars": 33771,
+      "stars": 33836,
       "summary": "",
       "type": "guide",
       "topics": [
         "agent",
         "llm"
       ],
-      "pushed_at": "2026-06-29T08:25:10Z",
+      "pushed_at": "2026-07-24T08:01:27Z",
       "is_stale": false,
       "source": "search",
       "added_at": "2026-06-08T07:24:17.326865975Z",
@@ -3939,6 +4239,10 @@
         {
           "t": "2026-07-20T06:00:17.937109802Z",
           "stars": 33771
+        },
+        {
+          "t": "2026-07-27T06:17:53.770210603Z",
+          "stars": 33836
         }
       ]
     },
@@ -3949,13 +4253,13 @@
       "name": "PageIndex",
       "description": "📑 PageIndex: Document Index for Vectorless, Reasoning-based RAG",
       "language": "Python",
-      "stars": 34119,
+      "stars": 34725,
       "summary": "",
       "type": "guide",
       "topics": [
         "rag"
       ],
-      "pushed_at": "2026-07-19T08:33:00Z",
+      "pushed_at": "2026-07-24T08:13:08Z",
       "is_stale": false,
       "source": "search",
       "added_at": "2026-06-08T07:24:17.326865975Z",
@@ -3988,6 +4292,10 @@
         {
           "t": "2026-07-20T06:00:17.937109802Z",
           "stars": 34119
+        },
+        {
+          "t": "2026-07-27T06:17:53.770210603Z",
+          "stars": 34725
         }
       ]
     },
@@ -3998,7 +4306,7 @@
       "name": "happy-llm",
       "description": "📚 从零开始构建大模型",
       "language": "Jupyter Notebook",
-      "stars": 32171,
+      "stars": 32360,
       "summary": "",
       "type": "guide",
       "topics": [
@@ -4037,6 +4345,10 @@
         {
           "t": "2026-07-20T06:00:17.937109802Z",
           "stars": 32171
+        },
+        {
+          "t": "2026-07-27T06:17:53.770210603Z",
+          "stars": 32360
         }
       ]
     },
@@ -4047,7 +4359,7 @@
       "name": "self-llm",
       "description": "《开源大模型食用指南》针对中国宝宝量身打造的基于Linux环境快速微调（全参数/Lora）、部署国内外开源大模型（LLM）/多模态大模型（MLLM）教程",
       "language": "Jupyter Notebook",
-      "stars": 31339,
+      "stars": 31434,
       "summary": "",
       "type": "guide",
       "topics": [
@@ -4086,6 +4398,10 @@
         {
           "t": "2026-07-20T06:00:17.937109802Z",
           "stars": 31339
+        },
+        {
+          "t": "2026-07-27T06:17:53.770210603Z",
+          "stars": 31434
         }
       ]
     },
@@ -4096,13 +4412,13 @@
       "name": "prompt-optimizer",
       "description": "An AI prompt optimizer for writing better prompts and getting better AI results.",
       "language": "TypeScript",
-      "stars": 32326,
+      "stars": 32709,
       "summary": "",
       "type": "template",
       "topics": [
         "prompt"
       ],
-      "pushed_at": "2026-07-18T10:13:54Z",
+      "pushed_at": "2026-07-27T06:15:15Z",
       "is_stale": false,
       "source": "search",
       "added_at": "2026-06-08T07:24:17.326865975Z",
@@ -4135,6 +4451,10 @@
         {
           "t": "2026-07-20T06:00:17.937109802Z",
           "stars": 32326
+        },
+        {
+          "t": "2026-07-27T06:17:53.770210603Z",
+          "stars": 32709
         }
       ]
     },
@@ -4145,7 +4465,7 @@
       "name": "llm.c",
       "description": "LLM training in simple, raw C/CUDA",
       "language": "Cuda",
-      "stars": 30585,
+      "stars": 30649,
       "summary": "",
       "type": "guide",
       "topics": [
@@ -4184,6 +4504,10 @@
         {
           "t": "2026-07-20T06:00:17.937109802Z",
           "stars": 30585
+        },
+        {
+          "t": "2026-07-27T06:17:53.770210603Z",
+          "stars": 30649
         }
       ]
     },
@@ -4194,13 +4518,13 @@
       "name": "onyx",
       "description": "Open Source AI Platform - AI Chat with advanced features that works with every LLM",
       "language": "Python",
-      "stars": 31011,
+      "stars": 31197,
       "summary": "",
       "type": "guide",
       "topics": [
         "llm"
       ],
-      "pushed_at": "2026-07-20T05:53:43Z",
+      "pushed_at": "2026-07-26T10:34:35Z",
       "is_stale": false,
       "source": "search",
       "added_at": "2026-06-08T07:24:17.326865975Z",
@@ -4233,6 +4557,10 @@
         {
           "t": "2026-07-20T06:00:17.937109802Z",
           "stars": 31011
+        },
+        {
+          "t": "2026-07-27T06:17:53.770210603Z",
+          "stars": 31197
         }
       ]
     },
@@ -4243,13 +4571,13 @@
       "name": "ai-engineering-from-scratch",
       "description": "Learn it. Build it. Ship it for others.",
       "language": "Python",
-      "stars": 39899,
+      "stars": 43916,
       "summary": "",
       "type": "tutorial",
       "topics": [
         "other"
       ],
-      "pushed_at": "2026-06-25T19:43:11Z",
+      "pushed_at": "2026-07-26T11:07:40Z",
       "is_stale": false,
       "source": "search",
       "added_at": "2026-06-08T07:24:17.326865975Z",
@@ -4282,6 +4610,10 @@
         {
           "t": "2026-07-20T06:00:17.937109802Z",
           "stars": 39899
+        },
+        {
+          "t": "2026-07-27T06:17:53.770210603Z",
+          "stars": 43916
         }
       ]
     },
@@ -4292,7 +4624,7 @@
       "name": "Mr.-Ranedeer-AI-Tutor",
       "description": "A GPT-4 AI Tutor Prompt for customizable personalized learning experiences.",
       "language": "",
-      "stars": 29611,
+      "stars": 29606,
       "summary": "",
       "type": "tutorial",
       "topics": [
@@ -4332,6 +4664,10 @@
         {
           "t": "2026-07-20T06:00:17.937109802Z",
           "stars": 29611
+        },
+        {
+          "t": "2026-07-27T06:17:53.770210603Z",
+          "stars": 29606
         }
       ]
     },
@@ -4342,7 +4678,7 @@
       "name": "SillyTavern",
       "description": "LLM Frontend for Power Users.",
       "language": "JavaScript",
-      "stars": 30912,
+      "stars": 31185,
       "summary": "",
       "type": "guide",
       "topics": [
@@ -4381,6 +4717,10 @@
         {
           "t": "2026-07-20T06:00:17.937109802Z",
           "stars": 30912
+        },
+        {
+          "t": "2026-07-27T06:17:53.770210603Z",
+          "stars": 31185
         }
       ]
     },
@@ -4391,7 +4731,7 @@
       "name": "sglang",
       "description": "SGLang is a high-performance serving framework for large language models and multimodal models.",
       "language": "Python",
-      "stars": 30530,
+      "stars": 30778,
       "summary": "",
       "type": "guide",
       "topics": [
@@ -4399,7 +4739,7 @@
         "infra",
         "llm"
       ],
-      "pushed_at": "2026-07-20T05:58:16Z",
+      "pushed_at": "2026-07-27T05:59:50Z",
       "is_stale": false,
       "source": "search",
       "added_at": "2026-06-08T07:24:17.326865975Z",
@@ -4432,6 +4772,10 @@
         {
           "t": "2026-07-20T06:00:17.937109802Z",
           "stars": 30530
+        },
+        {
+          "t": "2026-07-27T06:17:53.770210603Z",
+          "stars": 30778
         }
       ]
     },
@@ -4442,13 +4786,13 @@
       "name": "composio",
       "description": "Composio powers 1000+ toolkits, tool search, context management, authentication, and a sandboxed workbench to help you build AI agents that turn intent into action.",
       "language": "TypeScript",
-      "stars": 29291,
+      "stars": 29400,
       "summary": "",
       "type": "guide",
       "topics": [
         "agent"
       ],
-      "pushed_at": "2026-07-19T10:29:58Z",
+      "pushed_at": "2026-07-27T05:57:55Z",
       "is_stale": false,
       "source": "search",
       "added_at": "2026-06-08T07:24:17.326865975Z",
@@ -4481,6 +4825,10 @@
         {
           "t": "2026-07-20T06:00:17.937109802Z",
           "stars": 29291
+        },
+        {
+          "t": "2026-07-27T06:17:53.770210603Z",
+          "stars": 29400
         }
       ]
     },
@@ -4491,7 +4839,7 @@
       "name": "langfuse",
       "description": "🪢 Open source AI engineering platform: LLM evals, observability, metrics, prompt management, playground, datasets. Integrates with OpenTelemetry, LangChain, OpenAI SDK, LiteLLM, and more. 🍊YC W23 ",
       "language": "TypeScript",
-      "stars": 31450,
+      "stars": 31918,
       "summary": "",
       "type": "guide",
       "topics": [
@@ -4500,7 +4848,7 @@
         "prompt",
         "llm"
       ],
-      "pushed_at": "2026-07-19T20:02:04Z",
+      "pushed_at": "2026-07-27T05:44:53Z",
       "is_stale": false,
       "source": "search",
       "added_at": "2026-06-08T07:24:17.326865975Z",
@@ -4533,6 +4881,10 @@
         {
           "t": "2026-07-20T06:00:17.937109802Z",
           "stars": 31450
+        },
+        {
+          "t": "2026-07-27T06:17:53.770210603Z",
+          "stars": 31918
         }
       ]
     },
@@ -4543,7 +4895,7 @@
       "name": "storm",
       "description": "An LLM-powered knowledge curation system that researches a topic and generates a full-length report with citations.",
       "language": "Python",
-      "stars": 30149,
+      "stars": 30339,
       "summary": "",
       "type": "guide",
       "topics": [
@@ -4582,6 +4934,10 @@
         {
           "t": "2026-07-20T06:00:17.937109802Z",
           "stars": 30149
+        },
+        {
+          "t": "2026-07-27T06:17:53.770210603Z",
+          "stars": 30339
         }
       ]
     },
@@ -4592,7 +4948,7 @@
       "name": "FastGPT",
       "description": "FastGPT is a knowledge-based platform built on the LLMs, offers a comprehensive suite of out-of-the-box capabilities such as data processing, RAG retrieval, and visual AI workflow orchestration, letting you easily develop and deploy complex question-answering systems without the need for extensive setup or configuration.",
       "language": "TypeScript",
-      "stars": 29031,
+      "stars": 29137,
       "summary": "",
       "type": "guide",
       "topics": [
@@ -4601,7 +4957,7 @@
         "infra",
         "llm"
       ],
-      "pushed_at": "2026-07-20T03:48:07Z",
+      "pushed_at": "2026-07-27T04:08:30Z",
       "is_stale": false,
       "source": "search",
       "added_at": "2026-06-08T07:24:17.326865975Z",
@@ -4634,6 +4990,10 @@
         {
           "t": "2026-07-20T06:00:17.937109802Z",
           "stars": 29031
+        },
+        {
+          "t": "2026-07-27T06:17:53.770210603Z",
+          "stars": 29137
         }
       ]
     },
@@ -4685,14 +5045,14 @@
       "name": "TradingAgents-CN",
       "description": "基于多智能体LLM的中文金融交易框架 - TradingAgents中文增强版",
       "language": "Python",
-      "stars": 30379,
+      "stars": 30690,
       "summary": "",
       "type": "guide",
       "topics": [
         "agent",
         "llm"
       ],
-      "pushed_at": "2026-04-20T09:46:55Z",
+      "pushed_at": "2026-07-24T02:51:59Z",
       "is_stale": false,
       "source": "search",
       "added_at": "2026-06-08T07:24:17.326865975Z",
@@ -4725,6 +5085,10 @@
         {
           "t": "2026-07-20T06:00:17.937109802Z",
           "stars": 30379
+        },
+        {
+          "t": "2026-07-27T06:17:53.770210603Z",
+          "stars": 30690
         }
       ]
     },
@@ -4735,13 +5099,13 @@
       "name": "AionUi",
       "description": "Free, local, open-source 24/7 Cowork app for OpenClaw, Hermes Agent, Claude Code, Codex, OpenCode, Gemini CLI and 20+ more CLI | Customize your assistants | Star if you like it!",
       "language": "TypeScript",
-      "stars": 30476,
+      "stars": 30901,
       "summary": "",
       "type": "guide",
       "topics": [
         "agent"
       ],
-      "pushed_at": "2026-07-20T03:38:13Z",
+      "pushed_at": "2026-07-27T05:26:26Z",
       "is_stale": false,
       "source": "search",
       "added_at": "2026-06-08T07:24:17.326865975Z",
@@ -4774,6 +5138,10 @@
         {
           "t": "2026-07-20T06:00:17.937109802Z",
           "stars": 30476
+        },
+        {
+          "t": "2026-07-27T06:17:53.770210603Z",
+          "stars": 30901
         }
       ]
     },
@@ -4784,13 +5152,13 @@
       "name": "llmfit",
       "description": "Hundreds of models & providers. One command to find what runs on your hardware.",
       "language": "Rust",
-      "stars": 29789,
+      "stars": 30717,
       "summary": "",
       "type": "guide",
       "topics": [
         "llm"
       ],
-      "pushed_at": "2026-07-20T00:56:02Z",
+      "pushed_at": "2026-07-27T00:55:39Z",
       "is_stale": false,
       "source": "search",
       "added_at": "2026-06-08T07:24:17.326865975Z",
@@ -4823,6 +5191,10 @@
         {
           "t": "2026-07-20T06:00:17.937109802Z",
           "stars": 29789
+        },
+        {
+          "t": "2026-07-27T06:17:53.770210603Z",
+          "stars": 30717
         }
       ]
     },
@@ -5018,7 +5390,7 @@
       "name": "aisuite",
       "description": "Simple, unified interface to multiple Generative AI providers",
       "language": "Python",
-      "stars": 14496,
+      "stars": 15457,
       "summary": "",
       "type": "guide",
       "topics": [
@@ -5033,6 +5405,10 @@
         {
           "t": "2026-06-15T08:51:36.954443589Z",
           "stars": 14496
+        },
+        {
+          "t": "2026-07-27T06:17:53.770210603Z",
+          "stars": 15457
         }
       ]
     },
@@ -5043,7 +5419,7 @@
       "name": "ponytail",
       "description": "Makes your AI agent think like the laziest senior dev in the room. The best code is the code you never wrote.",
       "language": "JavaScript",
-      "stars": 86205,
+      "stars": 89957,
       "summary": "",
       "type": "guide",
       "topics": [
@@ -5074,6 +5450,10 @@
         {
           "t": "2026-07-20T06:00:17.937109802Z",
           "stars": 86205
+        },
+        {
+          "t": "2026-07-27T06:17:53.770210603Z",
+          "stars": 89957
         }
       ]
     },
@@ -5084,7 +5464,7 @@
       "name": "headroom",
       "description": "Compress tool outputs, logs, files, and RAG chunks before they reach the LLM. 20% fewer tokens for coding agents, 60-95% fewer tokens for JSON, same answers. Library, proxy, MCP server.",
       "language": "Python",
-      "stars": 60434,
+      "stars": 62654,
       "summary": "",
       "type": "guide",
       "topics": [
@@ -5092,7 +5472,7 @@
         "infra",
         "llm"
       ],
-      "pushed_at": "2026-07-20T05:25:44Z",
+      "pushed_at": "2026-07-27T03:28:35Z",
       "is_stale": false,
       "source": "search",
       "added_at": "2026-06-22T08:50:09.825501478Z",
@@ -5117,6 +5497,10 @@
         {
           "t": "2026-07-20T06:00:17.937109802Z",
           "stars": 60434
+        },
+        {
+          "t": "2026-07-27T06:17:53.770210603Z",
+          "stars": 62654
         }
       ]
     },
@@ -5800,7 +6184,7 @@
       "name": "claude-cookbooks",
       "description": "A collection of notebooks/recipes showcasing some fun and effective ways of using Claude.",
       "language": "Jupyter Notebook",
-      "stars": 48573,
+      "stars": 50351,
       "summary": "",
       "type": "guide",
       "topics": [
@@ -5815,6 +6199,10 @@
         {
           "t": "2026-07-13T05:59:16.946746286Z",
           "stars": 48573
+        },
+        {
+          "t": "2026-07-27T06:17:53.770210603Z",
+          "stars": 50351
         }
       ]
     },
@@ -6197,6 +6585,132 @@
         {
           "t": "2026-07-20T06:00:17.937109802Z",
           "stars": 16300
+        }
+      ]
+    },
+    {
+      "id": "Graphify-Labs/graphify",
+      "url": "https://github.com/Graphify-Labs/graphify",
+      "owner": "Graphify-Labs",
+      "name": "graphify",
+      "description": "Turn any codebase, with its docs, SQL schemas, configs, and PDFs, into a queryable knowledge graph. A /graphify skill for Claude Code, Cursor, Codex, and Gemini CLI: local deterministic AST parsing, every edge explained, no vector store.",
+      "language": "Python",
+      "stars": 96625,
+      "summary": "",
+      "type": "guide",
+      "topics": [
+        "rag"
+      ],
+      "pushed_at": "2026-07-26T23:20:06Z",
+      "is_stale": false,
+      "source": "search",
+      "added_at": "2026-07-27T06:17:53.770210603Z",
+      "classified_by": "heuristic",
+      "star_snapshots": [
+        {
+          "t": "2026-07-27T06:17:53.770210603Z",
+          "stars": 96625
+        }
+      ]
+    },
+    {
+      "id": "citrolabs/ego-lite",
+      "url": "https://github.com/citrolabs/ego-lite",
+      "owner": "citrolabs",
+      "name": "ego-lite",
+      "description": "The fastest browser for AI agents to run web automation, built for sharing your logged-in browser state with your AI agents, like Codex or Claude Code, without disturbing you. Zero cost, zero config.",
+      "language": "JavaScript",
+      "stars": 4953,
+      "summary": "",
+      "type": "guide",
+      "topics": [
+        "agent"
+      ],
+      "pushed_at": "0001-01-01T00:00:00Z",
+      "is_stale": false,
+      "source": "trending",
+      "added_at": "2026-07-27T06:17:53.770210603Z",
+      "classified_by": "heuristic",
+      "star_snapshots": [
+        {
+          "t": "2026-07-27T06:17:53.770210603Z",
+          "stars": 4953
+        }
+      ]
+    },
+    {
+      "id": "CoreBunch/Instatic",
+      "url": "https://github.com/CoreBunch/Instatic",
+      "owner": "CoreBunch",
+      "name": "Instatic",
+      "description": "The open-source alternative to Webflow, Framer and WordPress. Agentic self-hosted visual CMS outputting clean static pages. Users, roles, plugins, content, database, it's all there.",
+      "language": "TypeScript",
+      "stars": 5843,
+      "summary": "",
+      "type": "guide",
+      "topics": [
+        "agent"
+      ],
+      "pushed_at": "0001-01-01T00:00:00Z",
+      "is_stale": false,
+      "source": "trending",
+      "added_at": "2026-07-27T06:17:53.770210603Z",
+      "classified_by": "heuristic",
+      "star_snapshots": [
+        {
+          "t": "2026-07-27T06:17:53.770210603Z",
+          "stars": 5843
+        }
+      ]
+    },
+    {
+      "id": "pbakaus/impeccable",
+      "url": "https://github.com/pbakaus/impeccable",
+      "owner": "pbakaus",
+      "name": "impeccable",
+      "description": "The design language that makes your AI harness better at design.",
+      "language": "JavaScript",
+      "stars": 50880,
+      "summary": "",
+      "type": "guide",
+      "topics": [
+        "other"
+      ],
+      "pushed_at": "0001-01-01T00:00:00Z",
+      "is_stale": false,
+      "source": "trending",
+      "added_at": "2026-07-27T06:17:53.770210603Z",
+      "classified_by": "heuristic",
+      "star_snapshots": [
+        {
+          "t": "2026-07-27T06:17:53.770210603Z",
+          "stars": 50880
+        }
+      ]
+    },
+    {
+      "id": "alibaba/open-code-review",
+      "url": "https://github.com/alibaba/open-code-review",
+      "owner": "alibaba",
+      "name": "open-code-review",
+      "description": "Open-source & free — Battle-tested at Alibaba's scale. Hybrid architecture code review tool: deterministic pipelines + LLM Agent, precise line-level comments, built-in fine-tuned ruleset (NPE, thread-safety, XSS, SQL injection), OpenAI & Anthropic compatible.",
+      "language": "Go",
+      "stars": 14113,
+      "summary": "",
+      "type": "guide",
+      "topics": [
+        "agent",
+        "llm"
+      ],
+      "pushed_at": "0001-01-01T00:00:00Z",
+      "is_stale": false,
+      "source": "trending",
+      "added_at": "2026-07-27T06:17:53.770210603Z",
+      "classified_by": "heuristic",
+      "star_snapshots": [
+        {
+          "t": "2026-07-27T06:17:53.770210603Z",
+          "stars": 14113
         }
       ]
     }
